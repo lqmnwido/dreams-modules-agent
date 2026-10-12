@@ -4,40 +4,26 @@ Interactive D-ReAMS module scaffolder. No installer dependencies or npm registry
 
 Requires Node.js >=22.12 (with npm), Git and access to company GitLab. Backend build requires your approved Java/Maven. This supports Spring Boot 3.x/Maven; other versions/build tools need reviewed templates.
 
-## Run locally
-
-```sh
-node /home/lqmnwido/Projects/dreams/dreams-modules-agent/bin/install.mjs
-```
-
 The questionnaire asks module name/code, target workspace, Java group/package, approved Java/Boot versions, frontend port and submodules/use cases. Press Enter at the Java/version prompts to use Java 25 (LTS) and Spring Boot 3.5.16. These are reviewed defaults, not a live latest-version lookup; you may enter another approved version. Boot 3.5 has extended commercial support, not free LTS coverage. [Spring requirements](https://docs.spring.io/spring-boot/3.5/system-requirements.html), [support policy](https://spring.io/support-policy/). Blank business answers become TBD. It previews dependencies/folders and asks confirmation before writing. Cancellation writes nothing. It refuses existing files and symlink parents.
 
-## Install from GitHub
+## Installation
 
-Repository: https://github.com/lqmnwido/dreams-modules-agent. Clone and run directly on Linux, macOS or Windows:
+Visit [D-ReAMS Modules Agent](https://dreams-agents.kohich.site/) for installation commands and the English / Bahasa Melayu prompt library. Enter your module code to customize the English prompts instead of using a fixed M12 reference.
 
-```sh
-git clone https://github.com/lqmnwido/dreams-modules-agent.git
-cd dreams-modules-agent
-node bin/install.mjs
-```
-
-Alternatively, download the bootstrap script below. These commands use main; for repeatable installation, use a reviewed release tag or commit. No release tag is published by this repository push. Bootstrap scripts check prerequisites, clone the selected revision and run the questionnaire. They do not install system tools or require administrator access.
+The bootstrap scripts below use main, check prerequisites, clone the tool and run the questionnaire. They do not install system tools or require administrator access. For repeatable installation, use a reviewed release tag or commit.
 
 Linux/macOS:
 
 ```sh
-curl -fL 'https://raw.githubusercontent.com/lqmnwido/dreams-modules-agent/main/installers/install.sh' -o install.sh
-# Read install.sh first.
-bash install.sh 'https://github.com/lqmnwido/dreams-modules-agent.git' 'main'
+# Inspect the script before running it:
+curl -fsSL 'https://dreams-agents.kohich.site/install.sh' | bash
 ```
 
 Windows PowerShell:
 
 ```powershell
-curl.exe -fL "https://raw.githubusercontent.com/lqmnwido/dreams-modules-agent/main/installers/install.ps1" -o install.ps1
-# Read install.ps1 first.
-.\install.ps1 -RepositoryUrl "https://github.com/lqmnwido/dreams-modules-agent.git" -ReleaseTag "main"
+# Inspect the script before running it:
+irm 'https://dreams-agents.kohich.site/install.ps1' | iex
 ```
 
 Windows policy may require an organization-approved signed script or direct Git clone + `node bin/install.mjs`. No policy bypass is built in. Use Git credential management for private repositories; keep tokens out of commands/documents.
