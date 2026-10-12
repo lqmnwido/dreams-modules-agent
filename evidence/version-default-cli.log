@@ -1,0 +1,39 @@
+D-ReAMS module setup. PostgreSQL is mandatory. Blank use-case answers remain TBD.
+Sources: place SRS/SDS/mockups in doc/documents/ after setup. No source-derived business code or migrations are generated.
+Module name (lowercase; example memorial): demo
+Module code: DEMO
+Target workspace (contains Shell, frontend and backend) [/home/lqmnwido/Projects/dreams/demo-workspace]: /tmp/dreams-cli-parent-1wd2tpq5/workspace
+Approved Java group (example com.dreams): com.dreams
+Approved Java package (example com.dreams.memorial): com.dreams.demo
+Approved Java version (17, 21 or 25; Enter = LTS default) [25]: 
+Boot 3.5 is the long-term enterprise support line (commercial support). Default 3.5.16 supports Java 25; this does not imply free LTS coverage.
+Approved exact Spring Boot 3.x version (Enter = reviewed 3.5-line default) [3.5.16]: 
+Frontend local port [3004]: 3004
+Confirmed submodule identifiers (comma-separated; blank = TBD): 
+
+Plan: /tmp/dreams-cli-parent-1wd2tpq5/workspace
+demo_fe + demo_be; 127 files including concise Markdown, AGENT/AGENTS, PRD, doc/documents and ui-element references.
+Maven dependencies: Web, Validation, JPA, Security, OAuth2 Resource Server, PostgreSQL, Flyway (disabled), Test.
+Frontend: Vue CLI 5, Vue 3, Pinia, router, i18n, and @2enapps/ui Git develop.
+No secrets, tables, migrations or business endpoints. Existing files are never overwritten.
+Clone/check Shell and npm install + npm update after scaffolding? (yes/no) [yes]: no
+Confirm these scaffold/dependency selections and create files? (yes/no) [no]: D-ReAMS module setup. PostgreSQL is mandatory. Blank use-case answers remain TBD.
+Sources: place SRS/SDS/mockups in doc/documents/ after setup. No source-derived business code or migrations are generated.
+Module name (lowercase; example memorial): demo
+Module code: DEMO
+Target workspace (contains Shell, frontend and backend) [/home/lqmnwido/Projects/dreams/demo-workspace]: /tmp/dreams-cli-parent-9wo76qvn/workspace
+Approved Java group (example com.dreams): com.dreams
+Approved Java package (example com.dreams.memorial): com.dreams.demo
+Approved Java version (17, 21 or 25; Enter = LTS default) [25]: 
+Boot 3.5 is the long-term enterprise support line (commercial support). Default 3.5.16 supports Java 25; this does not imply free LTS coverage.
+Approved exact Spring Boot 3.x version (Enter = reviewed 3.5-line default) [3.5.16]: 
+Frontend local port [3004]: 3004
+Confirmed submodule identifiers (comma-separated; blank = TBD): 
+
+Plan: /tmp/dreams-cli-parent-9wo76qvn/workspace
+demo_fe + demo_be; 127 files including concise Markdown, AGENT/AGENTS, PRD, doc/documents and ui-element references.
+Maven dependencies: Web, Validation, JPA, Security, OAuth2 Resource Server, PostgreSQL, Flyway (disabled), Test.
+Frontend: Vue CLI 5, Vue 3, Pinia, router, i18n, and @2enapps/ui Git develop.
+No secrets, tables, migrations or business endpoints. Existing files are never overwritten.
+Clone/check Shell and npm install + npm update after scaffolding? (yes/no) [yes]: no
+Confirm these scaffold/dependency selections and create files? (yes/no) [no]: 

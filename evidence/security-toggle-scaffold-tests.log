@@ -1,0 +1,29 @@
+
+> @lqmnwido/dreams-modules-agent@0.1.0 test
+> node --test
+
+✔ scaffold includes source folder, split docs, references, submodules and no migrations/domain endpoints (69.652017ms)
+✔ preflight refuses existing files without writing other files (10.294588ms)
+✔ rejects traversal, reserved submodules, duplicates and invalid technical inputs (0.215302ms)
+✔ symlink directory cannot redirect generated files (7.313283ms)
+✔ integrity check detects edited or missing protected Markdown (45.107503ms)
+✔ dependency correction replaces alternate dependency locations (0.72278ms)
+Shell check and dependency maintenance complete; run builds and live tests separately.
+Shell check and dependency maintenance complete; run builds and live tests separately.
+Shell check and dependency maintenance complete; run builds and live tests separately.
+✔ daily fetch once per day; update always; correct UI before each install/update (57.810238ms)
+Shell check and dependency maintenance complete; run builds and live tests separately.
+✔ clone missing Shell and stop before pull when local changes exist (48.593549ms)
+✔ npm failures propagate and are never reported as complete (39.975935ms)
+✔ noninteractive CLI fails before writing; help requires no setup (69.538464ms)
+✔ module transport takes credentials from host and preserves response metadata (26.947301ms)
+✔ PRD is the sole editable Markdown record; requested placeholder tables are absent (44.436522ms)
+✔ generated backend keeps security on by default and includes local-only bypass verification (9.732033ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 503.578614

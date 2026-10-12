@@ -1,0 +1,27 @@
+{
+  "name": "@lqmnwido/dreams-modules-agent",
+  "version": "0.1.0",
+  "description": "Interactive D-ReAMS module scaffold with read-only AI governance documents",
+  "type": "module",
+  "bin": {
+    "dreams-modules-agent": "bin/install.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check bin/install.mjs && node --check lib/scaffold.mjs && node --check lib/maintenance.mjs"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "templates/",
+    "README.md",
+    "installers/"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "author": "lqmnwido",
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,30 @@
+> @lqmnwido/dreams-modules-agent@0.1.0 test
+> node --test
+
+✔ scaffold includes source folder, split docs, references, submodules and no migrations/domain endpoints (145.723614ms)
+✔ preflight refuses existing files without writing other files (24.716836ms)
+✔ rejects traversal, reserved submodules, duplicates and invalid technical inputs (0.56766ms)
+✔ symlink directory cannot redirect generated files (19.294943ms)
+.docs/database.md locked. AI must read only; this command does not grant database/migration approval.
+✔ integrity check detects edited or missing protected Markdown (114.69375ms)
+✔ dependency correction replaces alternate dependency locations (2.763911ms)
+Shell check and dependency maintenance complete; run builds and live tests separately.
+Shell check and dependency maintenance complete; run builds and live tests separately.
+Shell check and dependency maintenance complete; run builds and live tests separately.
+✔ setup installs only; daily maintenance updates; correct UI before each install/update (151.81835ms)
+Shell check and dependency maintenance complete; run builds and live tests separately.
+✔ clone missing Shell and stop before pull when local changes exist (130.340656ms)
+✔ npm failures propagate and are never reported as complete (123.124693ms)
+✔ noninteractive CLI fails before writing; help requires no setup (165.106243ms)
+✔ module transport takes credentials from host and preserves response metadata (72.280958ms)
+.docs/frontend.md locked. AI must read only; this command does not grant database/migration approval.
+✔ PRD and unlocked drafts are editable; completed drafts are protected; placeholder tables stay absent (142.299444ms)
+✔ generated backend keeps security on by default and includes local-only bypass verification (27.447053ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1298.828478
