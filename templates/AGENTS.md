@@ -42,9 +42,27 @@ Use `node scripts/maintenance.mjs install` for initial installation: only `npm i
 - Implement only confirmed requirements; no traceability tables are required. No fabricated roles, fields, statuses, APIs, business rules, fake success responses or hidden TODOs.
 - Run meaningful build/API/white-box/security checks and Playwright positive, negative and edge tests against the running app. Preserve command, commit, expected/actual result and evidence; unrun tests are `Not run` or `Blocked`, never `Pass`.
 
+## Submodule implementation sequence
+
+Implement one confirmed submodule at a time. Before code, name its ID, functions, backend/API/frontend scope, dependencies and minimum shared infrastructure. Obtain explicit approval for that submodule; a request naming only backend/frontend implementation does not authorize implementing every submodule in one pass. If no submodule is selected, propose one based on dependencies and wait for selection before domain code.
+
+For the selected submodule, complete backend, frontend and applicable lint/format/build/tests, report its function/screen checklist and remaining blockers, then stop for human review before the next submodule. Backend-only approval stops after its backend report until frontend is authorized. Do not silently implement another submodule through shared infrastructure or migration dependencies. Explain any prerequisite requiring broader schema creation before proceeding. Never rewrite an executed migration. If runtime checks lack approved startup/database execution or external evidence, report Blocked/Not run and seek a decision before advancing; do not claim full completion. After all approved submodules, run cross-submodule integration through the approved test plan.
+
+## UI reference authority
+
+Mockups are functional drafts for fields, actions and workflows, not the final visual specification. Preserve source-established business requirements and citations. Page structure, components, form/table schemas, tabs, modals, validation, service patterns, helpers and styles must follow the exact selected examples in `src/views/ui-element/`, `src/services/training/` and the `CRUD-REFERENCE.md` general-tab-crud reference, using `@2enapps/ui`.
+
+Before each screen, read the actual reference files and report screen -> reference filename -> shared components/helpers -> domain API mapping. Match their structure and interaction patterns; do not invent a new layout or custom CSS to copy a mockup. Adapt confirmed domain fields and endpoints without copying demo records, fake responses, training integrations, legacy raw controls or unapproved styles. If a shared component/example cannot support a required interaction, identify the gap and present a concrete exception for explicit UI approval before deviating. A later UI instruction does not permit silently changing a locked design; follow human reopening/review when needed.
+
+## Linting and formatting
+
+Frontend must use ESLint and Prettier; Java must use the repository/team Java lint/style standard (for example Checkstyle) and a Java formatter (for example Spotless with the approved formatter), not frontend Prettier. Inspect existing package.json, Maven configuration and style files first. Reuse configured standards. If tooling is absent, propose exact dependency/plugin versions, configuration, file targets and check/fix commands and obtain approval before installation or configuration changes. Do not invent commands or imply unconfigured tooling passed.
+
+Format only authorized changed files. Verify formatter targets before write/fix commands; do not reformat the entire repository, locked Markdown, generated files, vendor code or unrelated changes. Do not suppress rules or exclude domain files to hide failures. Run configured lint and format checks after changes, plus relevant compilation/build and meaningful tests within the approved execution scope. Lint/format success is distinct from build and runtime proof. Reports must include actual commands/results for each submodule and language; missing tooling is Blocked, unrun checks are Not run. No next-submodule implementation until human review of the current result.
+
 ## Every phase report
 
-Report module/submodules, changed/new files, backend/frontend commits, build and migration commands/results, risks, TBD questions, database approval and final acceptance.
+Report module/submodules, changed/new files, backend/frontend commits, lint/format/build/test and migration commands/results, current submodule checklist and UI reference mapping, risks, TBD questions, database approval and final acceptance.
 Keep test results brief: command, actual result, evidence and anything blocked/not run. No placeholder test tables.
 
 Done requires confirmed use cases, approved schema/migrations, complete backend/frontend and README/API list, real tests/screenshots, and human Product Owner/Technical Lead/QA acceptance. Completed, accepted drafts must be locked. After all requested work is finished and the proposed entry is approved, update .docs/PRD.md with the concise maintenance record.
