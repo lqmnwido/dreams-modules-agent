@@ -235,3 +235,27 @@ test('remote mode defaults off and enables federation only for explicit on', asy
   assert.equal(remote.configureWebpack.plugins[0].options.remotes.shell, 'shell@http://localhost:3000/remoteEntry.js');
   assert.throws(() => load('true'), /VUE_APP_REMOTE must be off or on/);
 });
+
+
+test('workspace skill installer is self-contained and works outside the bootstrap checkout', async () => {
+  const root = await temp();
+  await writePlan(root, await plan(config));
+  const launcher = join(root, 'skills.js');
+  const outside = await temp();
+  const list = spawnSync(process.execPath, [launcher, '--list'], { cwd: outside, encoding: 'utf8' });
+  assert.equal(list.status, 0, list.stderr);
+  for (const skill of ['d-documents', 'd-frontend', 'd-backend', 'd-testing', 'd-manual']) {
+    assert.ok(list.stdout.includes(skill));
+  }
+  const installed = spawnSync(process.execPath, [launcher, '--opencode', '--project', root], { cwd: outside, encoding: 'utf8' });
+  assert.equal(installed.status, 0, installed.stderr);
+  const names = await readdir(join(root, '.opencode/skills'));
+  assert.equal(names.length, 5);
+  for (const name of names) {
+    assert.ok((await readFile(join(root, '.opencode/commands', `${name}.md`), 'utf8')).includes(name));
+  }
+  const repeat = spawnSync(process.execPath, [launcher, '--opencode', '--project', root], { cwd: outside, encoding: 'utf8' });
+  assert.equal(repeat.status, 0, repeat.stderr);
+  assert.match(repeat.stdout, /unchanged:/);
+  await checkDocuments(root);
+});

@@ -46,7 +46,7 @@ Use organizational Git credentials; never put tokens in commands or documentatio
 
 ## Install skills for your harness
 
-Run from this repository. Choose the harness you use; do not run every example:
+After workspace creation, run from the generated workspace or from this repository. Each new workspace bundles skills.js and its offline runtime/resources. Choose the harness you use; do not run every example:
 
 ```bash
 node skills.js --codex
@@ -109,7 +109,9 @@ workspace/
 │   └── documents/           # place SRS, SDS, mockups here
 ├── module.config.json
 ├── document-integrity.json
+├── skills.js                # offline harness skill installer
 ├── scripts/maintenance.mjs
+├── scripts/skills/          # bundled installer runtime and all five skills
 ├── evidence/
 ├── {module}_fe/             # see frontend structure below
 ├── {module}_be/             # see backend structure below
@@ -269,3 +271,19 @@ git diff --check
 ```
 
 The sync command updates public/index.html with 18 prompts per language. Keep its skill cards aligned with all five installed skills. These commands verify prompt generation, syntax and repository tests; they do not run a module database, browser or deployment. This repository currently has no dedicated formatter/linter scripts; report those checks as unavailable instead of claiming they passed. Pushing Git changes does not by itself verify hosted deployment.
+
+## Skill commands after bootstrap installation
+
+New workspaces created through the hosted install.sh/install.ps1 bootstrap or direct CLI include a root skills.js launcher and scripts/skills/ runtime with all five skill packages. The temporary bootstrap checkout is not needed afterward. No harness skills are installed until you explicitly select a target.
+
+From the generated workspace:
+
+```bash
+node skills.js --opencode
+# Or install only in this workspace:
+node skills.js --opencode --project .
+```
+
+Choose one scope. Replace --opencode with any supported harness flag. Default installation is user-wide. No network or npm dependencies are required by the skills installer itself. Restart/refresh the harness after installation.
+
+Older workspaces are not patched automatically. If skills.js is absent, invoke it from the dreams-modules-agent checkout (using an absolute path if necessary), with --project /path/to/workspace for project scope. Never rerun the module generator over existing files just to add this launcher. These instructions describe the updated generator; publishing or refreshing the hosted website is separate from local verification.

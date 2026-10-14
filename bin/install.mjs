@@ -46,6 +46,7 @@ try {
   else {
     await writePlan(root,files);
     console.log(`Created ${root}. Place sources in .docs/documents/ and review .docs/PRD.md; agents can prepare source-based .docs/ drafts after approval, then humans review and lock them. Scope/schema approval is still pending.`);
+    console.log('Skills installer bundled in the workspace. From that directory run node skills.js --opencode (or your harness flag); use --project . for workspace-only installation.');
     if(online) await maintain(root,{install:true});
     else console.log('Network setup deferred. Run node scripts/maintenance.mjs install from the workspace before development.');
   }

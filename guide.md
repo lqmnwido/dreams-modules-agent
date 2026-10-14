@@ -8,10 +8,10 @@ Use [prompts.md](prompts.md) or the Malay alternative [prompts-ms.md](prompts-ms
 
 ## Install skills instead of pasting phase prompts
 
-From the installer checkout, select your harness:
+After workspace creation, select your harness from the generated workspace. The same command also works from the installer checkout:
 
 ```bash
-cd /home/lqmnwido/Projects/dreams/dreams-modules-agent
+cd /home/lqmnwido/Projects/dreams/memorial-workspace
 node skills.js --codex
 # Other options (do not run all of them):
 # node skills.js --claude
@@ -386,3 +386,19 @@ git diff --check
 ```
 
 The sync command refreshes public/index.html with 18 prompts per language; its Skills section lists all five skills. Repository syntax/tests are separate from module lint/format/browser/database verification. Dedicated formatter/linter scripts are not currently configured in the installer repository; report them as unavailable rather than passed. A Git push does not prove the hosted site deployed successfully.
+
+## Skill commands after bootstrap installation
+
+New workspaces created through the hosted install.sh/install.ps1 bootstrap or direct CLI include a root skills.js launcher and scripts/skills/ runtime with all five skill packages. The temporary bootstrap checkout is not needed afterward. No harness skills are installed until you explicitly select a target.
+
+From the generated workspace:
+
+```bash
+node skills.js --opencode
+# Or install only in this workspace:
+node skills.js --opencode --project .
+```
+
+Choose one scope. Replace --opencode with any supported harness flag. Default installation is user-wide. No network or npm dependencies are required by the skills installer itself. Restart/refresh the harness after installation.
+
+Older workspaces are not patched automatically. If skills.js is absent, invoke it from the dreams-modules-agent checkout (using an absolute path if necessary), with --project /path/to/workspace for project scope. Never rerun the module generator over existing files just to add this launcher. These instructions describe the updated generator; publishing or refreshing the hosted website is separate from local verification.

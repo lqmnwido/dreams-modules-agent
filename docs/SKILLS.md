@@ -4,7 +4,7 @@ Install once, then invoke a phase skill instead of pasting the long prompts. Ski
 
 ## Install
 
-From the `dreams-modules-agent` checkout:
+From a newly generated module workspace or the `dreams-modules-agent` checkout:
 
 ```bash
 node skills.js --codex
@@ -131,3 +131,19 @@ node skills.js --codex --skill d-testing --skill d-manual
 ```
 
 Replace --codex with your harness flag. Default installation now includes all five skills. Testing and manual skills support the same three-phase workflow; they do not add implementation phases or bypass user acceptance, document locks or identified database execution authorization.
+
+## Skill commands after bootstrap installation
+
+New workspaces created through the hosted install.sh/install.ps1 bootstrap or direct CLI include a root skills.js launcher and scripts/skills/ runtime with all five skill packages. The temporary bootstrap checkout is not needed afterward. No harness skills are installed until you explicitly select a target.
+
+From the generated workspace:
+
+```bash
+node skills.js --opencode
+# Or install only in this workspace:
+node skills.js --opencode --project .
+```
+
+Choose one scope. Replace --opencode with any supported harness flag. Default installation is user-wide. No network or npm dependencies are required by the skills installer itself. Restart/refresh the harness after installation.
+
+Older workspaces are not patched automatically. If skills.js is absent, invoke it from the dreams-modules-agent checkout (using an absolute path if necessary), with --project /path/to/workspace for project scope. Never rerun the module generator over existing files just to add this launcher. These instructions describe the updated generator; publishing or refreshing the hosted website is separate from local verification.
