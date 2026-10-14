@@ -112,7 +112,7 @@ Replace the example with the actual workspace path. `install` performs initial n
 
 ## Document filename compatibility
 
-The workflow uses uppercase design names, while the current generator still creates lowercase drafts. The updated maintenance script resolves either actual filename using the same locking commands and rejects duplicate variants. Do not rename protected files or create competing documents. Existing workspace scripts are not updated automatically.
+New scaffolds generate uppercase Markdown filenames. Older unlocked lowercase Phase 1 drafts are converted to uppercase by lock before their uppercase paths are locked. The script rejects duplicate variants and existing locks. Do not rename protected files or create competing documents. Existing workspace scripts are not updated automatically.
 
 ## Phase 1 — read sources, prepare documents, confirm and lock
 
@@ -141,19 +141,37 @@ After Phase 1 drafting, source confirmation and consistency checks are complete,
 
 ```bash
 node scripts/maintenance.mjs check-docs
-node scripts/maintenance.mjs lock-phase1
+node scripts/maintenance.mjs lock
 node scripts/maintenance.mjs check-docs
 ```
 
-`lock-phase1` validates all five documents first, then records their hashes in one manifest update. It resolves the actual filenames, whether scope.md or SCOPE.md, and similarly for architecture, database, backend and frontend. It refuses missing files, duplicate case variants, symlinks, changed protected files and already-locked designs. It does not rename documents or overwrite a baseline.
+`lock` validates all five documents, converts any unlocked lowercase/mixed-case filenames to SCOPE.md, ARCHITECTURE.md, DATABASE.md, BACKEND.md and FRONTEND.md, then records hashes for those uppercase paths. After successful completion all five filenames are uppercase and locked; their contents are unchanged. It refuses missing files, duplicate case variants, symlinks, changed protected files and already-locked designs. Renames are staged and reversed if the manifest update fails; a recovery error identifies files needing human attention. Do not run concurrent document edits or locking commands.
 
-Do not start Phase 2 until all five designs are locked and the final check succeeds. PRD.md remains the ongoing phase record; TESTING.md and USERMANUAL.md are completed later and are not locked by lock-phase1.
+Do not start Phase 2 until all five designs are locked and the final check succeeds. PRD.md remains the ongoing phase record; TESTING.md and USERMANUAL.md are completed later and are not locked by lock.
 
-To lock one accepted document separately, use `node scripts/maintenance.mjs lock-doc scope` (or architecture, database, backend, frontend, testing or usermanual). This uses the same filename resolution and safety checks. If some Phase 1 documents are already locked, verify them and lock only the remaining accepted documents individually; do not replace their hashes.
+To lock one accepted document separately, use `node scripts/maintenance.mjs lock scope` (or architecture, database, backend, frontend, testing or usermanual). This resolves the actual filename with the same safety checks but does not rename it; automatic uppercase normalization applies to lock. If some Phase 1 documents are already locked, verify them and lock only the remaining accepted documents individually; do not replace their hashes.
 
 Subsequent design changes require the user to reopen the affected document and authorize revision. Agents must not run either locking command or edit the manifest. Locking does not authorize migration execution, database startup or deployment; exact targets/scripts and execution authorization remain required.
 
-Older workspaces contain their original copy of scripts/maintenance.mjs and do not automatically gain lock-phase1 or case resolution. Update that script through an explicitly authorized maintenance change before using the new command; do not rerun the generator over existing files. No inline Node script or manual hash editing is needed in updated workspaces.
+Older workspaces contain their original copy of scripts/maintenance.mjs and do not automatically gain lock or case resolution. Update that script through an explicitly authorized maintenance change before using the new command; do not rerun the generator over existing files. No inline Node script or manual hash editing is needed in updated workspaces.
+
+### Reopen documents for changes — user only
+
+Unlock only what you intend to revise. For one design document:
+
+```bash
+node scripts/maintenance.mjs unlock scope
+```
+
+For all five Phase 1 design documents:
+
+```bash
+node scripts/maintenance.mjs unlock
+```
+
+Unlock removes only the selected hash entries. It preserves filenames, contents, source documents, approval records and unrelated locks. Already-unlocked selections are reported without changing the manifest. The script rejects invalid names, duplicate filenames, symlinks and integrity violations in unrelated protected files. A selected draft that was already edited can be unlocked for an explicit human revision; that does not declare its edits reviewed or accepted.
+
+Tell the agent which changes are authorized. After revision, source/consistency checks and your acceptance, lock the selected document again with `node scripts/maintenance.mjs lock scope`, or use `node scripts/maintenance.mjs lock` for all five unlocked Phase 1 designs. The batch lock normalizes all five filenames to uppercase; a single-document lock preserves its existing filename. Run check-docs afterward. Agents do not run lock and unlock commands or record acceptance on your behalf.
 
 ## Phase 2 — frontend first, one submodule at a time
 

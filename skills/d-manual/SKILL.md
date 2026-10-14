@@ -37,3 +37,5 @@ Cross-check written steps, labels, permissions and outcomes against actual imple
 ## Deliver and stop
 
 Update unlocked USERMANUAL.md and the authorized general PRD summary. Report covered roles/tasks, changed files, actual evidence, documentation checks and remaining limitations. Request user review/acceptance of the concrete manual. Provide compatible human-run locking instructions only after the manual is accepted and complete; never execute locks or record acceptance for the user. Deployment and production changes remain separate authorizations.
+
+For a needed locked-document revision, identify the exact file and ask the human to use `node scripts/maintenance.mjs unlock <name>` and authorize the changes. `unlock` without a name reopens all five Phase 1 designs. Do not run these commands as AI. After user acceptance, provide `lock <name>` for a single document or `lock` for the five unlocked Phase 1 designs, followed by check-docs. Use updated workspace maintenance scripts; never replace these commands with inline manifest edits.

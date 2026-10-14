@@ -5,7 +5,7 @@ description: Build and review one D-ReAMS Phase 2 standalone frontend submodule 
 
 # D-ReAMS Phase 2 — one frontend prototype
 
-Load [UI and service contracts](references/ui-contract.md) before implementing a screen. This skill is for frontend-first prototypes, not silently connecting production APIs or implementing the backend.
+Load [UI and service contracts](references/UI-CONTRACT.md) before implementing a screen. This skill is for frontend-first prototypes, not silently connecting production APIs or implementing the backend.
 
 Write Markdown documentation in English; only prompts-ms.md uses Malay. Preserve source-defined names, code identifiers and quoted UI labels.
 
@@ -13,7 +13,7 @@ Write Markdown documentation in English; only prompts-ms.md uses Malay. Preserve
 
 Read workspace AGENTS.md, module.config.json and .docs/PRD.md. Identify the actual module, phase, selected submodule, explicit user decisions and evidence. Speak the user's language. Invocation authorizes this skill's phase work within the stated module/submodule; it does not accept results on the user's behalf, change locked files, unlock documents, execute an unidentified migration target, or deploy.
 
-Use uppercase .docs/SCOPE.md, ARCHITECTURE.md, DATABASE.md, BACKEND.md and FRONTEND.md. Existing scaffold versions may be lowercase. Updated maintenance scripts resolve uppercase/lowercase filenames through the same lock-doc and lock-phase1 commands; older workspace copies need an explicitly authorized script update. Inspect real paths and document-integrity.json; do not silently rename, bypass locks or create duplicate sources of truth. If naming or an old policy conflicts with the current requested workflow, ask one precise question before dependent changes. Never edit AGENTS/manifest/scaffold files merely because a skill is installed. Never discard existing human records.
+Use uppercase .docs/SCOPE.md, ARCHITECTURE.md, DATABASE.md, BACKEND.md and FRONTEND.md. New scaffolds generate uppercase Markdown filenames. Existing versions may be lowercase; lock normalizes the five unlocked Phase 1 filenames to uppercase and locks those paths, while lock <name> preserves the individual filename. Both refuse duplicates and existing locks; older workspace copies need an explicitly authorized script update. Inspect real paths and document-integrity.json; do not silently rename, bypass locks or create duplicate sources of truth. If naming or an old policy conflicts with the current requested workflow, ask one precise question before dependent changes. Never edit AGENTS/manifest/scaffold files merely because a skill is installed. Never discard existing human records.
 
 Each module owns a separate PostgreSQL database; other modules access its data through APIs only. Shell owns menu/navbar/login/SSO/token refresh/route guards; @2enapps/ui from Kai supplies UI. Do not invent provider contracts, credentials, source rules or successful test results. Ask when unclear, keep stable decision IDs and explicit answers, and do not repeat answered questions or unavailable-information requests. Continue independent work; after a repeated failure diagnose before trying again.
 
@@ -55,3 +55,5 @@ The submodule service defines WHAT to call: business-function names, endpoint pa
 ## Frontend remote mode
 
 Generated frontend .env, .env.local and .env.example default to VUE_APP_REMOTE=off. Use off for standalone work; set on only when serving the module through Shell, then restart/rebuild. Only on enables Module Federation, remoteEntry.js publication and the Shell remote configuration. The off setting does not create a standalone preview harness or bypass backend authentication; Phase 2 still needs its identified dev-only preview setup. Vue CLI loads .env.local as an override, so keep its value consistent with the intended mode. Existing workspaces are unchanged.
+
+For a needed locked-document revision, identify the exact file and ask the human to use `node scripts/maintenance.mjs unlock <name>` and authorize the changes. `unlock` without a name reopens all five Phase 1 designs. Do not run these commands as AI. After user acceptance, provide `lock <name>` for a single document or `lock` for the five unlocked Phase 1 designs, followed by check-docs. Use updated workspace maintenance scripts; never replace these commands with inline manifest edits.

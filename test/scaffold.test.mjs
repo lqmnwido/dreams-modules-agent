@@ -6,12 +6,12 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { runInNewContext } from 'node:vm';
 import { plan, writePlan, validate } from '../lib/scaffold.mjs';
-import { checkDocuments, lockDraft, lockPhase1, DRAFT_DOCUMENTS, maintain, enforceUi, UI_DEPENDENCY, SHELL_URL } from '../lib/maintenance.mjs';
+import { checkDocuments, lockDraft, lockDocuments, unlockDraft, unlockDocuments, DRAFT_DOCUMENTS, maintain, enforceUi, UI_DEPENDENCY, SHELL_URL } from '../lib/maintenance.mjs';
 const config={module:'memorial',code:'MEM',group:'com.dreams',package:'com.dreams.memorial',java:'21',boot:'3.5.0',port:3004,submodules:['feedback','visitors'],answers:[{question:'feedback purpose?',answer:'TBD'}]};
 const temp=()=>mkdtemp(join(tmpdir(),'dreams-module-test-'));
 test('scaffold includes source folder, split docs, references, submodules and no migrations/domain endpoints', async()=>{
   const root=await temp();const files=await plan(config);await writePlan(root,files);
-  for(const path of ['AGENTS.md','.docs/PRD.md','.docs/scope.md','.docs/documents/.gitkeep','.docs/backend.md','.docs/database.md','.docs/frontend.md','.docs/architecture.md','.docs/testing.md','.docs/usermanual.md','memorial_fe/src/views/ui-element/general-crud/list-main.vue','memorial_fe/src/services/training/crud.js','memorial_be/src/main/java/com/dreams/memorial/controller/feedback/.gitkeep']) assert.ok(files.has(path),path);
+  for(const path of ['AGENTS.md','.docs/PRD.md','.docs/SCOPE.md','.docs/documents/.gitkeep','.docs/BACKEND.md','.docs/DATABASE.md','.docs/FRONTEND.md','.docs/ARCHITECTURE.md','.docs/TESTING.md','.docs/USERMANUAL.md','memorial_fe/src/views/ui-element/general-crud/list-main.vue','memorial_fe/src/services/training/crud.js','memorial_be/src/main/java/com/dreams/memorial/controller/feedback/.gitkeep']) assert.ok(files.has(path),path);
   assert.equal(JSON.parse(await readFile(join(root,'memorial_fe/package.json'),'utf8')).dependencies['@2enapps/ui'],UI_DEPENDENCY);
   assert.deepEqual(await readdir(join(root,'memorial_be/src/main/resources/db/migration')),['.gitkeep']);
   assert.match(await readFile(join(root,'memorial_be/src/main/resources/application.properties'),'utf8'),/spring.flyway.enabled=true/);
@@ -25,6 +25,12 @@ test('scaffold includes source folder, split docs, references, submodules and no
   assert.match(files.get('memorial_fe/exposes.js').toString(),/metadata/);
   assert.doesNotMatch(files.get('memorial_fe/exposes.js').toString(),/ui-element/);
   for(const [p,b] of files) if(p.endsWith('.md')) assert.doesNotMatch(b.toString(),/\{\{\w+\}\}/,p);
+  for (const path of files.keys()) {
+    if (path.endsWith('.md')) {
+      const basename = path.split('/').pop();
+      assert.equal(basename, basename.slice(0, -3).toUpperCase() + '.md', path);
+    }
+  }
   assert.ok(!files.has('memorial_fe/expose.js'));
   assert.ok(files.has('memorial_be/src/main/java/com/dreams/memorial/common/.gitkeep'));
   assert.match(files.get('memorial_be/src/main/java/com/dreams/memorial/MemorialApplication.java').toString(), /class MemorialApplication/);
@@ -57,8 +63,8 @@ test('symlink directory cannot redirect generated files',async t=>{
   await assert.rejects(writePlan(root,await plan(config)),/Refusing existing/);assert.deepEqual(await readdir(other),[]);
 });
 test('integrity check detects edited or missing protected Markdown',async()=>{
-  const root=await temp();await writePlan(root,await plan(config));await lockDraft(root,'database');await writeFile(join(root,'.docs/database.md'),'changed after locking');
-  await assert.rejects(checkDocuments(root),/Protected Markdown changed.*database.md/);
+  const root=await temp();await writePlan(root,await plan(config));await lockDraft(root,'database');await writeFile(join(root,'.docs/DATABASE.md'),'changed after locking');
+  await assert.rejects(checkDocuments(root),/Protected Markdown changed.*DATABASE.md/);
 });
 test('dependency correction replaces alternate dependency locations',async()=>{
   const root=await temp();await writeFile(join(root,'package.json'),JSON.stringify({devDependencies:{'@2enapps/ui':'file:../ui'},optionalDependencies:{'@2enapps/ui':'wrong'}}));
@@ -145,16 +151,16 @@ test('PRD and unlocked drafts are editable; completed drafts are protected; plac
   for(const path of DRAFT_DOCUMENTS) assert.equal(hashes[path],undefined);
   await writeFile(join(root,'.docs/PRD.md'),'Completed requested work. Actual results and maintenance notes.');
   await checkDocuments(root);
-  for(const path of ['AGENTS.md','.docs/scope.md','.docs/frontend.md','.docs/testing.md']) {
+  for(const path of ['AGENTS.md','.docs/SCOPE.md','.docs/FRONTEND.md','.docs/TESTING.md']) {
     const content=files.get(path).toString();
     assert.doesNotMatch(content,/## Traceability|submodule_rows|\| Type \| Total|\| Test type \| Total|\| ID \/ SRS ID|\| Submodule \| IDs \| Service|\| Submodule \| SRS\/use-case IDs/);
   }
-  await writeFile(join(root,'.docs/frontend.md'),'Changed by AI');
+  await writeFile(join(root,'.docs/FRONTEND.md'),'Changed by AI');
   await checkDocuments(root);
   await assert.rejects(lockDraft(root,'../AGENTS'),/Choose a draft/);
   await lockDraft(root,'frontend');
   await assert.rejects(lockDraft(root,'frontend'),/already locked/);
-  await writeFile(join(root,'.docs/frontend.md'),'Changed after lock');
+  await writeFile(join(root,'.docs/FRONTEND.md'),'Changed after lock');
   await assert.rejects(checkDocuments(root),/Protected Markdown changed/);
 });
 
@@ -265,16 +271,16 @@ test('Phase 1 lock command resolves actual casing and locks exactly the five des
   const root = await temp();
   await writePlan(root, await plan(config));
   for (const name of ['scope', 'architecture', 'database', 'backend', 'frontend']) {
-    await rename(join(root, `.docs/${name}.md`), join(root, `.docs/${name.toUpperCase()}.md`));
+    await rename(join(root, `.docs/${name.toUpperCase()}.md`), join(root, `.docs/${name}.md`));
   }
-  const result = spawnSync(process.execPath, [join(root, 'scripts/maintenance.mjs'), 'lock-phase1'], { encoding: 'utf8' });
+  const result = spawnSync(process.execPath, [join(root, 'scripts/maintenance.mjs'), 'lock'], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
   const hashes = JSON.parse(await readFile(join(root, 'document-integrity.json'), 'utf8'));
   for (const name of ['SCOPE', 'ARCHITECTURE', 'DATABASE', 'BACKEND', 'FRONTEND']) {
     assert.ok(hashes[`.docs/${name}.md`]);
   }
-  assert.equal(hashes['.docs/testing.md'], undefined);
-  assert.equal(hashes['.docs/usermanual.md'], undefined);
+  assert.equal(hashes['.docs/TESTING.md'], undefined);
+  assert.equal(hashes['.docs/USERMANUAL.md'], undefined);
   assert.equal(hashes['.docs/PRD.md'], undefined);
   await checkDocuments(root);
 });
@@ -284,18 +290,83 @@ test('locking rejects duplicate casing and missing documents without partial bas
   await writePlan(root, await plan(config));
   const manifest = join(root, 'document-integrity.json');
   const before = await readFile(manifest, 'utf8');
-  await unlink(join(root, '.docs/frontend.md'));
-  await assert.rejects(lockPhase1(root), /Missing draft frontend/);
+  await unlink(join(root, '.docs/FRONTEND.md'));
+  await assert.rejects(lockDocuments(root), /Missing draft frontend/);
   assert.equal(await readFile(manifest, 'utf8'), before);
-  await writeFile(join(root, '.docs/frontend.md'), 'Restored draft');
-  await writeFile(join(root, '.docs/SCOPE.md'), 'Duplicate');
-  await assert.rejects(lockPhase1(root), /Ambiguous draft scope/);
+  await writeFile(join(root, '.docs/FRONTEND.md'), 'Restored draft');
+  await writeFile(join(root, '.docs/scope.md'), 'Duplicate');
+  await assert.rejects(lockDocuments(root), /Ambiguous draft scope/);
   assert.equal(await readFile(manifest, 'utf8'), before);
-  await unlink(join(root, '.docs/SCOPE.md'));
-  await rename(join(root, '.docs/scope.md'), join(root, '.docs/SCOPE.md'));
+  await unlink(join(root, '.docs/scope.md'));
   await lockDraft(root, 'scope');
   await assert.rejects(lockDraft(root, 'SCOPE'), /already locked/);
   const locked = await readFile(manifest, 'utf8');
-  await assert.rejects(lockPhase1(root), /already locked/);
+  await assert.rejects(lockDocuments(root), /already locked/);
   assert.equal(await readFile(manifest, 'utf8'), locked);
+});
+
+
+test('Phase 1 completion uppercases all five filenames without changing content and locks uppercase paths', async () => {
+  const root = await temp();
+  const files = await plan(config);
+  await writePlan(root, files);
+  for (const name of ['scope', 'architecture', 'database', 'frontend']) {
+    await rename(join(root, `.docs/${name.toUpperCase()}.md`), join(root, `.docs/${name}.md`));
+  }
+  await lockDocuments(root);
+  const names = await readdir(join(root, '.docs'));
+  const hashes = JSON.parse(await readFile(join(root, 'document-integrity.json'), 'utf8'));
+
+  for (const name of ['scope', 'architecture', 'database', 'backend', 'frontend']) {
+    const target = `.docs/${name.toUpperCase()}.md`;
+    assert.ok(names.includes(`${name.toUpperCase()}.md`));
+    assert.ok(!names.includes(`${name}.md`));
+    assert.equal(await readFile(join(root, target), 'utf8'), files.get(`.docs/${name.toUpperCase()}.md`).toString());
+    assert.ok(hashes[target]);
+    assert.equal(hashes[`.docs/${name}.md`], undefined);
+  }
+
+  assert.ok(!(await readdir(root)).some((name) => name.startsWith('.document-lock-')));
+  await checkDocuments(root);
+  await writeFile(join(root, '.docs/SCOPE.md'), 'Changed after locking');
+  await assert.rejects(checkDocuments(root), /Protected Markdown changed.*SCOPE.md/);
+});
+
+
+test('unlock reopens selected drafts without changing content or unrelated locks', async () => {
+  const root = await temp();
+  await writePlan(root, await plan(config));
+  await lockDocuments(root);
+  const manifest = join(root, 'document-integrity.json');
+  const before = JSON.parse(await readFile(manifest, 'utf8'));
+  const selected = join(root, '.docs/SCOPE.md');
+  await writeFile(selected, 'User-authorized revision');
+  const cli = spawnSync(process.execPath, [join(root, 'scripts/maintenance.mjs'), 'unlock', 'scope'], { encoding: 'utf8' });
+  assert.equal(cli.status, 0, cli.stderr);
+  const after = JSON.parse(await readFile(manifest, 'utf8'));
+  delete before['.docs/SCOPE.md'];
+  assert.deepEqual(after, before);
+  assert.equal(await readFile(selected, 'utf8'), 'User-authorized revision');
+  await checkDocuments(root);
+  await unlockDraft(root, 'scope');
+  await unlockDocuments(root);
+  const final = JSON.parse(await readFile(manifest, 'utf8'));
+  assert.ok(final['AGENTS.md']);
+  for (const name of ['SCOPE', 'ARCHITECTURE', 'DATABASE', 'BACKEND', 'FRONTEND']) {
+    assert.equal(final[`.docs/${name}.md`], undefined);
+  }
+  await lockDocuments(root);
+  await checkDocuments(root);
+});
+
+test('unlock refuses unrelated integrity violations and invalid selections', async () => {
+  const root = await temp();
+  await writePlan(root, await plan(config));
+  await lockDocuments(root);
+  const manifest = join(root, 'document-integrity.json');
+  const original = await readFile(manifest, 'utf8');
+  await assert.rejects(unlockDraft(root, '../AGENTS'), /Choose a draft/);
+  await writeFile(join(root, 'AGENTS.md'), 'Unexpected protected change');
+  await assert.rejects(unlockDocuments(root), /Protected Markdown changed.*AGENTS.md/);
+  assert.equal(await readFile(manifest, 'utf8'), original);
 });
