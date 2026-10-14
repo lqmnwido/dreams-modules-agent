@@ -10,7 +10,7 @@ The questionnaire asks module name/code, target workspace, Java group/package, a
 
 ## Installation
 
-Visit [D-ReAMS Modules Agent](https://dreams-agents.kohich.site/) for installation commands and the English / Bahasa Melayu prompt library. Enter your module code to customize the English prompts instead of using a fixed M12 reference.
+Visit [D-ReAMS Modules Agent](https://dreams-agents.kohich.site/) for installation commands and the English / Bahasa Melayu prompt library. Use the Skills section to search supported harnesses and copy installation and phase commands. Enter your Module Code to add module and mockup context to prompts 1 and 2 in English or Malay. Run `npm run sync:prompts` after changing the Markdown prompt libraries to refresh the website.
 
 The bootstrap scripts below use main, check prerequisites, clone the tool and run the questionnaire. They do not install system tools or require administrator access. For repeatable installation, use a reviewed release tag or commit.
 
