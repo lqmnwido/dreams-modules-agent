@@ -45,7 +45,7 @@ node skills.js --copilot
 node skills.js --windsurf
 ```
 
-Use `$d-dooc`, `$d-frontend <submodule>`, `$d-backend <submodule>` in Codex; use `/d-dooc`, `/d-frontend <submodule>`, `/d-backend <submodule>` in Claude Code/OpenCode/Cursor/Cline. Other harnesses use their documented skill invocation. These replace repeated long phase prompts; phase locks, user interface review and execution authorization still apply.
+Use `$d-documents`, `$d-frontend <submodule>`, `$d-backend <submodule>` in Codex; use `/d-documents`, `/d-frontend <submodule>`, `/d-backend <submodule>` in Claude Code/OpenCode/Cursor/Cline. Other harnesses use their documented skill invocation. These replace repeated long phase prompts; phase locks, user interface review and execution authorization still apply.
 
 See [skills installation and invocation](docs/SKILLS.md) for user/project scope, dry runs, safe updates, custom destinations and exact harness compatibility. `node skills.js --list-harnesses` lists 79 named harness targets plus a portable directory, with paths and sources. Use `--harness NAME` or a direct flag. `--all --dry-run` previews the full dated registry; it does not claim every tool in existence. See the [complete support matrix](docs/HARNESS-SUPPORT.md). Skill instructions follow the current [three-phase guide](guide.md); older generated scaffold text and lowercase filenames are not silently migrated by installing skills.
 

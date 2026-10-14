@@ -1,11 +1,11 @@
 ---
-name: d-dooc
+name: d-documents
 description: Prepare and confirm D-ReAMS Phase 1 source-based SCOPE, ARCHITECTURE, DATABASE, BACKEND, FRONTEND and PRD documents, then request user locking. Use for module documentation and unresolved source decisions, not frontend or backend implementation.
 ---
 
 # D-ReAMS Phase 1 — documents
 
-Start or resume Phase 1 without requiring the user to paste the long prompt library. The command name is intentionally `d-dooc`.
+Start or resume Phase 1 without requiring the user to paste the long prompt library. The document-phase skill is `d-documents`.
 
 ## Start or resume safely
 
@@ -15,9 +15,13 @@ Use uppercase .docs/SCOPE.md, ARCHITECTURE.md, DATABASE.md, BACKEND.md and FRONT
 
 Each module owns a separate PostgreSQL database; other modules access its data through APIs only. Shell owns menu/navbar/login/SSO/token refresh/route guards; @2enapps/ui from Kai supplies UI. Do not invent provider contracts, credentials, source rules or successful test results. Ask when unclear, keep stable decision IDs and explicit answers, and do not repeat answered questions or unavailable-information requests. Continue independent work; after a repeated failure diagnose before trying again.
 
+## Module Code and mockup selection
+
+Read the Module Code from `module.config.json` field `code` before selecting mockups; the module name/package is not the Module Code. Resolve mockups under `.docs/documents/mockup/{module code}`. For example, code `M12` uses `.docs/documents/mockup/m12/` only when that actual directory is the unique case-insensitive match. Prefer the exact directory name; inspect existing immediate directories for a unique case-only match, record the actual path, and never rename source folders. Treat the code as one folder name, not a path: reject separators, `.` and `..`, and do not follow a symlink outside the source tree. If the code is missing, unsafe, inconsistent with the requested module, or the folder is missing/ambiguous, ask the user for the exact code/path before reading mockups. Never substitute another module folder or a dated/ZIP copy without explicit source selection. Continue reading independently identified SRS/SDS while waiting. Record the Module Code and resolved mockup path in SCOPE.md and the PRD source summary.
+
 ## Source pass and focused documents
 
-1. Inventory and read supplied .docs/documents/ SRS/SDS/mockups including relevant nested/supporting files. Extract DOCX tables/text and inspect necessary diagrams. Report actual versions/files/sections and unreadable sources. Do not assume an SRS exists or treat vendor/unrelated modules as requirements.
+1. Inventory and read module-relevant SRS/SDS under `.docs/documents/` and mockups only from the resolved Module Code folder, including its nested/supporting files. Extract DOCX tables/text and inspect necessary diagrams. Report actual versions/files/sections and unreadable sources. Do not assume an SRS exists or treat vendor/unrelated modules as requirements.
 2. Read [document templates](references/templates/SCOPE.md) for organization; follow linked specialized templates below as needed. Templates are not source facts or completed designs.
 3. Write unlocked documents with simple, direct content and citations:
    - SCOPE.md: complete relevant source requirements, actors, submodules/functions, workflows, validation/permissions, decisions and routing links. Do not dump every technical detail here.

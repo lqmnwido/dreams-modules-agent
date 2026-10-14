@@ -67,11 +67,11 @@ Only vendor-docs entries have additional vendor-path verification; other entries
 
 | Phase | Codex native invocation | Claude Code / OpenCode / Cursor / Cline |
 | --- | --- | --- |
-| 1: source documents, confirmation, request user locking | `$d-dooc` | `/d-dooc` |
+| 1: source documents, confirmation, request user locking | `$d-documents` | `/d-documents` |
 | 2: one standalone frontend prototype | `$d-frontend attendance` | `/d-frontend attendance` |
 | 3: one Java backend and real integration | `$d-backend attendance` | `/d-backend attendance` |
 
-`attendance` is an example; use an actual scope submodule. `d-dooc` intentionally matches the requested command name. The user still answers unresolved decisions, locks Phase 1 files, accepts each interface and authorizes any real database target execution. Installing or invoking a skill is not acceptance of its results.
+`attendance` is an example; use an actual scope submodule. `d-documents` is the document-phase skill; legacy installer selection `--skill d-dooc` resolves to it. Existing installed d-dooc copies are not automatically removed. The user still answers unresolved decisions, locks Phase 1 files, accepts each interface and authorizes any real database target execution. Installing or invoking a skill is not acceptance of its results.
 
 Start or refresh the harness session if the new skill is not visible. Codex also offers its skill selector; it does not use arbitrary `/d-*` commands simply because a skill directory exists. OpenCode receives explicit command wrappers that load the named skill and pass `$ARGUMENTS`. Claude Code exposes the skill itself as a slash command.
 
@@ -109,7 +109,7 @@ Do not install the same names to several discovery roots unnecessarily. `--dest`
 
 ## What is packaged
 
-- `d-dooc`: Phase 1 instructions and eight self-contained document templates.
+- `d-documents`: Phase 1 instructions and eight self-contained document templates.
 - `d-frontend`: Phase 2 prototype/UI/test instructions plus the shared UI/service contract.
 - `d-backend`: Phase 3 own-database Java/Flyway/API/integration instructions, backend contract tables, database implementation patterns and existing-project/JUnit 5 test rules.
 - Each has Codex UI metadata in `agents/openai.yaml`; other harnesses use portable `SKILL.md` frontmatter.
@@ -117,3 +117,5 @@ Do not install the same names to several discovery roots unnecessarily. `--dest`
 The skills preserve the current three-phase workflow, no separate database human-review record, human-only design locks, one submodule per cycle, explicit missing-component cards, ESLint/Prettier and Java lint/format checks. They ask on ambiguity rather than invent rules or repeat unavailable-information questions.
 
 No MCP server, browser, JDK, npm dependency, harness binary or authentication is installed by this script. Playwright MCP browser tests still require the actual tool to be configured. No working harness UI has been exercised by filesystem installation tests alone.
+
+Phase 1 reads Module Code from `module.config.json` field `code` and selects `.docs/documents/mockup/{module code}/` (the actual matching folder, for example M12 → m12). Missing or ambiguous codes/folders require clarification; other modules’ mockups are excluded.

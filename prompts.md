@@ -4,7 +4,7 @@ Use one prompt at a time. Read and approve the actual proposal before sending an
 
 ## Short phase commands
 
-Install with `node skills.js --codex`, `--claude`, `--opencode`, `--cursor`, `--gemini`, `--copilot`, `--windsurf` or another `--harness NAME` from the installer checkout. Use `--list-harnesses` for the complete path/source inventory. Codex uses `$d-dooc`, `$d-frontend <submodule>`, `$d-backend <submodule>`; Claude Code/OpenCode/Cursor/Cline use `/d-dooc`, `/d-frontend <submodule>`, `/d-backend <submodule>`. See `docs/SKILLS.md` and `docs/HARNESS-SUPPORT.md` in that repository; other tools may use skill selection rather than slash commands. The numbered prompts below remain the manual alternative; skills do not bypass phase locks, user acceptance or an identified database execution plan.
+Install with `node skills.js --codex`, `--claude`, `--opencode`, `--cursor`, `--gemini`, `--copilot`, `--windsurf` or another `--harness NAME` from the installer checkout. Use `--list-harnesses` for the complete path/source inventory. Codex uses `$d-documents`, `$d-frontend <submodule>`, `$d-backend <submodule>`; Claude Code/OpenCode/Cursor/Cline use `/d-documents`, `/d-frontend <submodule>`, `/d-backend <submodule>`. See `docs/SKILLS.md` and `docs/HARNESS-SUPPORT.md` in that repository; other tools may use skill selection rather than slash commands. The numbered prompts below remain the manual alternative; skills do not bypass phase locks, user acceptance or an identified database execution plan.
 
 ## 1. Confirm module, sources and document paths
 
@@ -236,3 +236,5 @@ Prepare, do not execute, a deployment plan with exact artifact/commit, environme
 
 Do not deploy or execute production changes until the complete identified plan is explicitly authorized. Keep prototype fixtures disabled and unresolved components documented.
 ```
+
+Read Module Code from module.config.json field code and resolve the actual matching .docs/documents/mockup/{module code}/ folder before reading mockups. Do not substitute the module name or another module folder; ask if missing or ambiguous.

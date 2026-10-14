@@ -39,6 +39,7 @@ test('skill CLI validates choices and rejects ambiguous or traversal arguments',
   assert.throws(() => parseArgs(['--dest', '/tmp/skills', '--project', '/tmp/project']), /cannot be combined/);
   assert.deepEqual(parseArgs(['--codex', '--codex']).harnesses, ['codex']);
   assert.equal(parseArgs(['--help']).help, true);
+  assert.deepEqual(parseArgs(['--codex', '--skill', 'd-dooc']).skills, ['d-documents']);
 });
 
 test('target resolution distinguishes global/project roots and honors OpenCode XDG config', () => {
@@ -110,7 +111,7 @@ test('unowned skill collision is preserved even with force before any other skil
   await mkdir(collision, { recursive: true });
   await writeFile(join(collision, 'SKILL.md'), 'Existing unrelated skill\n');
   await assert.rejects(installSkills(parseArgs(['--claude', '--project', project, '--force'])), /Unowned skill/);
-  assert.equal(await exists(join(project, '.claude/skills/d-dooc')), false);
+  assert.equal(await exists(join(project, '.claude/skills/d-documents')), false);
   assert.equal(await readFile(join(collision, 'SKILL.md'), 'utf8'), 'Existing unrelated skill\n');
 });
 
@@ -118,10 +119,10 @@ test('unowned OpenCode slash command blocks all writes and is not overwritten by
   const project = await temporary();
   const commands = join(project, '.opencode/commands');
   await mkdir(commands, { recursive: true });
-  await writeFile(join(commands, 'd-dooc.md'), 'User command\n');
+  await writeFile(join(commands, 'd-documents.md'), 'User command\n');
   await assert.rejects(installSkills(parseArgs(['--opencode', '--project', project, '--force'])), /Unowned command/);
   assert.equal(await exists(join(project, '.opencode/skills')), false);
-  assert.equal(await readFile(join(commands, 'd-dooc.md'), 'utf8'), 'User command\n');
+  assert.equal(await readFile(join(commands, 'd-documents.md'), 'utf8'), 'User command\n');
 });
 
 test('symlinked destination ancestors and skill entries are rejected without following them', async t => {
@@ -134,7 +135,7 @@ test('symlinked destination ancestors and skill entries are rejected without fol
   const second = await temporary();
   const options = parseArgs(['--codex', '--project', second]);
   await installSkills(options);
-  await symlink(outside, join(second, '.agents/skills/d-dooc/external'), 'dir');
+  await symlink(outside, join(second, '.agents/skills/d-documents/external'), 'dir');
   await assert.rejects(installSkills({ ...options, force: true }), /Refusing symlink inside skill/);
   assert.deepEqual(await readdir(outside), []);
 });

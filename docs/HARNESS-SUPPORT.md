@@ -155,10 +155,10 @@ Also checked the [GitHub CLI supported-agent inventory](https://cli.github.com/m
 
 ## Invocation and availability limits
 
-- Codex: `$d-dooc`, `$d-frontend`, `$d-backend` or the native skill selector.
-- Claude Code, Cursor and Cline: native `/d-dooc`, `/d-frontend`, `/d-backend` where enabled in the installed version.
+- Codex: `$d-documents`, `$d-frontend`, `$d-backend` or the native skill selector.
+- Claude Code, Cursor and Cline: native `/d-documents`, `/d-frontend`, `/d-backend` where enabled in the installed version.
 - OpenCode: generated `/d-*` wrappers load the named skill and pass arguments.
-- Windsurf/Devin Desktop: `@d-dooc`, `@d-frontend`, `@d-backend` skill mentions.
+- Windsurf/Devin Desktop: `@d-documents`, `@d-frontend`, `@d-backend` skill mentions.
 - Gemini and remaining registry adapters: ask the agent to use the named skill or select it in the documented skill interface. The installer does not promise arbitrary slash commands.
 
 Some versions require feature flags, workspace trust or explicit agent skill-resource configuration. Local installs do not deploy skills into cloud workers/remote SSH/container profiles. This installer does not enable features, modify settings, install harness binaries/MCP servers or send remote configuration. Installation tests verify paths/resources and safe file operations, not model behavior in every harness. No symlink destinations or unowned packages/commands are overwritten.

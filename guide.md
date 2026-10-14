@@ -24,7 +24,7 @@ Kemudian buka sesi agent dalam workspace modul dan guna:
 
 | Fasa | Codex | Claude Code / OpenCode / Cursor / Cline |
 | --- | --- | --- |
-| Dokumentasi dan minta lock | `$d-dooc` | `/d-dooc` |
+| Dokumentasi dan minta lock | `$d-documents` | `/d-documents` |
 | Satu prototaip frontend | `$d-frontend nama-submodul` | `/d-frontend nama-submodul` |
 | Satu backend dan integrasi | `$d-backend nama-submodul` | `/d-backend nama-submodul` |
 
@@ -319,3 +319,5 @@ Selepas semua submodul, sediakan pelan Shell MFE/SSO/menu/routes dan cross-submo
 ## Bukti minimum, bukan dakwaan
 
 Setiap laporan: phase/submodule, fungsi/skrin, fail berubah, commands, hasil Pass/Fail/Blocked/Not run, screenshot/trace/log paths, batasan dan keputusan seterusnya. Jangan isi test result sebelum ujian dijalankan. Jangan menyalin angka baris/warning rujukan lama sebagai bukti semakan hari ini.
+
+Baca Module Code daripada module.config.json (medan code). Mockup mesti daripada .docs/documents/mockup/{module code}/, contohnya M12 → folder m12 yang benar-benar wujud. Jika kod/folder tiada atau tidak jelas, tanya pengguna; jangan guna mockup modul lain.

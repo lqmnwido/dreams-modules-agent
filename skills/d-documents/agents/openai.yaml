@@ -1,4 +1,4 @@
 interface:
   display_name: "D-ReAMS Documents"
   short_description: "Source-based documents and Phase 1 locking"
-  default_prompt: "Use $d-dooc to prepare or resume Phase 1 module documents."
+  default_prompt: "Use $d-documents to prepare or resume Phase 1 module documents."

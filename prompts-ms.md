@@ -4,7 +4,7 @@ Gunakan satu prompt pada satu masa. Baca proposal sebenar sebelum menghantar kel
 
 ## Arahan fasa ringkas
 
-Pasang dengan `node skills.js --codex`, `--claude`, `--opencode`, `--cursor`, `--gemini`, `--copilot`, `--windsurf` atau `--harness NAMA` dari checkout installer. Guna `--list-harnesses` bagi semua path/sumber. Codex menggunakan `$d-dooc`, `$d-frontend nama-submodul`, `$d-backend nama-submodul`; Claude Code/OpenCode/Cursor/Cline menggunakan `/d-dooc`, `/d-frontend nama-submodul`, `/d-backend nama-submodul`. Rujuk `docs/SKILLS.md` dan `docs/HARNESS-SUPPORT.md` dalam repository tersebut; tools lain mungkin menggunakan skill selector, bukan slash command. Prompt bernombor di bawah kekal alternatif manual; skills tidak memintas locks, penerimaan pengguna atau pelan execution database dikenal pasti.
+Pasang dengan `node skills.js --codex`, `--claude`, `--opencode`, `--cursor`, `--gemini`, `--copilot`, `--windsurf` atau `--harness NAMA` dari checkout installer. Guna `--list-harnesses` bagi semua path/sumber. Codex menggunakan `$d-documents`, `$d-frontend nama-submodul`, `$d-backend nama-submodul`; Claude Code/OpenCode/Cursor/Cline menggunakan `/d-documents`, `/d-frontend nama-submodul`, `/d-backend nama-submodul`. Rujuk `docs/SKILLS.md` dan `docs/HARNESS-SUPPORT.md` dalam repository tersebut; tools lain mungkin menggunakan skill selector, bukan slash command. Prompt bernombor di bawah kekal alternatif manual; skills tidak memintas locks, penerimaan pengguna atau pelan execution database dikenal pasti.
 
 ## 1. Sahkan modul, sumber dan path dokumen
 
@@ -236,3 +236,5 @@ Sediakan, jangan jalankan, pelan deployment dengan artifact/commit tepat, enviro
 
 Jangan deploy atau execute perubahan production sehingga pelan lengkap dikenal pasti dibenarkan secara jelas. Pastikan fixtures prototaip tidak aktif dan komponen belum selesai didokumentasi.
 ```
+
+Baca Module Code daripada medan code dalam module.config.json dan tentukan folder sebenar .docs/documents/mockup/{module code}/ sebelum membaca mockup. Jangan ganti dengan nama modul atau folder modul lain; tanya jika tiada atau tidak jelas.
