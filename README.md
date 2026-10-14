@@ -56,13 +56,13 @@ workspace/
 ├── AGENTS.md                # single workspace instruction file
 ├── .docs/
 │   ├── PRD.md               # read first; AI updates after finished work
-│   ├── scope.md
-│   ├── architecture.md
-│   ├── backend.md
-│   ├── database.md
-│   ├── frontend.md
-│   ├── testing.md
-│   ├── usermanual.md
+│   ├── SCOPE.md
+│   ├── ARCHITECTURE.md
+│   ├── BACKEND.md
+│   ├── DATABASE.md
+│   ├── FRONTEND.md
+│   ├── TESTING.md
+│   ├── USERMANUAL.md
 │   └── documents/           # place SRS, SDS, mockups here
 ├── module.config.json
 ├── document-integrity.json
