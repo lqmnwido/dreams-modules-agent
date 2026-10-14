@@ -179,3 +179,15 @@ propSchemaDataReportAsal, listDataFooter
 ```
 
 Read the engine when investigating table behavior; do not assume its internal flow from a thin example screen.
+
+## 10. Module fixture and upload examples
+
+Generated `src/services/{module}/hardcode-data.js` provides synthetic document rows through `createDemoDocuments()`. Use independent copies in Phase 2 prototypes; replace them with real services in Phase 3 without fixture fallbacks.
+
+Generated `src/services/{module}/upload.js` contains a `documentUploadField` matching the shared GeneratedFormData upload schema, with `type: "file"`, example `size: 5`, `align: "center"` and `process.env.VUE_APP_BUCKET_{MODULE}`. Tus configuration is commented out. Adapt the field and required/size/type validation to the actual domain contract. No live upload is wired automatically; Phase 2 remains offline.
+
+For authorized integration, shared form uploads delegate through @2enapps/ui to the host. Do not call `uploadExampleAttachment` as well as the form’s uploader for the same file. `uploadReadClient()` retrieves the host client for authorized stored-artifact reads; the upload helper itself has no `.get` method. Do not copy V2T’s ASR endpoint into unrelated modules or invent uploaded-object metadata for fixtures.
+
+## Frontend service layout
+
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.

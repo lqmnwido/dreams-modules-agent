@@ -15,6 +15,8 @@ Install with `node skills.js --codex`, `--claude`, `--opencode`, `--cursor`, `--
 ```text
 Read AGENTS.md, module.config.json and .docs/PRD.md. Identify the actual module and sources under .docs/documents/. Do not assume an SRS exists or reuse another module's business rules.
 
+Read Module Code from module.config.json field code before selecting mockups; do not use the module name or package as the code. Resolve .docs/documents/mockup/{module code}/ using the actual directory name. For code M12, use an existing m12 folder only if it is the unique case-insensitive match; prefer an exact match. Report the configured code and resolved path before reading mockups. If the code is missing, unsafe or inconsistent, or the folder is missing/ambiguous, ask for the exact code/path before dependent work. Never substitute another module folder or a dated/ZIP copy without explicit source selection. Read nested/supporting files only from the selected mockup folder. Record the code and actual path in SCOPE.md and the PRD source summary.
+
 Use the three-phase workflow: documents and user locking; standalone frontend prototypes for every submodule; backend and real integration. Database has no separate human schema-review/APPROVED record requirement.
 
 Canonical design filenames are uppercase SCOPE.md, ARCHITECTURE.md, DATABASE.md, BACKEND.md and FRONTEND.md. Inspect existing lowercase files, locks and instructions first. If naming or an old locked policy conflicts, ask one specific question and identify affected paths; do not silently rename, bypass locks or edit scaffold code.
@@ -27,7 +29,11 @@ Summarize source availability and any real ambiguity. Read-only inspection may c
 **Prompt:**
 
 ```text
-I authorize Phase 1 documentation for the confirmed module and source set. Read relevant documents, including DOCX tables/diagrams and mockup support files.
+I authorize Phase 1 documentation for the confirmed module and source set.
+
+Read Module Code from module.config.json field code before selecting mockups; do not use the module name or package as the code. Resolve .docs/documents/mockup/{module code}/ using the actual directory name. For code M12, use an existing m12 folder only if it is the unique case-insensitive match; prefer an exact match. Report the configured code and resolved path before reading mockups. If the code is missing, unsafe or inconsistent, or the folder is missing/ambiguous, ask for the exact code/path before dependent work. Never substitute another module folder or a dated/ZIP copy without explicit source selection. Read nested/supporting files only from the selected mockup folder. Record the code and actual path in SCOPE.md and the PRD source summary.
+
+Read module-relevant SRS/SDS, including DOCX tables/diagrams, and mockup support files from the resolved folder. Continue independently identified SRS/SDS work while awaiting any mockup-path clarification.
 
 Write the unlocked .docs/ documents:
 - SCOPE.md: complete source-derived requirement map, submodules, actors, workflows, decisions, citations and links wiring the specialized documents together.
@@ -98,7 +104,11 @@ Read SCOPE.md/FRONTEND.md and general-tab-crud/list-main.vue, tab.vue and releva
 
 Use synthetic dummy data for this prototype. Prepare the planned real API call as commented inactive code; do not send business API requests yet. Keep dummy mode visibly distinguishable, not a claimed backend success. Preserve getParams, returnResponseList envelope/list/total, returnResponseDetails and detailsBreadcrumbMixin; do not hand-build params or duplicate navigation state. Only implement domain-supported actions.
 
-Use ESLint and Prettier, remove unused training imports/stubs and format changed files only. Run standalone without Shell, using the agreed harness. Do not alter scaffold files without separate file-specific authorization.
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.
+
+Use ESLint and Prettier, remove unused training imports/stubs and format changed files only.
+
+Formatting and linting are mandatory for every code change: run the configured formatter check and linter check separately and report actual commands/results. Write multiline methods with one statement per line, braced conditions and expanded long calls/objects. Never compress declarations, branches and return into one line. Missing tools or failed/unrun checks block a completion claim; propose exact setup instead of skipping checks. Run standalone without Shell, using the agreed harness. Do not alter scaffold files without separate file-specific authorization.
 
 Report screens, reference/component/API mappings, missing-component cards, changes and actual lint/format/build results. Stop at this submodule.
 ```
@@ -166,7 +176,9 @@ Create Flyway migrations for the module's own database from the locked design. N
 
 Keep Flyway enabled, Hibernate generation none, SQL initialization never and bearer authentication enabled by default. Preserve the local-only testing bypass without calling bypass tests real security evidence.
 
-Use Java 25, approved Java lint/style and Java formatting, targeted changed files only. Run non-database checks/build/tests. No placeholders, dummy production responses, hidden TODOs, unused code, swallowed exceptions or mixed-submodule giant services. Never invent a provider contract.
+Use Java 25, approved Java lint/style and Java formatting, targeted changed files only.
+
+Formatting and linting are mandatory: run the configured Java formatter and Java lint/style checks separately. Use multiline methods, one statement per line, annotations above declarations and wrapped long signatures/calls. Never put @PostMapping, the signature and the whole body on one line. Report actual commands/results; missing tools or failed/unrun checks block a completion claim. Run non-database checks/build/tests. No placeholders, dummy production responses, hidden TODOs, unused code, swallowed exceptions or mixed-submodule giant services. Never invent a provider contract.
 
 Do not execute migrations or startup against a database until the target/execution plan is authorized. Do not change scaffold or locked files. Report actual functions/files/results and stop before another submodule.
 ```
@@ -238,5 +250,3 @@ Prepare, do not execute, a deployment plan with exact artifact/commit, environme
 
 Do not deploy or execute production changes until the complete identified plan is explicitly authorized. Keep prototype fixtures disabled and unresolved components documented.
 ```
-
-Read Module Code from module.config.json field code and resolve the actual matching .docs/documents/mockup/{module code}/ folder before reading mockups. Do not substitute the module name or another module folder; ask if missing or ambiguous.

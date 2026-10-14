@@ -30,9 +30,11 @@ test('scaffold includes source folder, split docs, references, submodules and no
   assert.ok(!files.has('memorial_be/src/main/java/com/dreams/memorial/exception/.gitkeep'));
   assert.ok(files.has('memorial_fe/.env.local'));
   assert.ok(files.has('memorial_fe/CRUD-REFERENCE.md'));
-  assert.match(files.get('memorial_fe/src/metadata.js').toString(), /"routePrefix":"\/memorial"/);
+  assert.match(files.get('memorial_fe/src/metadata.js').toString(), /"routePrefix":\s*"\/memorial"/);
   for (const submodule of config.submodules) {
-    assert.ok(files.has(`memorial_fe/src/services/memorial/${submodule}/index.js`));
+    assert.ok(files.has(`memorial_fe/src/services/memorial/${submodule}.service.js`));
+    assert.ok(!files.has(`memorial_fe/src/services/memorial/${submodule}/index.js`));
+    assert.match(files.get(`memorial_fe/src/services/memorial/${submodule}.service.js`).toString(), /from "\.\/https"/);
     assert.ok(files.has(`memorial_fe/src/views/${submodule}/interface.vue`));
     assert.ok(!files.has(`memorial_fe/src/services/${submodule}/.gitkeep`));
     assert.match(files.get(`memorial_fe/src/views/${submodule}/interface.vue`).toString(), /PageHeader/);
@@ -108,8 +110,8 @@ test('noninteractive CLI fails before writing; help requires no setup',()=>{
 });
 test('module transport takes credentials from host and preserves response metadata', async()=>{
   const files=await plan(config);
-  const source=files.get('memorial_fe/src/services/memorial/http.js').toString().replace('import { useHostAdapter } from "@2enapps/ui";', 'const useHostAdapter = () => ({ getAuthHeaders: async () => ({ Authorization: "Bearer test-token", authId: "test-actor" }) });');
-  const {createModuleClient}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+  const source=files.get('memorial_fe/src/services/memorial/https.js').toString().replace('import { useHostAdapter } from "@2enapps/ui";', 'const useHostAdapter = () => ({ getAuthHeaders: async () => ({ Authorization: "Bearer test-token", authId: "test-actor" }) });');
+  const {createModuleClient, returnResponseList, returnResponseDetails}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
   const originalFetch=globalThis.fetch,requests=[];
   globalThis.fetch=async(url,options)=>{requests.push({url,options});return new Response(JSON.stringify({data:[{id:1}],totalItems:1}),{headers:{'Content-Type':'application/json'}});};
   try {
@@ -120,6 +122,12 @@ test('module transport takes credentials from host and preserves response metada
     assert.ok(!requests[0].url.includes('authId'));
     assert.equal(result.data.totalItems,1);assert.equal(result.status,200);
     assert.equal(result.config.url,requests[0].url);
+    const wrapped = await returnResponseList('/records', result);
+    assert.equal(wrapped, result);
+    assert.deepEqual(wrapped.list, [{ id: 1 }]);
+    assert.equal(wrapped.total, 1);
+    assert.equal(wrapped.data.totalItems, 1);
+    assert.equal(await returnResponseDetails('/records/1', result), result);
     await assert.rejects(createModuleClient({}).get('/records'),/confirmed environment/);
     assert.equal(requests.length,1);
     globalThis.fetch=async()=>new Response(JSON.stringify({message:'Forbidden'}),{status:403,headers:{'Content-Type':'application/json'}});
@@ -162,4 +170,27 @@ test('generated backend keeps security on by default and includes local-only byp
   assert.ok(files.has('memorial_be/src/main/java/com/dreams/memorial/security/MethodSecurityConfig.java'));
   assert.ok(files.has('memorial_be/src/test/java/com/dreams/memorial/security/SecurityConfigTest.java'));
   assert.match(files.get('memorial_be/pom.xml').toString(),/spring-security-test/);
+});
+
+
+test('module fixture and upload examples use the actual module bucket without wiring live calls', async () => {
+  const files = await plan({ ...config, module: 'records', package: 'com.dreams.records' });
+  const fixture = files.get('records_fe/src/services/records/hardcode-data.js').toString();
+  const upload = files.get('records_fe/src/services/records/upload.js').toString();
+  assert.match(upload, /process\.env\.VUE_APP_BUCKET_RECORDS/);
+  assert.doesNotMatch(upload, /VUE_APP_BUCKET_V2T|upload-asr|\{\{env\}\}/);
+  assert.match(upload, /size: 5/);
+  assert.match(upload, /getUploadClient, uploadAttach/);
+  for (const source of [fixture, upload]) {
+    const checked = spawnSync(process.execPath, ['--input-type=module', '--check'], { input: source, encoding: 'utf8' });
+    assert.equal(checked.status, 0, checked.stderr);
+  }
+  const { createDemoDocuments } = await import(`data:text/javascript;base64,${Buffer.from(fixture).toString('base64')}`);
+  const first = createDemoDocuments();
+  first[0].namaDokumen = 'Changed locally';
+  assert.equal(createDemoDocuments()[0].namaDokumen, 'Example document A');
+  assert.equal(first[0].dirDokumen, null);
+  const page = files.get('records_fe/src/views/feedback/interface.vue').toString();
+  assert.doesNotMatch(page, /upload|hardcode-data/);
+  assert.doesNotMatch(files.get('records_fe/exposes.js').toString(), /upload|hardcode-data/);
 });

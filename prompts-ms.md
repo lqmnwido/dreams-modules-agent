@@ -13,6 +13,8 @@ Pasang dengan `node skills.js --codex`, `--claude`, `--opencode`, `--cursor`, `-
 ```text
 Baca AGENTS.md, module.config.json dan .docs/PRD.md. Kenal pasti modul sebenar dan sumber dalam .docs/documents/. Jangan anggap SRS wujud atau guna peraturan modul lain.
 
+Baca Module Code daripada medan code dalam module.config.json sebelum memilih mockup; jangan gunakan nama modul atau package sebagai kod. Tentukan .docs/documents/mockup/{module code}/ mengikut nama folder sebenar. Bagi kod M12, gunakan folder m12 yang wujud hanya jika itulah satu-satunya padanan tanpa mengira huruf besar/kecil; utamakan padanan tepat. Nyatakan kod konfigurasi dan path sebenar sebelum membaca mockup. Jika kod tiada, tidak selamat atau bercanggah, atau folder tiada/tidak jelas, tanya kod/path tepat sebelum kerja yang bergantung padanya. Jangan ganti dengan folder modul lain atau salinan bertarikh/ZIP tanpa pemilihan sumber yang jelas. Baca fail bersarang/sokongan mockup hanya daripada folder yang dipilih. Rekod kod dan path sebenar dalam SCOPE.md serta ringkasan sumber PRD.
+
 Gunakan tiga fasa: dokumentasi dan penguncian pengguna; prototaip frontend standalone bagi semua submodul; backend dan integrasi sebenar. Database tidak memerlukan rekod human review/APPROVED berasingan.
 
 Nama reka bentuk ialah SCOPE.md, ARCHITECTURE.md, DATABASE.md, BACKEND.md dan FRONTEND.md huruf besar. Semak fail lowercase, locks dan arahan sedia ada dahulu. Jika nama atau dasar lama terkunci bercanggah, tanya satu soalan khusus dan nyatakan path terjejas; jangan rename, pintas lock atau ubah kod scaffold sendiri.
@@ -25,7 +27,11 @@ Ringkaskan sumber tersedia dan kekaburan sebenar. Boleh teruskan pemeriksaan rea
 **Prompt:**
 
 ```text
-Saya membenarkan Fasa 1 dokumentasi bagi modul dan sumber yang disahkan. Baca dokumen berkaitan termasuk jadual/rajah DOCX serta fail sokongan mockup.
+Saya membenarkan Fasa 1 dokumentasi bagi modul dan sumber yang disahkan.
+
+Baca Module Code daripada medan code dalam module.config.json sebelum memilih mockup; jangan gunakan nama modul atau package sebagai kod. Tentukan .docs/documents/mockup/{module code}/ mengikut nama folder sebenar. Bagi kod M12, gunakan folder m12 yang wujud hanya jika itulah satu-satunya padanan tanpa mengira huruf besar/kecil; utamakan padanan tepat. Nyatakan kod konfigurasi dan path sebenar sebelum membaca mockup. Jika kod tiada, tidak selamat atau bercanggah, atau folder tiada/tidak jelas, tanya kod/path tepat sebelum kerja yang bergantung padanya. Jangan ganti dengan folder modul lain atau salinan bertarikh/ZIP tanpa pemilihan sumber yang jelas. Baca fail bersarang/sokongan mockup hanya daripada folder yang dipilih. Rekod kod dan path sebenar dalam SCOPE.md serta ringkasan sumber PRD.
+
+Baca SRS/SDS berkaitan modul termasuk jadual/rajah DOCX, serta fail sokongan mockup daripada folder yang dikenal pasti. Teruskan kerja SRS/SDS yang dikenal pasti secara bebas sementara menunggu penjelasan path mockup.
 
 Tulis dokumen .docs/ yang belum dikunci:
 - SCOPE.md: peta lengkap keperluan sumber, submodul, aktor, workflow, keputusan, citations dan pautan yang menghubungkan dokumen khusus.
@@ -96,7 +102,11 @@ Baca SCOPE.md/FRONTEND.md dan general-tab-crud/list-main.vue, tab.vue serta deta
 
 Guna data dummy sintetik untuk prototaip. Sediakan panggilan API sebenar dirancang sebagai kod komen yang tidak aktif; jangan hantar business API requests dahulu. Bezakan dummy mode daripada kejayaan backend sebenar. Kekalkan getParams, envelope/list/total returnResponseList, returnResponseDetails dan detailsBreadcrumbMixin; jangan bina params sendiri atau gandakan navigation state. Hanya tindakan domain disokong.
 
-Guna ESLint dan Prettier, buang import/stub training tidak digunakan dan format fail berubah sahaja. Jalankan standalone tanpa Shell dengan harness dipersetujui. Jangan ubah fail scaffold tanpa kebenaran khusus fail.
+Gunakan fail service rata src/services/{module}/{submodule}.service.js, sebaris dengan https.js, hardcode-data.js dan upload.js; jangan cipta folder service setiap submodul. Import transport dan response wrapper daripada ./https. Ikut struktur request/helpers/client/response wrapper dalam http.js training; nama transport modul ialah https.js. Kekalkan credentials host, metadata dan envelope list/details. Jangan salin provider, dasar public/authId, IP lookup atau kesan audit khusus training tanpa kontrak integrasi diluluskan. Jangan rename workspace lama secara automatik.
+
+Guna ESLint dan Prettier, buang import/stub training tidak digunakan dan format fail berubah sahaja.
+
+Formatting dan linting wajib bagi setiap perubahan kod: jalankan semakan formatter dan linter secara berasingan serta laporkan commands/hasil sebenar. Tulis method berbilang baris, satu statement setiap baris, braces bagi syarat dan pecahkan panggilan/object panjang. Jangan padatkan deklarasi, cabang syarat dan return dalam satu baris. Tooling tiada atau semakan gagal/tidak dijalankan menghalang dakwaan siap; cadangkan setup tepat, jangan langkau semakan. Jalankan standalone tanpa Shell dengan harness dipersetujui. Jangan ubah fail scaffold tanpa kebenaran khusus fail.
 
 Laporkan skrin, pemetaan rujukan/komponen/API, card komponen tiada, perubahan dan hasil lint/format/build sebenar. Berhenti pada submodul ini.
 ```
@@ -164,7 +174,9 @@ Cipta migrasi Flyway bagi database modul sendiri daripada reka bentuk terkunci. 
 
 Kekalkan Flyway aktif, Hibernate generation none, SQL initialization never dan bearer authentication aktif secara default. Kekalkan bypass local sahaja tanpa menganggap bypass tests bukti keselamatan sebenar.
 
-Guna Java 25, lint/style dan format Java diluluskan, fail berubah sahaja. Jalankan non-database checks/build/tests. Tiada placeholders, dummy production responses, hidden TODOs, unused code, swallowed exceptions atau service besar campur submodul. Jangan reka kontrak provider.
+Guna Java 25, lint/style dan format Java diluluskan, fail berubah sahaja.
+
+Formatting dan linting wajib: jalankan semakan formatter Java dan lint/style Java secara berasingan. Gunakan method berbilang baris, satu statement setiap baris, annotation di atas declaration dan pecahkan signature/panggilan panjang. Jangan letakkan @PostMapping, signature dan seluruh body dalam satu baris. Laporkan commands/hasil sebenar; tooling tiada atau semakan gagal/tidak dijalankan menghalang dakwaan siap. Jalankan non-database checks/build/tests. Tiada placeholders, dummy production responses, hidden TODOs, unused code, swallowed exceptions atau service besar campur submodul. Jangan reka kontrak provider.
 
 Jangan execute migrasi atau startup terhadap database sehingga pelan sasaran/execution dibenarkan. Jangan ubah scaffold atau fail terkunci. Laporkan fungsi/fail/results sebenar dan berhenti sebelum submodul lain.
 ```
@@ -236,5 +248,3 @@ Sediakan, jangan jalankan, pelan deployment dengan artifact/commit tepat, enviro
 
 Jangan deploy atau execute perubahan production sehingga pelan lengkap dikenal pasti dibenarkan secara jelas. Pastikan fixtures prototaip tidak aktif dan komponen belum selesai didokumentasi.
 ```
-
-Baca Module Code daripada medan code dalam module.config.json dan tentukan folder sebenar .docs/documents/mockup/{module code}/ sebelum membaca mockup. Jangan ganti dengan nama modul atau folder modul lain; tanya jika tiada atau tidak jelas.

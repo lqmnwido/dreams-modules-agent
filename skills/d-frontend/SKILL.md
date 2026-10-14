@@ -41,3 +41,11 @@ Save screenshots/traces/logs under evidence/ by phase/submodule. Update unlocked
 Show the interface and stop for user review. Do not infer acceptance from tests or invocation. After explicit user acceptance, record it in PRD.md and propose one next submodule. Each next submodule needs selection/authorization; repeat this complete cycle until all interfaces are accepted.
 
 Only after every interface is accepted, prepare module-specific metadata.js/defaultExpose, remote-entry.js with `export {};` and matching exposes.js. Existing scaffold files still need exact authorization before edits. Do not copy V2T identifiers into another module, connect Shell or start backend automatically. Report blockers, missing-component cards and next Phase 3 action (`d-backend`).
+
+## Mandatory readable formatting and linting
+
+Read [code style](references/CODE-STYLE.md). Every code change requires formatter and linter checks, reported separately. Use multiline method bodies with one statement per line, braced conditions and expanded long signatures/calls. Never compress declarations, branching and return into a one-line function. Java mapping annotations, signatures and bodies must be clearly separated. Use approved ESLint/Prettier for frontend and Java formatter/style tooling for backend. Missing tooling or failed/unrun checks block the completion claim; propose exact setup instead of skipping checks or disabling rules. Format changed authorized files only.
+
+## Frontend service layout
+
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.

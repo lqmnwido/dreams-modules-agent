@@ -7,7 +7,7 @@ Required dependency before every install/update:
 
 Use shared components/helpers/styles. New designs, raw controls, helpers and CSS require UI approval. Read `src/views/ui-element/` and `src/services/training/` as revision/reference examples; sample data and legacy controls are not approved production patterns.
 
-Submodule layout: `src/services/{{module}}/{submodule}/index.js`, `src/views/{submodule}/interface.vue`. Installer creates page/service scaffolds per entered submodule. Root `exposes.js` is the single federation contract, matching training. Real fields/actions/endpoints require confirmed use cases. Credentials come from the host through `src/services/{{module}}/http.js`; API base URL and routing policies require review. Local settings live in `.env.local`; add other `.env.<mode>` files only with confirmed environment values.
+Submodule layout: `src/services/{{module}}/{submodule}.service.js`, `src/views/{submodule}/interface.vue`. Installer creates page/service scaffolds per entered submodule. Root `exposes.js` is the single federation contract, matching training. Real fields/actions/endpoints require confirmed use cases. Credentials come from the host through `src/services/{{module}}/https.js`; API base URL and routing policies require review. Local settings live in `.env.local`; add other `.env.<mode>` files only with confirmed environment values.
 
 Shell owns auth/navigation/host adapter. Match expose names, Shell remote config/env/loader/router, singleton Vue/Pinia/router/i18n/UI and CORS origin. Reference examples are not exposed automatically.
 

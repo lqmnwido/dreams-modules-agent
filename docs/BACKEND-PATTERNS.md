@@ -38,3 +38,7 @@ Respect existing integration-test profiles/plugins. For example, if Maven Failsa
 ## Quality report
 
 Report per submodule: patterns reused and any approved deviation; unit/controller/repository/integration tests discovered/executed; commands, profile, database target, actual Pass/Fail/Blocked/Not run and report paths. Include lint/format/build/security/dependency scan results. No tests are passed by declaration; do not hide warnings, change accepted API behavior for a test, or disable checks to make the suite green.
+
+## Mandatory readability checks
+
+Use multiline methods, one statement per line, separate annotation/declaration lines and readable wrapped signatures/calls. Formatting and linting are separate required checks for every change; missing tools or failed/unrun checks block completion. See [code style](CODE-STYLE.md).

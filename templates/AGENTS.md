@@ -76,3 +76,13 @@ If unclear or unsure, ask the smallest specific question before dependent work; 
 ## Dependency maintenance
 
 Use `node scripts/maintenance.mjs install` for initial npm install only; ordinary maintenance does safe Shell checks and npm update with --legacy-peer-deps. Obtain authorization for dependency changes outside the approved phase scope; preserve unrelated edits and lockfiles. Before npm install/update use the exact Kai UI dependency above. No reset/stash/force-pull. Maintenance is not proof of build/browser success. Scaffold code remains unchanged by this policy update.
+
+## Mandatory code formatting and linting
+
+Every frontend/backend code change requires both formatter and linter checks before it can be reported complete. Frontend uses approved ESLint and Prettier settings; backend uses the approved Java formatter and Java lint/style configuration (for example Spotless and Checkstyle). Read existing configurations first. If missing, propose exact tools/versions/configuration and report Blocked; do not invent commands, skip checks silently or disable rules. Report format and lint commands/results separately from builds/tests.
+
+Write multiline method/function bodies with one statement per line, braces around conditionals and blank lines between logical steps. Expand long parameters, calls, objects and arrays using the approved formatter. Put Java annotations above declarations and separate HTTP mappings, signatures and bodies. Do not compress a function's declarations, branches and return into a single line or place multiple semicolon-separated statements on one line. Preserve behavior and identifiers while formatting. Format authorized changed files only; fix new errors/warnings, report unrelated existing warnings, then rerun format/lint and relevant build/tests. Do not reformat shared reference snapshots or locked/unrelated files.
+
+## Frontend service layout
+
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.

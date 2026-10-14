@@ -61,8 +61,8 @@ workspace/
     ├── metadata.js
     ├── services/
     │   ├── {module}/
-    │   │   ├── http.js
-    │   │   └── {submodule}/index.js
+    │   │   ├── https.js
+    │   │   └── {submodule}.service.js
     │   └── training/
     └── views/
         ├── {submodule}/interface.vue
@@ -111,6 +111,10 @@ Use Spring Boot, Java 25 and PostgreSQL. Dependency direction: controller → se
 Do not replace the main reference with `general-crud`, `training/crud/list` or Shell administration screens. Read the current implementation; historical line counts and warning counts can change and are not current verification evidence.
 
 Use existing shared UI components only. If a component is unavailable, show an empty shared card with the exact label `[ component not available ]` and record the gap in FRONTEND.md. Do not create alternative buttons, inputs, modals, CSS or components. Do not patch the Kai library or node_modules to hide the gap.
+
+## Frontend service layout
+
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.
 
 ## Frontend data contracts
 

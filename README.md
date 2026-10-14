@@ -92,8 +92,10 @@ Frontend includes the current training `src/views/ui-element/` and supporting `s
     ├── metadata.js                  # remote name, version, route prefix
     ├── services/
     │   ├── {module}/
-    │   │   ├── http.js              # transport; credentials from host
-    │   │   └── {submodule}/index.js # service scaffold per submodule
+    │   │   ├── https.js              # transport; credentials from host
+    │   │   ├── hardcode-data.js     # synthetic Phase 2 fixture example
+    │   │   ├── upload.js            # shared UI upload schema/service example
+    │   │   └── {submodule}.service.js # service scaffold per submodule
     │   └── training/               # reference services for ui-element
     └── views/
         ├── {submodule}/interface.vue # exposed page scaffold per submodule
@@ -102,7 +104,7 @@ Frontend includes the current training `src/views/ui-element/` and supporting `s
 
 `exposes.js` matches training's contract naming. Each entered submodule exposes `./views/{submodule}/interface`, consumed as `{module}/views/{submodule}/interface` by Shell. Page scaffolds use only shared PageHeader; approved fields/actions are pending. Shell routes/permissions are not registered automatically. Metadata's route prefix is the scaffold default `/{module}`; confirm it before Shell registration.
 
-`services/{module}/http.js` adapts training's generic transport and obtains credentials through `useHostAdapter`. The caller supplies the approved API base URL; public-prefix/authId policies default off and require explicit confirmation. Use the CRUD reference's `getParams`, `detailsBreadcrumbMixin`, `returnResponseList` envelope (preserving `data`, `list`, `total`) and shared validation helpers when implementing real flows.
+`services/{module}/https.js` adapts training's generic transport and obtains credentials through `useHostAdapter`. The caller supplies the approved API base URL; public-prefix/authId policies default off and require explicit confirmation. Use the CRUD reference's `getParams`, `detailsBreadcrumbMixin`, `returnResponseList` envelope (preserving `data`, `list`, `total`) and shared validation helpers when implementing real flows.
 
 ## Backend structure
 
@@ -173,3 +175,32 @@ node scripts/maintenance.mjs lock-doc scope  # repeat for each accepted draft
 ```
 
 The integrity manifest locks accepted drafts; AI must never alter it or invoke lock-doc. Revised sources require a human to explicitly reopen affected drafts (remove their hashes and approve revision). PRD entries still need completion and separate approval. Sources, instructions and other Markdown remain read-only. Locking does not grant migration approval. The hash checker detects edits; it is not an OS permission boundary. Evidence goes in `evidence/`. Never rerun the installer over existing files.
+
+## Dummy-data and upload examples
+
+New scaffolds include `src/services/{module}/hardcode-data.js` and `upload.js`, adapted from the V2T references. `createDemoDocuments()` returns independent synthetic rows for Phase 2 prototypes. These fixtures are not business requirements and must never become production API fallbacks.
+
+`upload.js` exports `documentUploadField`, `uploadExampleAttachment(field, file)` and `uploadReadClient()`. The field follows V2T’s `maklumat-dokumen.vue` shared form schema:
+
+```javascript
+upload: {
+  type: "file",
+  size: 5,
+  align: "center",
+  // isTus: true,
+  // tusEndPoint: "http://localhost:1080/files/",
+  bucketname: process.env.VUE_APP_BUCKET_MEMORIAL
+}
+```
+
+The generator substitutes the actual module environment suffix, not V2T’s bucket. Set its bucket only after the storage mapping is confirmed. The 5 MiB value and required flag are examples; actual domain limits, file types and server validation follow the accepted design. Tus remains commented out and unconfigured.
+
+Use the shared form uploader during authorized integration; it already calls the host’s attachment helper, so do not also invoke the service helper for the same selection. Host transport owns credentials and storage requests. No V2T `/upload-asr` endpoint, public-prefix fallback, custom uploader or automatic upload is added. The examples are not imported or exposed by default. Standalone Phase 2 remains offline; real uploads require the configured host adapter, authorized storage access and backend validation. Existing workspaces and the original V2T files are not modified.
+
+## Required formatting and linting
+
+Every frontend/backend change must pass both formatting and linting checks. Use approved ESLint/Prettier for frontend and the project’s Java formatter/lint configuration for backend. Write readable multiline methods; never compress declarations, conditions and returns into one line. Missing tooling or failed/unrun checks block a completion claim. Report each command/result separately and format authorized changed files only. See [CODE-STYLE.md](docs/CODE-STYLE.md) for examples and the verification procedure.
+
+## Frontend service layout
+
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.

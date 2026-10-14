@@ -321,3 +321,11 @@ After all submodules, plan Shell MFE/SSO/menu/routes and cross-submodule tests. 
 ## Evidence required for reports
 
 Each report identifies phase/submodule, functions/screens, changed files, commands, actual Pass/Fail/Blocked/Not run results, screenshot/trace/log paths, limitations and the next decision. Do not record test results before execution or copy historical reference line/warning counts as current verification evidence.
+
+## Required formatting and linting
+
+Every frontend/backend change must pass both formatting and linting checks. Use approved ESLint/Prettier for frontend and the project’s Java formatter/lint configuration for backend. Write readable multiline methods; never compress declarations, conditions and returns into one line. Missing tooling or failed/unrun checks block a completion claim. Report each command/result separately and format authorized changed files only. See [CODE-STYLE.md](docs/CODE-STYLE.md) for examples and the verification procedure.
+
+## Frontend service layout
+
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.

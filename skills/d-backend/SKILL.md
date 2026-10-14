@@ -60,3 +60,11 @@ After tested real APIs exist, replace the selected accepted frontend prototype's
 Keep the authorized backend README/API list synchronized with actual implementation (purpose/scope, submodules, packages, prerequisites/run/env without secrets, own-database/Flyway, Keycloak role matrix, endpoint/request/response/role/source-ID table). Locked README needs reopening first.
 
 Report functions/screens, files, actual commands/results, evidence, scan findings and blockers as Pass/Fail/Blocked/Not run. Update general PRD phase/submodule status and unlocked TESTING evidence within authorization. Stop for review before another submodule. After all submodules, complete cross-submodule tests and USERMANUAL from verified screenshots, ask user acceptance/final document locking, and leave deployment separate.
+
+## Mandatory readable formatting and linting
+
+Read [code style](references/CODE-STYLE.md). Every code change requires formatter and linter checks, reported separately. Use multiline method bodies with one statement per line, braced conditions and expanded long signatures/calls. Never compress declarations, branching and return into a one-line function. Java mapping annotations, signatures and bodies must be clearly separated. Use approved ESLint/Prettier for frontend and Java formatter/style tooling for backend. Missing tooling or failed/unrun checks block the completion claim; propose exact setup instead of skipping checks or disabling rules. Format changed authorized files only.
+
+## Frontend service layout
+
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.

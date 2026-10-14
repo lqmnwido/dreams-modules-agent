@@ -1,6 +1,8 @@
 import { useHostAdapter } from "@2enapps/ui";
 
-// Transport adapted from training/services/training/http.js.
+// Module https.js follows the bundled services/training/http.js structure.
+// Request helpers -> client factory -> response wrappers.
+// Training-specific providers, IP lookup and audit side effects are not module defaults.
 // Caller supplies approved baseURL and explicit routing/authId policies.
 // Credentials are obtained from the Shell host adapter per request.
 function normalizeUrl(url = "") {
@@ -126,7 +128,9 @@ export function createModuleClient({
   onlyAppendAuthIdWhenHeaderExists = false
 }) {
   async function request(url, options = {}) {
-    if (!baseURL) throw new Error("Module API baseURL requires a confirmed environment configuration.");
+    if (!baseURL) {
+      throw new Error("Module API baseURL requires a confirmed environment configuration.");
+    }
     const adapter = useHostAdapter();
     const authHeaders =
       typeof adapter.getAuthHeaders === "function"
@@ -199,3 +203,19 @@ export function createModuleClient({
   };
 }
 
+
+// Training-compatible response helpers: retain the original response envelope.
+export async function returnResponseList(extendUrl, response) {
+  response.list = response.data && response.data.data
+    ? response.data.data
+    : response.data || [];
+  response.total = response.data && response.data.data
+    ? response.data.totalItems
+    : 0;
+
+  return response;
+}
+
+export async function returnResponseDetails(extendUrl, response) {
+  return response;
+}
