@@ -179,7 +179,7 @@ After user locking and authorization, use **Prompt 6** to verify hashes, read SC
 
 ### Frontend service layout
 
-Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. Keep the API entry flat; use an optional services/{module}/{submodule}/ directory for extracted supporting modules. Existing workspaces are not automatically renamed.
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js` and `upload.js`; synthetic data belongs only in `services/{module}/{submodule}/hardcode-data.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. Keep the API entry flat; use an optional services/{module}/{submodule}/ directory for extracted supporting modules. Existing workspaces are not automatically renamed.
 
 The submodule service defines WHAT to call: business-function names, endpoint paths, payload mapping and explicitly approved fallback selection. It imports the shared client instead of calling fetch, assembling URLs/auth headers, parsing raw responses or duplicating audit/error plumbing. The module https.js defines HOW requests run: fetch, URL construction, host credentials/authId policy, serialization/parsing, response wrappers, approved audit transport and transport errors. Services may handle documented domain errors after the transport propagates them. Audit event intent/metadata may originate in the service; transport delivery belongs in https.js under the confirmed host/provider contract. Do not invent an audit endpoint or report audit delivery implemented merely because the layer is documented. Phase 2 may explicitly select fixtures; never silently fall back to dummy success after a production API error.
 
@@ -200,9 +200,10 @@ Use `VUE_APP_BUCKET_{MODULE}={module}` for the actual module. The default appear
 ```text
 src/services/{module}/
 ├── https.js
-├── hardcode-data.js
 ├── upload.js
-└── {submodule}.service.js
+├── {submodule}.service.js
+└── {submodule}/
+    └── hardcode-data.js
 ```
 
 The fixture helper returns independent synthetic document rows. The upload example follows the shared GeneratedFormData schema with type file, example size 5 MiB, center alignment and the module bucket variable. Adapt limits/required/type rules to accepted requirements; Tus remains commented out. Do not upload twice through both the shared form and service helper. Existing workspaces are not automatically migrated.
@@ -418,3 +419,15 @@ Add `--project .` for workspace-local installations; omit it for the harness's u
 `--update` needs Git/network access and reads skill resources from the official dreams-modules-agent main branch without executing the downloaded code. It explicitly replaces selected managed packages, including local edits, while preserving unowned destinations. `--update --dry-run` downloads to a temporary directory but leaves installed skills unchanged. A normal install is offline and uses the bundled snapshot; unchanged means that snapshot matches the installation, not that GitHub was checked. Use --force only to reinstall the current bundle after reviewing local edits.
 
 An update refreshes installed SKILL.md/reference resources and managed command wrappers only. It does not upgrade an older workspace's skills.js/runtime, add future CLI features to it, update application scaffolds or alter the harness registry bundled with that installer. Older workspace commands that reject --update/--delete need an authorized runtime upgrade or invocation from the updated dreams-modules-agent checkout. Refresh/restart your agent session afterward. Do not run concurrent updates, installs or deletes against the same paths.
+
+## Screen coverage, fixtures and shared UI details
+
+Before implementing a selected submodule, inventory every screen in FRONTEND.md, including source IDs grouped into ranges or rows. Map each actual source screen to its own named `src/views/{submodule}/{ScreenName}.vue`, service, expose key, local route and verification status. Five source screens require five screen Vue files; one interface.vue with conditional sections does not satisfy that inventory. Tab/step hosts may compose the named screens where the source defines that flow. Do not invent extra business screens. Report unfinished screens explicitly and do not mark the submodule complete until every mapped screen is implemented and reviewed.
+
+All synthetic business rows, dropdown fixture values, dashboard values and simulated response data for that submodule belong only in `src/services/{module}/{submodule}/hardcode-data.js`. Import them through the flat service or helpers; do not duplicate them inline in Vue files, schemas, the service, demo.mjs or module-root hardcode-data.js. Schema definitions and empty initial form state are not fixtures. Keep upstream training reference snapshots unchanged and separate from application data. Real calls remain commented in Phase 2; Phase 3 replaces fixture use without production fallback to fake success.
+
+Render exactly one card/title for `Carian Terperinci`. Inspect ComponentCarian and the generated form's actual supported options. If the outer component owns the card/title, suppress the inner card/title through an existing supported option; do not nest two identically titled cards, invent a prop, patch the UI library or add custom CSS. Verify the rendered DOM and screenshot.
+
+Keep the visible field label `Status`, but avoid the DOM ID `status` because the shared global `#status` rule styles an unrelated indicator. Use `status_new` for the UI control ID. Where the installed renderer derives its ID from field.name, use `status_new` as the UI schema/model key and map it explicitly to the existing approved API status key in the service. Preserve getParams and map its generated UI-key parameter rather than bypassing it. Do not rename backend/domain fields or invent a field.id override. Match labels, validation, reset and tests to the UI key; use unique namespaced suffixes for simultaneously rendered Status controls. Verify the dropdown and keyboard/accessibility behavior in the browser.
+
+New-project installer default: Java 25 LTS and Spring Boot 4.1.1 stable. Boot 4 requires its modular MVC, OAuth2 resource-server and Flyway starters; verify actual test imports/dependencies for that major version. Existing approved projects keep their versions until an upgrade is explicitly authorized. See https://docs.spring.io/spring-boot/system-requirements.html for compatibility.

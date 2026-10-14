@@ -63,7 +63,9 @@ workspace/
     ├── services/
     │   ├── {module}/
     │   │   ├── https.js
-    │   │   └── {submodule}.service.js
+    │   │   ├── {submodule}.service.js
+    │   │   └── {submodule}/
+    │   │       └── hardcode-data.js
     │   └── training/
     └── views/
         ├── {submodule}/{ScreenName}.vue
@@ -115,7 +117,7 @@ Use existing shared UI components only. If a component is unavailable, show an e
 
 ## Frontend service layout
 
-Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. Keep the API entry flat; use an optional services/{module}/{submodule}/ directory for extracted supporting modules. Existing workspaces are not automatically renamed.
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js` and `upload.js`; synthetic data belongs only in `services/{module}/{submodule}/hardcode-data.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. Keep the API entry flat; use an optional services/{module}/{submodule}/ directory for extracted supporting modules. Existing workspaces are not automatically renamed.
 
 ## Frontend data contracts
 

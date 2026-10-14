@@ -41,6 +41,8 @@ test('scaffold includes source folder, split docs, references, submodules and no
   for (const submodule of config.submodules) {
     assert.ok(files.has(`memorial_fe/src/services/memorial/${submodule}.service.js`));
     assert.ok(!files.has(`memorial_fe/src/services/memorial/${submodule}/index.js`));
+    assert.ok(files.has(`memorial_fe/src/services/memorial/${submodule}/hardcode-data.js`));
+    assert.ok(!files.has('memorial_fe/src/services/memorial/hardcode-data.js'));
     assert.match(files.get(`memorial_fe/src/services/memorial/${submodule}.service.js`).toString(), /from "\.\/https"/);
     assert.ok(files.has(`memorial_fe/src/views/${submodule}/interface.vue`));
     assert.ok(!files.has(`memorial_fe/src/services/${submodule}/.gitkeep`));
@@ -55,7 +57,7 @@ test('preflight refuses existing files without writing other files', async()=>{
   assert.deepEqual(await readdir(root),['.docs']);assert.deepEqual(await readdir(join(root,'.docs')),['PRD.md']);assert.equal(await readFile(join(root,'.docs/PRD.md'),'utf8'),'human requirements');
 });
 test('rejects traversal, reserved submodules, duplicates and invalid technical inputs',()=>{
-  for(const changes of [{module:'../oops'},{module:'shell'},{submodules:['training']},{submodules:['x','x']},{package:'bad;code'},{boot:'4.0.0'},{port:99999}]) assert.throws(()=>validate({...config,...changes}));
+  for(const changes of [{module:'../oops'},{module:'shell'},{submodules:['training']},{submodules:['x','x']},{package:'bad;code'},{boot:'5.0.0'},{port:99999}]) assert.throws(()=>validate({...config,...changes}));
 });
 test('symlink directory cannot redirect generated files',async t=>{
   if(process.platform==='win32')return t.skip('symlink permission depends on Windows configuration');
@@ -185,7 +187,7 @@ test('module fixture and upload examples use the actual module bucket without wi
   for (const name of ['.env', '.env.local', '.env.example']) {
     assert.match(files.get(`records_fe/${name}`).toString(), /^VUE_APP_BUCKET_RECORDS=records$/m);
   }
-  const fixture = files.get('records_fe/src/services/records/hardcode-data.js').toString();
+  const fixture = files.get('records_fe/src/services/records/feedback/hardcode-data.js').toString();
   const upload = files.get('records_fe/src/services/records/upload.js').toString();
   assert.match(upload, /process\.env\.VUE_APP_BUCKET_RECORDS/);
   assert.doesNotMatch(upload, /VUE_APP_BUCKET_V2T|upload-asr|\{\{env\}\}/);
@@ -429,4 +431,21 @@ test('standalone bootstrap initializes Pinia before UI and mounts with blocked e
   } finally {
     delete globalThis.__dreamsStandaloneTest;
   }
+});
+
+
+test('Java 25 Boot 4 scaffold includes modular MVC, OAuth2 and Flyway starters', async () => {
+  const files = await plan({ ...config, java: '25', boot: '4.1.1' });
+  const pom = files.get('memorial_be/pom.xml').toString();
+  assert.match(pom, /<version>4\.1\.1<\/version>/);
+  assert.match(pom, /<java.version>25<\/java.version>/);
+  for (const artifact of ['spring-boot-starter-webmvc', 'spring-boot-starter-security-oauth2-resource-server', 'spring-boot-starter-flyway']) {
+    assert.ok(pom.includes(`<artifactId>${artifact}</artifactId>`), artifact);
+  }
+  assert.doesNotMatch(pom, /<artifactId>spring-boot-starter-web<\/artifactId>|<artifactId>spring-boot-starter-oauth2-resource-server<\/artifactId>/);
+  const properties = files.get('memorial_be/src/main/resources/application.properties').toString();
+  assert.match(properties, /spring.flyway.enabled=true/);
+  assert.match(properties, /spring.jpa.hibernate.ddl-auto=none/);
+  assert.match(properties, /spring.sql.init.mode=never/);
+  assert.match(properties, /API_SECURITY_ENABLED:true/);
 });

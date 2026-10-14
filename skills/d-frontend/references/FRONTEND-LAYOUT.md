@@ -24,16 +24,15 @@ src/
 └── services/
     └── memorial/
         ├── https.js
-        ├── hardcode-data.js
         ├── upload.js
         ├── permohonan-lawatan.service.js
         └── permohonan-lawatan/
             ├── schemas.mjs
-            ├── demo.mjs
+            ├── hardcode-data.js
             └── files.mjs
 ```
 
-The flat `{submodule}.service.js` entry remains responsible for business functions, endpoint paths, payload mapping and explicitly approved fixture selection. The optional `services/{module}/{submodule}/` directory holds extracted schemas, dummy-data helpers, file-related logic and other submodule service support. Create only needed modules; do not create empty helper files or duplicate the central hardcode-data.js fixtures unnecessarily.
+The flat `{submodule}.service.js` entry remains responsible for business functions, endpoint paths, payload mapping and explicitly approved fixture selection. The optional `services/{module}/{submodule}/` directory holds extracted schemas, dummy-data helpers, file-related logic and other submodule service support. Create only needed modules; do not create empty helper files. All synthetic submodule data lives only in the nested hardcode-data.js.
 
 Keep standalone JavaScript modules (`.mjs` or `.js` helpers) out of business `views/{submodule}/`. Vue files own rendering and screen-local event wiring; extracted supporting logic belongs under services/{module}/{submodule}/. Preserve existing project extension conventions rather than converting .mjs to .js without a reason. Do not move shared ui-element reference snapshots.
 
@@ -63,3 +62,13 @@ Before calling the screen complete, verify that its target file exists with exac
 ## Normal standalone serve command
 
 Standalone development uses the normal npm run serve command with VUE_APP_REMOTE=off, VUE_APP_MODUL and VUE_APP_MODUL_PORT from the environment. vue.config.js selects src/main.js when off and src/remote-entry.js when on. main.js activates Pinia before importing @2enapps/ui, installs i18n/shared UI and mounts local hash routes from standalone-routes.js. It does not supply real identity or permit external API/upload/audit calls. When a named screen is completed, update its local route target alongside its exposes.js mapping. Do not create preview/run.cjs, override VUE_CLI_SERVICE_CONFIG_PATH or hardcode another port in a runner. Add actual locale messages required by the selected screens during implementation. Existing workspace files are not changed by this generator update.
+
+## Screen coverage, fixtures and shared UI details
+
+Before implementing a selected submodule, inventory every screen in FRONTEND.md, including source IDs grouped into ranges or rows. Map each actual source screen to its own named `src/views/{submodule}/{ScreenName}.vue`, service, expose key, local route and verification status. Five source screens require five screen Vue files; one interface.vue with conditional sections does not satisfy that inventory. Tab/step hosts may compose the named screens where the source defines that flow. Do not invent extra business screens. Report unfinished screens explicitly and do not mark the submodule complete until every mapped screen is implemented and reviewed.
+
+All synthetic business rows, dropdown fixture values, dashboard values and simulated response data for that submodule belong only in `src/services/{module}/{submodule}/hardcode-data.js`. Import them through the flat service or helpers; do not duplicate them inline in Vue files, schemas, the service, demo.mjs or module-root hardcode-data.js. Schema definitions and empty initial form state are not fixtures. Keep upstream training reference snapshots unchanged and separate from application data. Real calls remain commented in Phase 2; Phase 3 replaces fixture use without production fallback to fake success.
+
+Render exactly one card/title for `Carian Terperinci`. Inspect ComponentCarian and the generated form's actual supported options. If the outer component owns the card/title, suppress the inner card/title through an existing supported option; do not nest two identically titled cards, invent a prop, patch the UI library or add custom CSS. Verify the rendered DOM and screenshot.
+
+Keep the visible field label `Status`, but avoid the DOM ID `status` because the shared global `#status` rule styles an unrelated indicator. Use `status_new` for the UI control ID. Where the installed renderer derives its ID from field.name, use `status_new` as the UI schema/model key and map it explicitly to the existing approved API status key in the service. Preserve getParams and map its generated UI-key parameter rather than bypassing it. Do not rename backend/domain fields or invent a field.id override. Match labels, validation, reset and tests to the UI key; use unique namespaced suffixes for simultaneously rendered Status controls. Verify the dropdown and keyboard/accessibility behavior in the browser.

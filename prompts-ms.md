@@ -96,13 +96,16 @@ Kenal pasti jika fail scaffold perlu diubah dan tanya sebelum edit. Cadangkan to
 **Prompt:**
 
 ```text
+Inventori setiap skrin sumber dalam FRONTEND.md untuk submodul ini. Satu skrin mesti mempunyai satu fail Vue bernama; lima skrin memerlukan lima fail skrin, bukan satu interface.vue. Daftar setiap skrin dalam exposes.js dan route standalone, serta laporkan liputan.
+Semua data dummy perniagaan hanya dalam services/{module}/{submodule}/hardcode-data.js. Jangan gandakan fixture dalam Vue, service atau schema.
+Paparkan satu card/tajuk Carian Terperinci sahaja. Kekalkan label Status dengan DOM ID status_new; jika renderer menggunakan nama model sebagai ID, petakan status_new kepada medan API status yang diluluskan melalui service/getParams. Semak pilihan UI sebenar dan tingkah laku browser.
 Saya meluluskan satu submodul frontend dan pelan terhad tanpa perubahan scaffold yang baru dicadangkan. Nyatakan ID dan implement submodul itu sahaja.
 
 Baca SCOPE.md/FRONTEND.md dan general-tab-crud/list-main.vue, tab.vue serta details/list anak berkaitan. Jangan ganti dengan general-crud, training/crud/list atau screen admin Shell. Guna @2enapps/ui sahaja; semak kod shared terpasang. Jika komponen wajib tiada, biarkan card shared kosong dengan label tepat [ component not available ]. Rekod jurang; jangan cipta button/input/custom component atau patch library UI.
 
 Guna data dummy sintetik untuk prototaip. Sediakan panggilan API sebenar dirancang sebagai kod komen yang tidak aktif; jangan hantar business API requests dahulu. Bezakan dummy mode daripada kejayaan backend sebenar. Kekalkan getParams, envelope/list/total returnResponseList, returnResponseDetails dan detailsBreadcrumbMixin; jangan bina params sendiri atau gandakan navigation state. Hanya tindakan domain disokong.
 
-Gunakan fail service rata src/services/{module}/{submodule}.service.js, sebaris dengan https.js, hardcode-data.js dan upload.js; kekalkan fail API service rata; folder services/{module}/{submodule}/ boleh menyimpan helper sokongan. Import transport dan response wrapper daripada ./https. Ikut struktur request/helpers/client/response wrapper dalam http.js training; nama transport modul ialah https.js. Kekalkan credentials host, metadata dan envelope list/details. Jangan salin provider, dasar public/authId, IP lookup atau kesan audit khusus training tanpa kontrak integrasi diluluskan. Jangan rename workspace lama secara automatik.
+Gunakan fail service rata src/services/{module}/{submodule}.service.js, sebaris dengan https.js dan upload.js; data dummy hanya dalam services/{module}/{submodule}/hardcode-data.js; kekalkan fail API service rata; folder services/{module}/{submodule}/ boleh menyimpan helper sokongan. Import transport dan response wrapper daripada ./https. Ikut struktur request/helpers/client/response wrapper dalam http.js training; nama transport modul ialah https.js. Kekalkan credentials host, metadata dan envelope list/details. Jangan salin provider, dasar public/authId, IP lookup atau kesan audit khusus training tanpa kontrak integrasi diluluskan. Jangan rename workspace lama secara automatik.
 
 Service submodul menentukan APA yang dipanggil: nama fungsi business, endpoint, pemetaan payload dan pemilihan fallback yang diluluskan secara jelas. https.js menentukan MACAM MANA: fetch, bina URL, credentials host/dasar authId, serialize/parse, response wrapper, pengangkutan audit diluluskan dan ralat transport. Jangan ulang fetch/auth/parse/audit dalam service. Service boleh mengendalikan ralat domain yang didokumenkan selepas transport meneruskannya. Kontrak host/provider sebenar diperlukan sebelum pengangkutan audit dilaksanakan; jangan reka endpoint audit. Fixtures hanya dipilih secara jelas dalam Fasa 2; jangan fallback kepada kejayaan dummy selepas ralat API production.
 
@@ -170,6 +173,7 @@ Semak formatter/lint Java dan cadang tools/versi yang tiada (contohnya Checkstyl
 **Prompt:**
 
 ```text
+Untuk projek baharu, gunakan default installer Java 25 LTS dan Spring Boot 4.1.1 stable dengan starter serasi Boot 4. Kekalkan versi projek sedia ada melainkan naik taraf diluluskan secara jelas.
 Saya membenarkan satu submodul backend dan pelan terhad yang baru dicadangkan. Nyatakan ID. Implement controller/service/form/entity/repository sebenar, validasi, role/object access, transaksi, paging/filter/sort, errors, concurrency dan audit mengikut BACKEND.md/DATABASE.md.
 
 Terapkan standard database: snake_case/unquoted identifiers; id BIGINT GENERATED ALWAYS AS IDENTITY atau corak SERIAL dibenarkan; NUMERIC/TIMESTAMPTZ; CREATE TYPE enums; nama idx_/uniq_/fk_ serta FK actions jelas. Tanya sebelum menukar definisi UUID/catalog/API/locking terkunci yang bercanggah.

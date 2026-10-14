@@ -22,7 +22,7 @@ cd dreams-modules-agent
 node bin/install.mjs
 ```
 
-The questionnaire asks module name/code, workspace path, Java package/toolchain, frontend port, submodules and use-case inputs. Current installer defaults are Java 25 and Spring Boot 3.5.16; these are repository defaults, not a live latest-version lookup. Confirm project compatibility before changing versions. Blank business answers remain TBD. The installer previews the plan and asks before writing; cancellation writes nothing, and existing files/symlink parents are rejected. Never rerun it to overwrite an existing workspace.
+The questionnaire asks module name/code, workspace path, Java package/toolchain, frontend port, submodules and use-case inputs. Current installer defaults are Java 25 LTS and Spring Boot 4.1.1 stable; these are pinned repository defaults, not a live latest-version lookup. Java has the LTS designation; Spring Boot is not described as an LTS release. Boot 4 scaffolds use the modular MVC, OAuth2 resource-server and Flyway starters. Existing projects are not automatically upgraded. Confirm project compatibility before changing versions. Blank business answers remain TBD. The installer previews the plan and asks before writing; cancellation writes nothing, and existing files/symlink parents are rejected. Never rerun it to overwrite an existing workspace.
 
 For hosted installation, download and inspect the script before execution:
 
@@ -179,9 +179,10 @@ Read Module Code from `module.config.json` field `code`, not the module name/pac
     ├── services/
     │   ├── {module}/
     │   │   ├── https.js            # transport; credentials from host
-    │   │   ├── hardcode-data.js     # synthetic Phase 2 fixture example
     │   │   ├── upload.js            # shared UI upload schema/service example
-    │   │   └── {submodule}.service.js # service scaffold per submodule
+    │   │   ├── {submodule}.service.js # service scaffold per submodule
+    │   │   └── {submodule}/
+    │   │       └── hardcode-data.js # all synthetic submodule data
     │   └── training/               # reference services for ui-element
     └── views/
         ├── {submodule}/{ScreenName}.vue # implemented screen from FRONTEND.md
@@ -363,3 +364,13 @@ Add `--project .` for workspace-local installations; omit it for the harness's u
 `--update` needs Git/network access and reads skill resources from the official dreams-modules-agent main branch without executing the downloaded code. It explicitly replaces selected managed packages, including local edits, while preserving unowned destinations. `--update --dry-run` downloads to a temporary directory but leaves installed skills unchanged. A normal install is offline and uses the bundled snapshot; unchanged means that snapshot matches the installation, not that GitHub was checked. Use --force only to reinstall the current bundle after reviewing local edits.
 
 An update refreshes installed SKILL.md/reference resources and managed command wrappers only. It does not upgrade an older workspace's skills.js/runtime, add future CLI features to it, update application scaffolds or alter the harness registry bundled with that installer. Older workspace commands that reject --update/--delete need an authorized runtime upgrade or invocation from the updated dreams-modules-agent checkout. Refresh/restart your agent session afterward. Do not run concurrent updates, installs or deletes against the same paths.
+
+## Screen coverage, fixtures and shared UI details
+
+Before implementing a selected submodule, inventory every screen in FRONTEND.md, including source IDs grouped into ranges or rows. Map each actual source screen to its own named `src/views/{submodule}/{ScreenName}.vue`, service, expose key, local route and verification status. Five source screens require five screen Vue files; one interface.vue with conditional sections does not satisfy that inventory. Tab/step hosts may compose the named screens where the source defines that flow. Do not invent extra business screens. Report unfinished screens explicitly and do not mark the submodule complete until every mapped screen is implemented and reviewed.
+
+All synthetic business rows, dropdown fixture values, dashboard values and simulated response data for that submodule belong only in `src/services/{module}/{submodule}/hardcode-data.js`. Import them through the flat service or helpers; do not duplicate them inline in Vue files, schemas, the service, demo.mjs or module-root hardcode-data.js. Schema definitions and empty initial form state are not fixtures. Keep upstream training reference snapshots unchanged and separate from application data. Real calls remain commented in Phase 2; Phase 3 replaces fixture use without production fallback to fake success.
+
+Render exactly one card/title for `Carian Terperinci`. Inspect ComponentCarian and the generated form's actual supported options. If the outer component owns the card/title, suppress the inner card/title through an existing supported option; do not nest two identically titled cards, invent a prop, patch the UI library or add custom CSS. Verify the rendered DOM and screenshot.
+
+Keep the visible field label `Status`, but avoid the DOM ID `status` because the shared global `#status` rule styles an unrelated indicator. Use `status_new` for the UI control ID. Where the installed renderer derives its ID from field.name, use `status_new` as the UI schema/model key and map it explicitly to the existing approved API status key in the service. Preserve getParams and map its generated UI-key parameter rather than bypassing it. Do not rename backend/domain fields or invent a field.id override. Match labels, validation, reset and tests to the UI key; use unique namespaced suffixes for simultaneously rendered Status controls. Verify the dropdown and keyboard/accessibility behavior in the browser.

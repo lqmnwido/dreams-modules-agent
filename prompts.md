@@ -98,13 +98,16 @@ Identify any scaffold file change needed and ask before editing it. Propose miss
 **Prompt:**
 
 ```text
+Inventory every source screen in FRONTEND.md for this submodule. Create one named Vue file per source screen; if five are defined, deliver five mapped screen files, not one interface.vue. Register each screen in exposes.js and standalone routes, and report coverage.
+Keep all synthetic business data only in services/{module}/{submodule}/hardcode-data.js. Do not duplicate fixtures in Vue, service or schema files.
+Render one Carian Terperinci card/title only. Preserve label Status while using DOM ID status_new; map a renderer-derived status_new model key back to the approved API status field through the service/getParams pipeline. Verify actual supported shared UI options and browser behavior.
 I approve the single frontend submodule and bounded non-scaffold plan just proposed. Name its ID and implement only it.
 
 Read SCOPE.md/FRONTEND.md and general-tab-crud/list-main.vue, tab.vue and relevant details/list children. Do not substitute general-crud, training/crud/list or Shell admin screens. Use @2enapps/ui only; inspect installed shared code. If a required component is absent, leave an existing shared card blank with exact label [ component not available ]. Record the gap; do not create a button/input/custom component or patch UI library code.
 
 Use synthetic dummy data for this prototype. Prepare the planned real API call as commented inactive code; do not send business API requests yet. Keep dummy mode visibly distinguishable, not a claimed backend success. Preserve getParams, returnResponseList envelope/list/total, returnResponseDetails and detailsBreadcrumbMixin; do not hand-build params or duplicate navigation state. Only implement domain-supported actions.
 
-Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. Keep API service entries flat; supporting helpers may use services/{module}/{submodule}/. Existing workspaces are not automatically renamed.
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js` and `upload.js`; fixtures belong only in `services/{module}/{submodule}/hardcode-data.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. Keep API service entries flat; supporting helpers may use services/{module}/{submodule}/. Existing workspaces are not automatically renamed.
 
 The submodule service defines WHAT to call: business-function names, endpoint paths, payload mapping and explicitly approved fallback selection. It imports the shared client instead of calling fetch, assembling URLs/auth headers, parsing raw responses or duplicating audit/error plumbing. The module https.js defines HOW requests run: fetch, URL construction, host credentials/authId policy, serialization/parsing, response wrappers, approved audit transport and transport errors. Services may handle documented domain errors after the transport propagates them. Audit event intent/metadata may originate in the service; transport delivery belongs in https.js under the confirmed host/provider contract. Do not invent an audit endpoint or report audit delivery implemented merely because the layer is documented. Phase 2 may explicitly select fixtures; never silently fall back to dummy success after a production API error.
 
@@ -172,6 +175,7 @@ Inspect Java formatter/lint settings and propose missing tools/versions (for exa
 **Prompt:**
 
 ```text
+For a newly generated project, use the installer defaults Java 25 LTS and Spring Boot 4.1.1 stable with Boot 4-compatible starters. Keep existing approved versions unless an upgrade is explicitly authorized.
 I authorize the single backend submodule and bounded plan just proposed. Name its ID. Implement actual controllers/services/forms/entities/repositories, validation, role/object access, transactions, paging/filter/sort, errors, concurrency and audit against BACKEND.md/DATABASE.md.
 
 Apply the database standards: snake_case/unquoted identifiers; id BIGINT GENERATED ALWAYS AS IDENTITY or permitted SERIAL pattern; NUMERIC/TIMESTAMPTZ; CREATE TYPE enums; idx_/uniq_/fk_ names and explicit FK actions. Ask before changing conflicting locked UUID/catalog/API/locking definitions.

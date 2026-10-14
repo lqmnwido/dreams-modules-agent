@@ -29,8 +29,12 @@ try {
   const group=await required('Approved Java group (example com.dreams)',/^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)+$/);
   const pkg=await required('Approved Java package (example com.dreams.memorial)',/^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)+$/);
   const java=await required('Approved Java version (17, 21 or 25; Enter = LTS default)',/^(17|21|25)$/, '25');
-  console.log('Boot 3.5 is the long-term enterprise support line (commercial support). Default 3.5.16 supports Java 25; this does not imply free LTS coverage.');
-  const boot=await required('Approved exact Spring Boot 3.x version (Enter = reviewed 3.5-line default)',/^3\.\d+\.\d+$/, '3.5.16');
+  console.log('New-project default: Java 25 LTS with Spring Boot 4.1.1 stable. Existing projects are not upgraded.');
+  const boot = await required(
+    'Approved exact Spring Boot version (3.x or 4.x)',
+    /^[34]\.\d+\.\d+$/,
+    '4.1.1'
+  );
   const port=Number(await ask('Frontend local port','3004'));
   const submodules=(await ask('Confirmed submodule identifiers (comma-separated; blank = TBD)')).split(',').map(s=>s.trim()).filter(Boolean);
   const answers=[];
