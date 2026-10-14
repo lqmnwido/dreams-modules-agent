@@ -1,483 +1,238 @@
-# D-ReAMS workflow prompts — English
+# D-ReAMS — three-phase Agile prompts
 
-Use one prompt at a time. Replace M12, module paths and source declarations with the actual module; never carry M12 business rules into another module. Approvals apply only to the concrete preceding proposal you have reviewed. See [guide.md](guide.md) for installation, locking/reopening scripts and conditional lint/format commands.
+Use one prompt at a time. Read and approve the actual proposal before sending an approval prompt. No placeholders are business answers. Phase 1 ends with user locking; Phase 2 is frontend-first, standalone and synthetic; Phase 3 is backend plus real integration. No separate database human-review record. Never modify scaffold files without exact authorization. See guide.md and ARCHITECTURE.md.
 
-Implement one explicitly selected submodule at a time: backend → frontend → checks/tests → review → approval for the next. Shared prerequisites must be bounded and explained. Mockups supply draft functional requirements, not final visual design; match exact selected ui-element/general-tab-crud examples using @2enapps/ui. Frontend uses ESLint/Prettier; Java uses approved Java lint/style and a Java formatter. Existing locked designs still require human reopening if a change is needed.
+## Short phase commands
 
-### 1. Recover requirements and draft the scope
+Install with `node skills.js --codex`, `--claude`, `--opencode`, `--cursor`, `--gemini`, `--copilot`, `--windsurf` or another `--harness NAME` from the installer checkout. Use `--list-harnesses` for the complete path/source inventory. Codex uses `$d-dooc`, `$d-frontend <submodule>`, `$d-backend <submodule>`; Claude Code/OpenCode/Cursor/Cline use `/d-dooc`, `/d-frontend <submodule>`, `/d-backend <submodule>`. See `docs/SKILLS.md` and `docs/HARNESS-SUPPORT.md` in that repository; other tools may use skill selection rather than slash commands. The numbered prompts below remain the manual alternative; skills do not bypass phase locks, user acceptance or an identified database execution plan.
 
-Prompt:
+## 1. Confirm module, sources and document paths
 
-Read AGENTS.md and .docs/PRD.md for M12.
+**Prompt:**
 
-I approve completing the unlocked .docs/scope.md. If preserved source-review findings are insufficient, I explicitly authorize rereading only the sources needed to recover concrete requirements.
+```text
+Read AGENTS.md, module.config.json and .docs/PRD.md. Identify the actual module and sources under .docs/documents/. Do not assume an SRS exists or reuse another module's business rules.
 
-Use the supplied SDS and .docs/documents/mockup/m12/ as the authoritative functional mockup. Mockups are drafts for fields, actions and workflows, not the final visual specification. UI structure follows selected ui-element examples and @2enapps/ui. There is no standalone SRS. Dated folders and ZIPs are historical references.
+Use the three-phase workflow: documents and user locking; standalone frontend prototypes for every submodule; backend and real integration. Database has no separate human schema-review/APPROVED record requirement.
 
-Document actual submodules, functions, actors, fields, workflows, validation and permissions. Cite source filenames and sections.
+Canonical design filenames are uppercase SCOPE.md, ARCHITECTURE.md, DATABASE.md, BACKEND.md and FRONTEND.md. Inspect existing lowercase files, locks and instructions first. If naming or an old locked policy conflicts, ask one specific question and identify affected paths; do not silently rename, bypass locks or edit scaffold code.
 
-Do not leave source-defined facts as TBD. For conflicting or missing rules, propose concrete resolutions and distinguish them from source requirements.
+Summarize source availability and any real ambiguity. Read-only inspection may continue. Do not begin implementation.
+```
 
-Preserve the source-review findings and their citations in the scope draft.
+## 2. Phase 1: read sources and write focused documents
 
-No code, migrations or locking.
+**Prompt:**
 
-Explanation: Recover and preserve the actual requirements.
+```text
+I authorize Phase 1 documentation for the confirmed module and source set. Read relevant documents, including DOCX tables/diagrams and mockup support files.
 
-### 2. Present unresolved scope decisions
+Write the unlocked .docs/ documents:
+- SCOPE.md: complete source-derived requirement map, submodules, actors, workflows, decisions, citations and links wiring the specialized documents together.
+- DATABASE.md: actual own-module PostgreSQL tables, fields/types/null/defaults, keys, relationships, constraints, indexes, audit/removal and query/transaction invariants.
+- BACKEND.md: per-submodule controllers/services/repositories/entities/forms, function logic, API payloads, permissions, errors and source IDs.
+- FRONTEND.md: mockup ideas, actual screens/fields/actions, exact general-tab-crud/shared UI references, dummy prototype scenarios and planned APIs.
+- ARCHITECTURE.md: concise common ownership, MFE/Shell/UI boundaries and folder structures. Every module owns a separate database; other modules use its API only.
 
-Prompt:
+Keep wording simple and direct; do not duplicate all details in SCOPE.md or every file. PRD.md is general system/phase information. Keep citations; distinguish source facts from proposals. No source-defined facts left TBD. Ask for genuinely missing/conflicting rules before dependent design.
 
-Read the existing M12 scope draft and preserved source findings.
+No code, migrations, scaffold changes or locks.
+```
 
-Consolidate unresolved decisions. Remove duplicates and identify anything already established by sources or explicitly confirmed in this conversation.
+## 3. Resolve one decision group
 
-Present no more than five unresolved decisions at a time. For each:
+**Prompt:**
 
-- Give its stable decision ID.
-- Explain the question simply.
-- Give one complete recommended answer.
-- Explain its effect on users.
-- Identify any exact value or external information still needed.
-- Identify what it blocks.
-- Recommend whether the affected function can be deferred.
+```text
+Present at most five genuinely unresolved decisions with stable IDs, one complete recommended answer, user effect, missing value/evidence and blocked work. Do not repeat source-defined or explicitly answered questions.
 
-Separate business choices I can answer from external contracts requiring evidence.
+Keep unavailable provider evidence separate. Do not repeatedly ask for information I already said I do not have; continue independent decisions. If unclear, ask before dependent work, not after inventing a rule. Wait for my answers.
+```
 
-Do not repeatedly request information I have already said I do not have. Record its unavailability and propose the next practical way to obtain evidence.
+## 4. Apply the answered group
 
-Wait for my answers before presenting the next group. Do not repeat the full source review.
+**Prompt:**
 
-Explanation: Review decisions in manageable groups.
+```text
+I approve the concrete recommendations in your immediately preceding group exactly as written. List the covered IDs and apply only fully resolved decisions consistently to unlocked documents.
 
-### 3. Approve a scope decision group
+Do not infer missing values, provider contracts or acceptance from approval. Ask about remaining user choices and record unavailable external evidence. Present the next independent group or report decisions complete. No code or locks.
+```
 
-Prompt:
+## 5. Phase 1: PRD summary and source confirmation reread
 
-I approve the recommendations in your immediately preceding scope decision group exactly as written.
+**Prompt:**
 
-Identify the decision IDs covered by this approval.
+```text
+Finish the Phase 1 documents and write a concise general phase/source/decision summary to PRD.md within this authorization.
 
-Apply fully resolved decisions to the unlocked .docs/scope.md.
+Then reread the relevant source documents once for confirmation as explicitly requested. Check every source function, field, workflow and permission is represented and linked to storage/API/screen definitions. Correct omissions in unlocked drafts; record actual files/sections rechecked and update PRD.md to the real outcome.
 
-Approval of a recommendation does not supply a missing value or external contract. Ask directly for any remaining choice I can answer; keep unavailable external evidence unresolved.
+Do not loop the source review or leave stale contradictory alternatives. If incomplete, ask only the exact remaining question and stop dependent work. Do not invent missing external contracts.
 
-Do not mark unanswered details as approved or silently defer functions.
+If complete, stop and ask me to lock the five Phase 1 design files. Do not start Phase 2 or create a database human-review table. No code or migrations.
+```
 
-Present the next independent decision group, or report that all blocking scope decisions are resolved.
+## 6. Verify the user locks and select one frontend submodule
 
-No code, migrations or locking.
+**Prompt:**
 
-Explanation: Use only when you agree with the whole preceding group. Otherwise, answer by decision ID.
+```text
+I have locked the Phase 1 documents. Verify actual paths and hashes; do not rely on this statement alone. No separate database approval record is required.
 
-### 4. Verify scope readiness
+Read SCOPE.md and FRONTEND.md. Propose one frontend submodule, its screens, exact reference files, dummy scenarios and standalone test approach without Shell/backend. Inspect available @2enapps/ui components and existing tooling/harness before proposing changes.
 
-Prompt:
+Identify any scaffold file change needed and ask before editing it. Propose missing lint/test tooling with exact versions/commands, not invented commands. Wait for submodule selection; do not implement all submodules.
+```
 
-Check .docs/scope.md for readiness to prepare technical designs.
+## 7. Phase 2: implement the selected standalone prototype
 
-Verify concrete submodules, functions, actors, fields, workflows, validation and permissions.
+**Prompt:**
 
-Separate:
+```text
+I approve the single frontend submodule and bounded non-scaffold plan just proposed. Name its ID and implement only it.
 
-- Unresolved business decisions that prevent concrete design.
-- External integration contracts that prevent implementation.
-- Environment values that can wait until integration testing.
-- Functions explicitly deferred by me.
+Read SCOPE.md/FRONTEND.md and general-tab-crud/list-main.vue, tab.vue and relevant details/list children. Do not substitute general-crud, training/crud/list or Shell admin screens. Use @2enapps/ui only; inspect installed shared code. If a required component is absent, leave an existing shared card blank with exact label [ component not available ]. Record the gap; do not create a button/input/custom component or patch UI library code.
 
-If a business decision blocks design, present its recommended resolution and wait for my answer.
+Use synthetic dummy data for this prototype. Prepare the planned real API call as commented inactive code; do not send business API requests yet. Keep dummy mode visibly distinguishable, not a claimed backend success. Preserve getParams, returnResponseList envelope/list/total, returnResponseDetails and detailsBreadcrumbMixin; do not hand-build params or duplicate navigation state. Only implement domain-supported actions.
 
-If the scope is ready for technical drafting, submit it for acceptance and clearly identify any remaining implementation dependencies.
+Use ESLint and Prettier, remove unused training imports/stubs and format changed files only. Run standalone without Shell, using the agreed harness. Do not alter scaffold files without separate file-specific authorization.
 
-Do not lock documents or invent human acceptance records.
+Report screens, reference/component/API mappings, missing-component cards, changes and actual lint/format/build results. Stop at this submodule.
+```
 
-Explanation: Business rules must be settled; later deployment values should not unnecessarily block drafting.
+## 8. Phase 2: test and show the interface
 
-### 5. Prepare concrete technical drafts
+**Prompt:**
 
-Prompt:
+```text
+For the current prototype, run white-box tests of implemented logic and black-box tests through Playwright MCP in a visible browser. Cover happy/negative/edge cases, validation/boundaries, search/reset, paging, tabs/breadcrumbs, supported actions and console/network errors. Verify no Shell/business API dependency and missing-component cards are explicit.
 
-I accept the completed scope and approve preparing the unlocked M12 technical drafts:
+Use synthetic fixture scenarios; do not claim real API, SSO or authorization proof. Save screenshots/traces/results to evidence/ and update unlocked TESTING.md with prototype-only evidence. If a tool/browser is unavailable, mark Blocked, not Pass.
 
-- .docs/architecture.md
-- .docs/database.md
-- .docs/backend.md
-- .docs/frontend.md
+Fix defects within this submodule's authorized scope, rerun affected checks and show the interface for my review. Ask if uncertain; do not repeat failed attempts without a new diagnosis. Stop before the next submodule.
+```
 
-Produce concrete designs.
+## 9. Accept the interface and propose the next prototype
 
-Architecture:
-Module boundaries, Shell integration, SSO, configuration and deployment.
+**Prompt:**
 
-Database:
-Actual PostgreSQL tables, columns, types, nullability, defaults, keys, relationships, constraints, indexes, audit fields and deletion rules.
+```text
+I accept the current submodule interface as shown, with its explicitly listed prototype limitations. Record this exact acceptance and evidence reference in PRD.md; do not claim production completion.
 
-Backend:
-Actual controllers, services, forms, REST endpoints, request/response fields, validation, errors, transactions and permissions.
+Propose one next frontend submodule and wait for authorization. Repeat the Phase 2 build/test/user-review cycle. If all interfaces are accepted, report that and prepare the metadata plan only; do not start backend or Shell integration automatically.
+```
 
-Frontend:
-Actual screens, fields, actions, services, exposes.js entries and Shell routes using @2enapps/ui and exact selected ui-element/general-tab-crud examples. Name each reference file and map components, schemas, helpers and layout. Do not invent a layout to copy the draft mockup.
+## 10. Finalize MFE metadata after all interfaces are accepted
 
-Address pagination, N+1 prevention, concurrent updates, duplicate requests and integration failures.
+**Prompt:**
 
-Use the accepted scope and preserved source references. Do not reread original sources without identifying the specific need and obtaining any required authorization.
+```text
+Verify every Phase 2 submodule has user acceptance or an explicit unresolved status. Use actual module identity/default screen to prepare metadata.js, remote-entry.js containing export {}; and matching exposes.js keys. Follow the metadata example in ARCHITECTURE.md; do not copy V2T identity into another module.
 
-Distinguish definitive confirmed design from conditional recommendations. Submit unresolved decisions separately.
+If these files already exist as scaffold, show exact diffs and ask permission before modifying them. This prompt does not authorize scaffold edits. Do not add Shell routes/menus or connect SSO yet. Check federation names/imports statically, update PRD.md with actual Phase 2 status and stop for Phase 3 authorization.
+```
 
-No code, migrations or locking.
+## 11. Phase 3: select one backend submodule
 
-Explanation: Design the actual schema, APIs and screens.
+**Prompt:**
 
-### 6. Review consistency across designs
+```text
+Read SCOPE.md, BACKEND.md, DATABASE.md and the accepted frontend contract. Verify Phase 1 design locks; database does not require a separate reviewer/APPROVED record.
 
-Prompt:
+Follow existing project/module patterns before framework conventions; never install restructuring scaffold tools without approval. Use PostgreSQL + Spring Data JPA and JUnit 5 + Mockito + Spring Boot Test. Plan @WebMvcTest, @DataJpaTest and @SpringBootTest with actual Maven/Gradle commands and an isolated test database. Read docs/BACKEND-PATTERNS.md and docs/DATABASE-PATTERNS.md in the installed/reference materials as applicable.
 
-Review scope, architecture, database, backend and frontend together.
+Propose one backend submodule with actual functions, classes, endpoints/forms, owned tables/indexes, migration dependencies, roles and tests. Use Java 25, Spring Boot and PostgreSQL. No cross-module database access; dependencies use APIs.
 
-For every included function, verify:
+Inspect Java formatter/lint settings and propose missing tools/versions (for example team-approved Checkstyle and Spotless). Do not claim a universal Spring Boot formatter or lower Java target. Identify external contracts still missing and ask before dependent implementation. Do not touch scaffold files. Wait for selection.
+```
 
-- Required data has concrete database storage.
-- API request/response fields and permissions are defined.
-- Screens and services use those APIs and display their fields.
-- Each screen maps to the exact selected ui-element reference and shared components; draft mockup styling does not override it.
-- Validation, statuses and errors agree.
-- Relationships, indexes and transaction rules agree.
-- Required integrations have defined contracts.
+## 12. Phase 3: implement one backend and create its migrations
 
-List concrete corrections separately from unanswered decisions and missing external evidence.
+**Prompt:**
 
-Give each item a stable ID and recommend a specific correction.
+```text
+I authorize the single backend submodule and bounded plan just proposed. Name its ID. Implement actual controllers/services/forms/entities/repositories, validation, role/object access, transactions, paging/filter/sort, errors, concurrency and audit against BACKEND.md/DATABASE.md.
 
-Do not declare implementation-ready while required contracts remain unresolved.
+Apply the database standards: snake_case/unquoted identifiers; id BIGINT GENERATED ALWAYS AS IDENTITY or permitted SERIAL pattern; NUMERIC/TIMESTAMPTZ; CREATE TYPE enums; idx_/uniq_/fk_ names and explicit FK actions. Ask before changing conflicting locked UUID/catalog/API/locking definitions.
 
-No code or migrations.
+Reuse existing queries/indexes and check relationships/batching/page-size/timeouts. Prevent N+1; targeted eager/join/batch loading, partial/expression indexes and scoped caching only where appropriate. Use keyset/cursor for large results only with a compatible agreed API/UI contract. Keep transactions short; prefer advisory coordination where safe, retain necessary row locks. Use authorized EXPLAIN (ANALYZE, BUFFERS), acknowledging it executes queries.
 
-Explanation: Trace each function through all five documents.
+Every migration needs representative-data forward and tested rollback/recovery evidence. Verify Flyway undo support or test a compensating/restore procedure; no fabricated automatic rollback. Production is read-only unless explicitly authorized; no destructive/DROP operation without approval and confirmed backup, and no silent data modification/deletion.
 
-### 7. Group remaining decisions and missing evidence
+Create Flyway migrations for the module's own database from the locked design. No separate schema human review is required. Do not invent missing columns/rules or create another module's tables. Explain prerequisite tables; ask if implementation scope must expand. Do not rewrite executed migrations.
 
-Prompt:
+Keep Flyway enabled, Hibernate generation none, SQL initialization never and bearer authentication enabled by default. Preserve the local-only testing bypass without calling bypass tests real security evidence.
 
-Consolidate the remaining M12 corrections, unanswered decisions and missing integration evidence.
+Use Java 25, approved Java lint/style and Java formatting, targeted changed files only. Run non-database checks/build/tests. No placeholders, dummy production responses, hidden TODOs, unused code, swallowed exceptions or mixed-submodule giant services. Never invent a provider contract.
 
-Remove duplicates and identify anything already explicitly approved.
+Do not execute migrations or startup against a database until the target/execution plan is authorized. Do not change scaffold or locked files. Report actual functions/files/results and stop before another submodule.
+```
 
-Present no more than five unanswered decisions at a time. For each, give:
+## 13. Prepare exact database execution and API test plan
 
-- Stable decision ID.
-- Simple explanation.
-- One complete recommended answer.
-- User effect.
-- Any exact value I must supply.
-- What it blocks.
+**Prompt:**
 
-Keep unavailable provider evidence in a separate dependency list. Do not keep asking me for documents or contacts I have already said I do not have.
+```text
+Prepare the current submodule's execution plan in unlocked TESTING.md: migration filenames/checksums, target environment/host/port/database/schema/roles, commands, startup, accounts/services, recovery and expected evidence. Target only this module's database. Do not expose secrets.
 
-Inspect authorized local Shell/shared-service code for additional evidence where useful. Distinguish consumer-code evidence from verified provider contracts.
+Include the actual JUnit 5/Mockito unit, @WebMvcTest controller, @DataJpaTest PostgreSQL repository and @SpringBootTest integration test commands (mvn test or the existing Maven/Gradle wrapper, plus configured integration profiles). Include representative-data migration/rollback tests and bounded performance/locking checks; do not assume H2 or production test targets.
 
-Continue independent business decisions while external evidence is unavailable.
+Include endpoint happy paths, every field/boundary, role/object scope, missing/conflicting/duplicate/concurrent records, pagination/sort/filter/empty, integration failure/timeouts, response/error contracts, SQL injection, mass assignment, IDOR, uploads and audit. Include build/lint/format/dependency/security-scan commands supported by the project.
 
-Do not ask me to approve or lock an incomplete schema. No code, migrations or locking.
+A separate human schema-review table is not required; execution still needs an identified target. Do not execute this plan or claim unrun checks passed.
+```
 
-Explanation: Use this when technical decisions remain. Resolve policies without repeating unavailable-provider questions.
+## 14. Execute the identified plan and test the backend
 
-### 8. Approve technical corrections or a decision group
+**Prompt:**
 
-Prompt:
+```text
+I authorize the exact migration files/checksums, target database, startup and test commands in your immediately preceding complete plan. If any target or prerequisite is unknown or files changed, ask before execution.
 
-I approve the concrete corrections and recommendations in your immediately preceding proposal exactly as written.
+Execute only that plan. Test real APIs and security with appropriate actual test identities; no dummy production responses. Keep failures and provider unavailability honest; no success fallback. Save real evidence and report Pass/Fail/Blocked/Not run, scan findings and critical warnings. Fix only within authorized scope; ask if design/scaffold changes are required. Stop at the selected submodule.
+```
 
-Identify the decision and correction IDs covered by this approval.
+## 15. Replace prototype data and integrate the selected frontend
 
-Apply resolved answers consistently to the unlocked scope, architecture, database, backend and frontend drafts.
+**Prompt:**
 
-If an answer still requires a missing value or unanswered choice, ask me directly before marking it resolved.
+```text
+I authorize connecting the current frontend submodule to its tested actual API. Activate its prepared API calls and remove/disable synthetic fixtures in production paths. Preserve getParams, returnResponseList/Details and breadcrumb contracts. The backend owns pagination/filtering; do not leave demo parseQuery/applyFilters as production logic.
 
-Do not invent external contracts, configuration, human approval records or function deferrals.
+Run ESLint/Prettier/build and real frontend/API Playwright checks for this submodule. No fixture fallback on HTTP errors. Show accurate loading, empty, validation, forbidden, conflict and integration errors. Missing shared components remain explicitly labeled, not silently invented or counted complete.
 
-Present the next independent unresolved group, or report that all implementation blockers are resolved.
+Do not connect Shell or edit scaffold unless separately authorized. Report evidence and stop for submodule acceptance before the next backend cycle.
+```
 
-No code, migrations or locking.
+## 16. Accept one integrated submodule and propose the next
 
-Explanation: Repeat Prompts 7–8 until the applicable decisions are resolved.
+**Prompt:**
 
-### 9. Finalize the designs and reconcile approval wording
+```text
+I accept the integrated submodule just demonstrated with the explicitly listed test status and limitations. Update PRD.md with actual implementation/evidence and propose one next backend submodule. Wait for authorization; repeat Phase 3 per submodule.
 
-Prompt:
+After all submodules, prepare a separate Shell MFE/SSO/menu/routes and cross-submodule test plan. Show exact files; ask permission before touching existing scaffold/Shell configuration. Do not deploy automatically.
+```
 
-I approve finalizing the unlocked M12 designs using only explicitly confirmed decisions.
+## 17. Generate the backend README and final user documentation
 
-Make tables, constraints, indexes, API payloads, permissions, statuses and frontend mappings definitive for the agreed implementation scope.
+**Prompt:**
 
-Remove superseded alternatives and contradictory definitions. Preserve source citations and distinguish source requirements from approved recommendations.
+```text
+Update the authorized backend README to match real implementation: module purpose/scope, submodules, architecture/packages, prerequisites/setup/run, safe env variable names, own-database/Flyway instructions, Keycloak role/access matrix and complete implemented API list (submodule, method, path, function, request/response form, role, real source ID). Do not invent SRS IDs or list unimplemented endpoints as available. If README is locked, request reopening first.
 
-Review the database approval section:
+Finish TESTING.md with real white-box/API/browser/security/dependency/lint/format/build results. Write USERMANUAL.md from actual behavior/screenshots by role/submodule. Distinguish prototype screenshots from live results and list missing-component limitations.
 
-- If it does not exist, add an empty human approval table with reviewer, role, decision, reviewed schema revision, date and approval scope; set decision PENDING.
-- If it already contains human entries, preserve them exactly.
-- Identify placeholder values, missing fields or revision mismatches.
-- Correct surrounding narrative so it accurately describes the existing entries.
-- Do not claim that fields are blank when they contain values.
-- Do not change my decision or other human review fields.
+Update PRD.md with concise final system/phase summary and evidence links. Submit for user acceptance; ask the user to lock completed TESTING.md and USERMANUAL.md. Do not lock files yourself or deploy.
+```
 
-Run a final consistency review.
+## 18. Prepare deployment separately
 
-If schema or implementation blockers remain, explain them and stop without declaring a finalized implementation-ready revision.
+**Prompt:**
 
-Otherwise, identify the exact finalized schema revision and the document version or fingerprint that fixes its reviewed contents.
+```text
+Prepare, do not execute, a deployment plan with exact artifact/commit, environment/server, own-module database, migrations/checksums, env/secret references, Shell/remote/API configuration, commands, backups/recovery and health/security checks. Identify missing information once and ask before dependent work.
 
-No code, migrations or locking.
-
-Explanation: This avoids the contradiction between an APPROVED table and paragraphs claiming it is empty.
-
-### 10. Explain how to record valid database approval
-
-Prompt:
-
-Verify whether the database draft contains a complete, concrete schema suitable for migration creation.
-
-Separate schema blockers from later integration or deployment prerequisites.
-
-If the schema is incomplete, list exactly what remains and stop.
-
-If complete:
-
-- Identify the exact finalized schema revision and its document version or fingerprint. If using a fingerprint, define schema-content coverage separately from the editable human approval section.
-- Show the existing human approval section.
-- Explain which fields are missing, placeholders or inconsistent.
-- Explain what I must personally enter for reviewer, actual review role, decision, exact reviewed revision, actual review date and approval scope.
-
-Do not suggest copying instructional placeholder text into those fields.
-
-Distinguish approval to create migrations from approval to execute them.
-
-Do not edit my human approval record, create migrations or run database commands.
-
-Explanation: Personally review the finalized schema and enter real values. Sending this prompt does not record approval.
-
-### 11. Verify approval, readiness and provide locking commands
-
-Prompt:
-
-I have personally completed the human database approval record and accept the finalized designs.
-
-Verify:
-
-- Required decisions for the agreed implementation scope are resolved.
-- Tables, API contracts, permissions and screens are concrete and consistent.
-- The database approval contains actual reviewer, role, decision, reviewed revision, date and approval scope.
-- The reviewed revision matches the finalized schema contents.
-- No schema change occurred after that approval without renewed review.
-
-Do not treat APPROVED alone as sufficient when fields are placeholders or the schema remains incomplete.
-
-If any check fails, explain exactly why and do not recommend locking.
-
-If all checks pass, provide the exact commands to lock scope, architecture, database, backend and frontend.
-
-Do not edit approval records or run locking commands.
-
-Explanation: Lock only after the checks pass.
-
-### 12. Select one submodule and agree on tooling
-
-Prompt:
-
-Before implementation, propose a submodule sequence from the accepted designs and select one candidate to start. Name its ID, functions, tables, endpoints, screens and minimum shared prerequisites.
-
-Inspect configured frontend ESLint/Prettier and Java lint/style/formatter standards. Reuse existing settings. If missing, propose exact dependency/plugin versions, configuration, file targets and check/fix commands for approval; do not install yet. Java needs a Java formatter, not frontend Prettier.
-
-Read the exact ui-element/general-tab-crud references for the candidate's screens and present screen → reference file → shared component/helper → API mapping. Mockups are functional drafts, not final visual design. Do not copy demo data, legacy raw controls or unapproved CSS into domain code.
-
-Wait for my submodule and tooling approval. Do not implement all submodules, create migrations or change locked documents.
-
-Explanation: Choose one bounded implementation unit and agree on tooling before code.
-
-### 13. Implement the backend
-
-Prompt:
-
-I approve backend implementation for the single submodule and tooling proposed in your immediately preceding response. Name that submodule's ID; this does not authorize other submodules.
-
-Verify locked-document integrity, that submodule's readiness and recorded schema approval first.
-
-Implement its confirmed controllers, endpoints, forms/DTOs, validation, authorization, services, repositories, transactions, audit and outbox. Limit shared infrastructure to its named prerequisites; do not hide other submodules' implementation there.
-
-Create migrations only within recorded schema approval. Explain FK dependencies first; if full-schema creation is a prerequisite, submit that broader plan before creating it. Never rewrite an executed migration.
-
-Keep Flyway enabled, Hibernate generation disabled, SQL initialization disabled and bearer authentication enabled by default, preserving the approved local-only bypass. Do not invent unavailable provider contracts or fake successful adapters.
-
-Keep the approved Java target. Use approved Java lint/style and formatter configuration; format authorized changed files only. Run formatter check, lint/style check, compilation and meaningful tests that do not connect to a database or execute migrations. Do not use frontend Prettier for Java or disable rules to hide failures.
-
-Do not execute migrations or start against a database. Do not change locked designs; identify any required reopening.
-
-Report the submodule function checklist, changed/new files, actual lint/format/build/test commands and results, and blockers. Stop for review; do not implement the next submodule.
-
-Explanation: Implement one backend submodule, with targeted Java quality checks and no migration execution.
-
-### 14. Implement the frontend
-
-Prompt:
-
-I approve frontend implementation for the current single submodule whose backend was just submitted. Name its ID before work.
-
-Use accepted, locked designs. Read the selected ui-element/general-tab-crud files and match their page/component structure, schemas, tabs, modals, validation, service/helper patterns and shared styles using @2enapps/ui.
-
-The mockup is a functional draft, not final visual design. Do not invent a layout or custom CSS to copy it, or copy demo data/training APIs. If a reference/component cannot support a required interaction, propose a specific exception before deviating. If a locked design conflicts, request the required revision first.
-
-Implement only this submodule's screens and services against real REST contracts. Match exposes.js and Shell imports/routes; Shell owns SSO and refresh. Include loading, empty, success, validation, forbidden, errors and version conflicts without fake success.
-
-Use approved ESLint/Prettier configuration. Format only authorized changed files and run lint, format check and build. Confirm script targets before write/fix; no whole-repository reformat or rule suppression.
-
-Report screen → reference file → shared component/helper → API mapping, screen/function checklist, files, actual commands/results and integration blockers. Do not start apps or run integration tests without an approved plan. Stop; do not implement another submodule.
-
-After current-submodule checks/tests and human review, propose the next submodule and wait for approval. Repeat the backend/frontend/test cycle per submodule; missing runtime evidence remains Blocked/Not run. After all submodules, prepare cross-submodule integration testing.
-
-Explanation: Follow the exact shared UI examples for one submodule, then stop for review.
-
-### 15. Prepare the execution and test plan
-
-Prompt:
-
-I approve preparing the unlocked .docs/testing.md.
-
-Prepare backend/API and frontend/Playwright checks covering confirmed functions, permissions, object access, validation, workflows, duplicates, concurrency and integration failures.
-
-Focus this plan on the current selected submodule and its dependencies. After all submodules, prepare a separate cross-submodule integration round.
-
-Compare generated migration files with the approved schema. Include actual frontend ESLint/Prettier and Java lint/formatter/build results and identify missing tooling.
-
-Present:
-
-- Exact migration filenames and checksums.
-- Target environment and database host, port, name and schema.
-- Migration commands.
-- Startup commands.
-- Test commands.
-- Required accounts and services.
-- Expected outcomes.
-- Evidence locations.
-- Recovery steps appropriate to the reviewed migrations.
-
-Identify unanswered prerequisites.
-
-Do not execute migrations, start applications or run this execution plan yet. Do not mark unrun checks as passed.
-
-Explanation: Review the exact database target and execution plan.
-
-### 16. Approve and execute the reviewed plan
-
-Prompt:
-
-I approve the exact migration files, checksums, target database, startup commands and test commands in your immediately preceding execution plan.
-
-This approval covers only the identified environment and commands.
-
-If the plan contains an unknown target, unanswered prerequisite or changed migration file, stop and ask me to resolve it before execution.
-
-Otherwise, execute only the approved plan.
-
-Preserve real evidence under evidence/. Report passed, failed, blocked and unrun checks accurately.
-
-Do not deploy or change locked designs.
-
-Explanation: Send only after checking the named target and commands.
-
-### 17. Propose fixes for verified defects
-
-Prompt:
-
-Review failed tests and actual runtime evidence.
-
-For each defect, explain:
-
-- Cause.
-- Affected functions and files.
-- Concrete proposed fix.
-- Required retesting.
-- Whether it changes an accepted design or approved schema.
-
-Submit fixes for approval before editing.
-
-If a locked draft requires revision, identify it and explain how I must reopen it. Do not unlock documents yourself.
-
-Do not rewrite an already executed migration as a defect fix.
-
-Explanation: Base fixes on evidence and preserve migration history.
-
-### 18. Apply approved fixes and retest
-
-Prompt:
-
-I approve the specific fixes in your immediately preceding proposal.
-
-Implement those fixes and rerun the approved affected checks. Do not add unrelated changes.
-
-If a fix requires a locked draft to be reopened, wait until I reopen it and authorize the revision.
-
-If it changes the schema, obtain approval against the revised schema before creating a new migration. Do not execute a new migration without execution approval.
-
-Rerun affected lint, formatter checks, build and meaningful tests for changed languages/files. Stay within the current submodule.
-
-Preserve evidence and report remaining failures, blocked checks and limitations.
-
-Explanation: Repeat Prompts 17–18 as necessary.
-
-### 19. Prepare the user manual
-
-Prompt:
-
-I approve preparing the unlocked .docs/usermanual.md from the verified implementation.
-
-Organize it by role and submodule.
-
-Explain navigation, fields, actions, statuses, uploads/downloads and common messages.
-
-Use real screenshots from the authorized running application and mask sensitive information.
-
-Do not describe unimplemented or unverified behavior as available.
-
-Submit the manual, final verification results and remaining limitations for acceptance.
-
-Do not deploy.
-
-Explanation: Document what users can actually do.
-
-### 20. Prepare the PRD maintenance entry
-
-Prompt:
-
-Prepare a concise proposed .docs/PRD.md entry covering:
-
-- Completed functionality.
-- Confirmed decisions.
-- Source versions and authoritative mockup reviewed.
-- Final design and approved schema revision.
-- Changed files.
-- Actual lint, formatting, build and test evidence for each submodule.
-- Remaining defects, limitations and next steps.
-- Draft completion, human acceptance and document-lock status.
-
-Future agents should use PRD and completed drafts without rereading original sources unless an authorized revision requires it.
-
-Distinguish documented design, implemented functionality and verified runtime behavior.
-
-Show the proposed entry before writing it. Do not invent human approvals or acceptance.
-
-Explanation: Preserve a reliable record for future sessions.
-
-### 21. Save the approved entry and finish
-
-Prompt:
-
-I approve the PRD entry in your immediately preceding message. Write that exact entry to .docs/PRD.md.
-
-For testing and the user manual, verify actual human acceptance before recommending locking. If acceptance is missing, identify it explicitly.
-
-Provide the commands to lock the accepted testing and user manual drafts. Do not run them.
-
-Report outstanding work, limitations and any remaining acceptance required.
-
-Do not deploy. Deployment requires a separate reviewed plan and explicit approval.
-
-Explanation: Save the accepted record and finish this phase.
+Do not deploy or execute production changes until the complete identified plan is explicitly authorized. Keep prototype fixtures disabled and unresolved components documented.
+```

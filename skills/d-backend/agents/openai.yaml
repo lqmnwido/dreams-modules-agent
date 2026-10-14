@@ -1,0 +1,4 @@
+interface:
+  display_name: "D-ReAMS Backend"
+  short_description: "One Java backend and real API integration"
+  default_prompt: "Use $d-backend to implement the selected Phase 3 backend submodule."

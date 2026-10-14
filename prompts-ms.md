@@ -1,425 +1,238 @@
-# Prompt aliran kerja D-ReAMS — Bahasa Melayu
+# D-ReAMS — prompt Agile tiga fasa
 
-Gunakan satu prompt pada satu masa. Tukar nama/kod modul, path dan pengisytiharan sumber mengikut modul sebenar; jangan guna peraturan perniagaan M12 untuk modul lain. Kelulusan hanya meliputi proposal konkrit sebelumnya yang telah anda baca. Lihat [guide.md](guide.md) untuk pemasangan, skrip penguncian/pembukaan semula dan commands lint/format bersyarat.
+Gunakan satu prompt pada satu masa. Baca proposal sebenar sebelum menghantar kelulusan. Teks contoh bukan jawapan perniagaan. Fasa 1 tamat dengan pengguna mengunci dokumen; Fasa 2 frontend dahulu, standalone dan sintetik; Fasa 3 backend dan integrasi sebenar. Tiada rekod human review database berasingan. Jangan ubah fail scaffold tanpa kebenaran tepat. Rujuk guide.md dan ARCHITECTURE.md.
 
-Laksanakan satu submodul dipilih sahaja: backend → frontend → semakan/ujian → review → kelulusan submodul seterusnya. Shared prerequisites mesti terhad dan dijelaskan. Mockup ialah draf keperluan fungsi, bukan visual akhir; ikut contoh ui-element/general-tab-crud tepat menggunakan @2enapps/ui. Frontend menggunakan ESLint/Prettier; Java menggunakan lint/style dan formatter Java yang diluluskan. Perubahan reka bentuk terkunci masih memerlukan pembukaan semula oleh manusia.
+## Arahan fasa ringkas
 
-### 1. Kenal pasti modul dan sumber rasmi
+Pasang dengan `node skills.js --codex`, `--claude`, `--opencode`, `--cursor`, `--gemini`, `--copilot`, `--windsurf` atau `--harness NAMA` dari checkout installer. Guna `--list-harnesses` bagi semua path/sumber. Codex menggunakan `$d-dooc`, `$d-frontend nama-submodul`, `$d-backend nama-submodul`; Claude Code/OpenCode/Cursor/Cline menggunakan `/d-dooc`, `/d-frontend nama-submodul`, `/d-backend nama-submodul`. Rujuk `docs/SKILLS.md` dan `docs/HARNESS-SUPPORT.md` dalam repository tersebut; tools lain mungkin menggunakan skill selector, bukan slash command. Prompt bernombor di bawah kekal alternatif manual; skills tidak memintas locks, penerimaan pengguna atau pelan execution database dikenal pasti.
 
-Prompt:
+## 1. Sahkan modul, sumber dan path dokumen
 
-Baca AGENTS.md, .docs/PRD.md dan module.config.json.
+**Prompt:**
 
-Kenal pasti nama dan kod modul serta dokumen SRS, SDS dan mockup yang tersedia dalam .docs/documents/.
+```text
+Baca AGENTS.md, module.config.json dan .docs/PRD.md. Kenal pasti modul sebenar dan sumber dalam .docs/documents/. Jangan anggap SRS wujud atau guna peraturan modul lain.
 
-Senaraikan versi dokumen dan folder mockup yang dicadangkan sebagai rujukan rasmi. Minta saya mengesahkan sumber rasmi sebelum semakan kandungan.
+Gunakan tiga fasa: dokumentasi dan penguncian pengguna; prototaip frontend standalone bagi semua submodul; backend dan integrasi sebenar. Database tidak memerlukan rekod human review/APPROVED berasingan.
 
-Jangan gunakan keperluan modul lain. Jangan anggap SRS tersedia jika failnya tiada.
+Nama reka bentuk ialah SCOPE.md, ARCHITECTURE.md, DATABASE.md, BACKEND.md dan FRONTEND.md huruf besar. Semak fail lowercase, locks dan arahan sedia ada dahulu. Jika nama atau dasar lama terkunci bercanggah, tanya satu soalan khusus dan nyatakan path terjejas; jangan rename, pintas lock atau ubah kod scaffold sendiri.
 
-Jika semakan sumber telah selesai dan direkodkan dengan mencukupi, gunakan hasil tersebut tanpa mengulangi keseluruhan semakan.
+Ringkaskan sumber tersedia dan kekaburan sebenar. Boleh teruskan pemeriksaan read-only. Jangan mulakan implementasi.
+```
 
-Jangan ubah fail, jana kod atau cipta migrasi dahulu.
+## 2. Fasa 1: baca sumber dan tulis dokumen khusus
 
-Penjelasan:
-Ejen menentukan modul dan meminta anda mengesahkan sumber yang betul.
+**Prompt:**
 
-### 2. Semak sumber dan sediakan draf skop
+```text
+Saya membenarkan Fasa 1 dokumentasi bagi modul dan sumber yang disahkan. Baca dokumen berkaitan termasuk jadual/rajah DOCX serta fail sokongan mockup.
 
-Prompt:
+Tulis dokumen .docs/ yang belum dikunci:
+- SCOPE.md: peta lengkap keperluan sumber, submodul, aktor, workflow, keputusan, citations dan pautan yang menghubungkan dokumen khusus.
+- DATABASE.md: jadual PostgreSQL modul sendiri, medan/jenis/NULL/default, keys, hubungan, constraints, indexes, audit/removal dan invariants query/transaksi.
+- BACKEND.md: controller/service/repository/entity/form mengikut submodul, fungsi/logic, payload API, permissions, errors dan source IDs.
+- FRONTEND.md: idea mockup, skrin/medan/tindakan, rujukan general-tab-crud/shared UI tepat, senario dummy prototype dan API dirancang.
+- ARCHITECTURE.md: ownership bersama, sempadan MFE/Shell/UI dan struktur folder secara ringkas. Setiap modul ada database berasingan; modul lain melalui API sahaja.
 
-Saya mengesahkan sumber rasmi yang dicadangkan dalam jawapan anda yang terakhir dan meluluskan penyediaan draf .docs/scope.md yang belum dikunci.
+Gunakan ayat mudah dan terus; jangan ulang semua butiran dalam SCOPE.md atau setiap fail. PRD.md ialah maklumat umum sistem/fasa. Kekalkan citations dan beza fakta sumber daripada cadangan. Jangan tinggal fakta sumber sebagai TBD. Tanya peraturan yang benar-benar tiada/bercanggah sebelum reka bentuk bergantung padanya.
 
-Baca sumber tersebut jika semakan belum selesai. Jika hasil semakan terdahulu tidak mencukupi, saya membenarkan pembacaan semula bahagian yang diperlukan.
+Tiada kod, migrasi, perubahan scaffold atau penguncian.
+```
 
-Mockup ialah draf keperluan fungsi, medan dan aliran kerja, bukan spesifikasi visual akhir. Struktur UI pelaksanaan mengikut contoh ui-element yang dipilih dan @2enapps/ui.
+## 3. Selesaikan satu kumpulan keputusan
 
-Rekodkan submodul, fungsi, aktor, medan, validasi, aliran kerja dan kebenaran akses yang ditetapkan oleh sumber. Sertakan nama fail, versi dan seksyen rujukan.
+**Prompt:**
 
-Jangan tandakan fakta yang jelas dalam sumber sebagai TBD. Jangan mereka-reka peraturan yang tiada.
+```text
+Bentangkan maksimum lima keputusan benar-benar belum selesai dengan ID kekal, satu cadangan lengkap, kesan pengguna, nilai/bukti tiada dan kerja terhalang. Jangan ulang soalan yang ditetapkan sumber atau sudah saya jawab.
 
-Bezakan keperluan sumber daripada cadangan anda. Rekodkan konflik dan maklumat yang belum ditentukan.
+Asingkan bukti provider yang tidak tersedia. Jangan ulang meminta maklumat yang saya sudah nyatakan tiada; teruskan keputusan bebas. Jika tidak faham, tanya sebelum kerja bergantung padanya, bukan selepas mereka peraturan. Tunggu jawapan saya.
+```
 
-Simpan hasil semakan dalam draf skop supaya sesi seterusnya tidak perlu mengulangi semakan penuh. Jangan jana kod atau migrasi.
+## 4. Terapkan kumpulan yang dijawab
 
-Penjelasan:
-Hantar hanya jika anda bersetuju dengan sumber yang dicadangkan. Ejen kemudian menyediakan skop berdasarkan keperluan sebenar.
+**Prompt:**
 
-### 3. Bentangkan keputusan skop yang belum selesai
+```text
+Saya meluluskan cadangan konkrit kumpulan terakhir tepat seperti ditulis. Senaraikan ID diliputi dan terapkan hanya keputusan lengkap secara selaras dalam dokumen belum dikunci.
 
-Prompt:
+Jangan infer nilai tiada, kontrak provider atau penerimaan daripada kelulusan. Tanya pilihan pengguna yang masih perlu dan rekod bukti luaran tiada. Bentangkan kumpulan bebas seterusnya atau laporkan keputusan selesai. Tiada kod atau penguncian.
+```
 
-Semak keputusan yang belum selesai dalam draf skop.
+## 5. Fasa 1: ringkasan PRD dan pembacaan semula pengesahan
 
-Gabungkan soalan yang berulang. Jangan tanya semula perkara yang sudah jelas dalam sumber atau telah saya sahkan.
+**Prompt:**
 
-Bentangkan maksimum lima keputusan pada satu masa. Untuk setiap keputusan:
+```text
+Lengkapkan dokumen Fasa 1 dan tulis ringkasan umum fasa/sumber/keputusan dalam PRD.md dalam kebenaran ini.
 
-- Terangkan soalan dengan bahasa mudah.
-- Berikan satu cadangan jawapan yang khusus.
-- Jelaskan kesannya kepada pengguna.
-- Nyatakan nilai atau maklumat tambahan yang diperlukan.
-- Nyatakan kerja yang terhalang dan sama ada fungsi tersebut boleh ditangguhkan.
+Kemudian baca semula sumber berkaitan sekali untuk pengesahan seperti diminta. Pastikan setiap fungsi, medan, workflow dan permission sumber diwakili serta dipautkan kepada storan/API/skrin. Betulkan kekurangan dalam draf terbuka; rekod fail/seksyen sebenar disemak semula dan selaraskan PRD.md kepada hasil sebenar.
 
-Tunggu jawapan saya sebelum membentangkan kumpulan seterusnya.
+Jangan ulang semakan sumber tanpa penghujung atau tinggal alternatif bercanggah. Jika belum lengkap, tanya soalan tepat yang masih perlu dan hentikan kerja bergantung padanya. Jangan reka kontrak luar.
 
-Penjelasan:
-Anda menjawab soalan dalam kumpulan kecil.
+Jika lengkap, berhenti dan minta saya mengunci lima dokumen reka bentuk Fasa 1. Jangan mulakan Fasa 2 atau cipta jadual human review database. Tiada kod atau migrasi.
+```
 
-### 4. Sahkan satu kumpulan keputusan skop
+## 6. Sahkan lock pengguna dan pilih satu submodul frontend
 
-Prompt:
+**Prompt:**
 
-Saya meluluskan cadangan dalam kumpulan keputusan skop yang anda bentangkan dalam jawapan terakhir, tepat seperti yang ditulis.
+```text
+Saya telah mengunci dokumen Fasa 1. Sahkan path dan hash sebenar; jangan bergantung pada kenyataan ini sahaja. Tiada rekod kelulusan database berasingan diperlukan.
 
-Jika sesuatu cadangan masih memerlukan nilai khusus atau maklumat luar, tanya saya secara langsung sebelum menandakannya selesai.
+Baca SCOPE.md dan FRONTEND.md. Cadangkan satu submodul frontend, skrin, fail rujukan tepat, senario dummy dan kaedah ujian standalone tanpa Shell/backend. Semak komponen @2enapps/ui serta tooling/harness sedia ada sebelum cadang perubahan.
 
-Kemas kini keputusan yang telah lengkap dalam .docs/scope.md yang belum dikunci. Jangan tandakan perkara yang belum dijawab sebagai diluluskan.
+Kenal pasti jika fail scaffold perlu diubah dan tanya sebelum edit. Cadangkan tooling lint/test yang tiada dengan versi/commands tepat, bukan arahan rekaan. Tunggu pilihan submodul; jangan implement semua sekali.
+```
 
-Kemudian bentangkan kumpulan seterusnya, atau laporkan bahawa semua keputusan skop yang menghalang kerja telah selesai.
+## 7. Fasa 2: laksanakan prototaip standalone dipilih
 
-Penjelasan:
-Gunakan hanya jika anda bersetuju dengan seluruh kumpulan. Jika tidak, jawab soalan tersebut secara individu. Ulang sehingga selesai.
+**Prompt:**
 
-### 5. Semak kesediaan skop
+```text
+Saya meluluskan satu submodul frontend dan pelan terhad tanpa perubahan scaffold yang baru dicadangkan. Nyatakan ID dan implement submodul itu sahaja.
 
-Prompt:
+Baca SCOPE.md/FRONTEND.md dan general-tab-crud/list-main.vue, tab.vue serta details/list anak berkaitan. Jangan ganti dengan general-crud, training/crud/list atau screen admin Shell. Guna @2enapps/ui sahaja; semak kod shared terpasang. Jika komponen wajib tiada, biarkan card shared kosong dengan label tepat [ component not available ]. Rekod jurang; jangan cipta button/input/custom component atau patch library UI.
 
-Semak sama ada .docs/scope.md sudah bersedia untuk reka bentuk dan pelaksanaan.
+Guna data dummy sintetik untuk prototaip. Sediakan panggilan API sebenar dirancang sebagai kod komen yang tidak aktif; jangan hantar business API requests dahulu. Bezakan dummy mode daripada kejayaan backend sebenar. Kekalkan getParams, envelope/list/total returnResponseList, returnResponseDetails dan detailsBreadcrumbMixin; jangan bina params sendiri atau gandakan navigation state. Hanya tindakan domain disokong.
 
-Pastikan submodul, fungsi, aktor, medan, validasi, aliran kerja dan kebenaran akses adalah konkrit.
+Guna ESLint dan Prettier, buang import/stub training tidak digunakan dan format fail berubah sahaja. Jalankan standalone tanpa Shell dengan harness dipersetujui. Jangan ubah fail scaffold tanpa kebenaran khusus fail.
 
-Kenal pasti keputusan belum selesai yang menghalang kerja. Cadangkan penyelesaian tanpa mereka-reka jawapan.
+Laporkan skrin, pemetaan rujukan/komponen/API, card komponen tiada, perubahan dan hasil lint/format/build sebenar. Berhenti pada submodul ini.
+```
 
-Jika masih ada halangan, berhenti dan minta keputusan saya. Jika tiada, bentangkan skop lengkap untuk penerimaan saya.
+## 8. Fasa 2: uji dan tunjuk interface
 
-Jangan kunci dokumen atau rekodkan penerimaan bagi pihak saya.
+**Prompt:**
 
-Penjelasan:
-Teruskan hanya apabila tiada keputusan skop yang menghalang reka bentuk.
+```text
+Bagi prototaip semasa, jalankan white-box tests logic yang dilaksanakan dan black-box tests melalui Playwright MCP dalam browser yang kelihatan. Liputi happy/negative/edge, validasi/boundaries, carian/reset, paging, tabs/breadcrumbs, tindakan disokong serta console/network errors. Sahkan tiada kebergantungan Shell/business API dan card komponen tiada jelas.
 
-### 6. Sediakan reka bentuk teknikal
+Guna senario fixture sintetik; jangan dakwa bukti API, SSO atau authorization sebenar. Simpan screenshots/traces/results dalam evidence/ dan kemas kini TESTING.md terbuka dengan bukti prototaip sahaja. Jika tooling/browser tiada, tandakan Blocked, bukan Pass.
 
-Prompt:
+Betulkan kecacatan dalam skop submodul dibenarkan, ulang semakan terjejas dan tunjuk interface untuk review saya. Tanya jika tidak pasti; jangan ulang kegagalan tanpa diagnosis baharu. Berhenti sebelum submodul seterusnya.
+```
 
-Saya menerima skop yang lengkap dan meluluskan penyediaan draf teknikal yang belum dikunci:
+## 9. Terima interface dan cadangkan prototaip seterusnya
 
-- .docs/architecture.md
-- .docs/database.md
-- .docs/backend.md
-- .docs/frontend.md
+**Prompt:**
 
-Sediakan reka bentuk konkrit:
+```text
+Saya menerima interface submodul semasa yang ditunjukkan dengan batasan prototaip yang disenaraikan. Rekod penerimaan ini dan rujukan bukti dalam PRD.md; jangan dakwa siap production.
 
-Architecture:
-Sempadan modul, integrasi Shell, SSO, konfigurasi dan deployment.
+Cadangkan satu submodul frontend seterusnya dan tunggu kebenaran. Ulang kitaran bina/uji/review pengguna Fasa 2. Jika semua interface diterima, laporkan dan sediakan pelan metadata sahaja; jangan mulakan backend atau integrasi Shell secara automatik.
+```
 
-Database:
-Jadual PostgreSQL sebenar, kolum, jenis data, nullability, default, primary key, foreign key, hubungan, constraints, indexes, audit dan peraturan pemadaman.
+## 10. Muktamad metadata MFE selepas semua interface diterima
 
-Backend:
-Controller, service, form, endpoint REST, medan request/response, validasi, ralat, transaksi dan kebenaran akses.
+**Prompt:**
 
-Frontend:
-Skrin, medan, tindakan, service, exposes.js dan route Shell menggunakan @2enapps/ui serta contoh ui-element/general-tab-crud yang tepat. Nyatakan fail rujukan dan pemetaan komponen, schema, helpers serta layout setiap skrin. Mockup bukan visual akhir.
+```text
+Sahkan setiap submodul Fasa 2 mempunyai penerimaan pengguna atau status belum selesai yang jelas. Guna identiti modul/skrin lalai sebenar untuk sediakan metadata.js, remote-entry.js dengan export {}; dan expose keys sepadan. Ikut contoh metadata ARCHITECTURE.md; jangan salin identiti V2T kepada modul lain.
 
-Tangani pagination, pencegahan N+1, kemas kini serentak dan kegagalan integrasi.
+Jika fail ini sudah wujud sebagai scaffold, tunjuk diff tepat dan minta kebenaran sebelum mengubahnya. Prompt ini tidak membenarkan edit scaffold. Jangan tambah routes/menu Shell atau sambung SSO dahulu. Semak nama/import federation secara statik, kemas kini PRD.md dengan status sebenar Fasa 2 dan berhenti untuk kebenaran Fasa 3.
+```
 
-Gunakan skop lengkap dan rujukan yang telah direkodkan. Jangan gantikan reka bentuk sebenar dengan prinsip umum sahaja.
+## 11. Fasa 3: pilih satu submodul backend
 
-Bentangkan cadangan yang masih memerlukan keputusan secara berasingan. Jangan jana kod atau migrasi.
+**Prompt:**
 
-Penjelasan:
-Ejen menyediakan reka bentuk sebenar untuk database, API dan skrin.
+```text
+Baca SCOPE.md, BACKEND.md, DATABASE.md dan kontrak frontend diterima. Sahkan lock reka bentuk Fasa 1; database tidak memerlukan rekod reviewer/APPROVED berasingan.
 
-### 7. Semak keselarasan reka bentuk
+Ikut corak projek/modul sedia ada sebelum convention framework; jangan install tool scaffold yang menyusun semula repo tanpa approval. Guna PostgreSQL + Spring Data JPA serta JUnit 5 + Mockito + Spring Boot Test. Rancang @WebMvcTest, @DataJpaTest dan @SpringBootTest dengan commands Maven/Gradle sebenar serta database ujian terasing. Rujuk docs/BACKEND-PATTERNS.md dan docs/DATABASE-PATTERNS.md dalam bahan rujukan berkaitan.
 
-Prompt:
+Cadangkan satu submodul backend dengan fungsi, classes, endpoint/forms, tables/indexes milik modul, dependencies migrasi, roles dan tests. Guna Java 25, Spring Boot dan PostgreSQL. Tiada akses database silang modul; dependencies melalui API.
 
-Semak scope, architecture, database, backend dan frontend sebagai satu reka bentuk.
+Semak formatter/lint Java dan cadang tools/versi yang tiada (contohnya Checkstyle dan Spotless standard pasukan). Jangan dakwa ada formatter universal Spring Boot atau turunkan sasaran Java. Kenal pasti kontrak luaran yang tiada dan tanya sebelum implementasi bergantung padanya. Jangan sentuh fail scaffold. Tunggu pilihan.
+```
 
-Untuk setiap fungsi yang termasuk dalam skop, pastikan:
+## 12. Fasa 3: implement satu backend dan cipta migrasinya
 
-- Data mempunyai tempat simpanan yang konkrit.
-- Request, response dan kebenaran API ditentukan.
-- Skrin dan service menggunakan API yang sepadan.
-- Setiap skrin mengikuti fail contoh ui-element tepat dan komponen shared yang dipilih.
-- Medan, validasi, status dan ralat adalah konsisten.
-- Hubungan data, indexes dan transaksi adalah selaras.
+**Prompt:**
 
-Asingkan pembetulan konkrit daripada keputusan yang belum selesai. Terangkan masalah dengan mudah dan cadangkan penyelesaian khusus.
+```text
+Saya membenarkan satu submodul backend dan pelan terhad yang baru dicadangkan. Nyatakan ID. Implement controller/service/form/entity/repository sebenar, validasi, role/object access, transaksi, paging/filter/sort, errors, concurrency dan audit mengikut BACKEND.md/DATABASE.md.
 
-Jangan nyatakan reka bentuk bersedia untuk pelaksanaan jika kontrak penting masih belum ditentukan. Jangan jana kod atau migrasi.
+Terapkan standard database: snake_case/unquoted identifiers; id BIGINT GENERATED ALWAYS AS IDENTITY atau corak SERIAL dibenarkan; NUMERIC/TIMESTAMPTZ; CREATE TYPE enums; nama idx_/uniq_/fk_ serta FK actions jelas. Tanya sebelum menukar definisi UUID/catalog/API/locking terkunci yang bercanggah.
 
-Penjelasan:
-Ini mengesan percanggahan sebelum kod ditulis.
+Guna semula queries/indexes dan semak relationships/batching/page-size/timeouts. Elak N+1; eager/join/batch loading bersasar, partial/expression indexes dan cache berskop hanya jika sesuai. Guna keyset/cursor untuk hasil besar hanya dengan kontrak API/UI serasi dipersetujui. Transaksi pendek; advisory coordination jika selamat, kekalkan row locks yang perlu. EXPLAIN (ANALYZE, BUFFERS) pada sasaran dibenarkan sahaja kerana ia execute query.
 
-### 8. Bentangkan keputusan teknikal
+Setiap migrasi perlu bukti forward pada data representatif dan rollback/recovery diuji. Sahkan sokongan Flyway undo atau uji compensating/restore procedure; jangan reka automatic rollback. Production read-only kecuali dibenarkan jelas; tiada destructive/DROP tanpa approval serta backup disahkan, dan tiada modify/delete data senyap.
 
-Prompt:
+Cipta migrasi Flyway bagi database modul sendiri daripada reka bentuk terkunci. Tiada human review skema berasingan diperlukan. Jangan reka kolum/peraturan tiada atau cipta tables modul lain. Jelaskan prerequisite tables; tanya jika skop perlu diperluas. Jangan tulis semula migrasi dijalankan.
 
-Gabungkan pembetulan dan cadangan teknikal daripada semakan anda.
+Kekalkan Flyway aktif, Hibernate generation none, SQL initialization never dan bearer authentication aktif secara default. Kekalkan bypass local sahaja tanpa menganggap bypass tests bukti keselamatan sebenar.
 
-Buang perkara berulang dan kenal pasti perkara yang telah diluluskan.
+Guna Java 25, lint/style dan format Java diluluskan, fail berubah sahaja. Jalankan non-database checks/build/tests. Tiada placeholders, dummy production responses, hidden TODOs, unused code, swallowed exceptions atau service besar campur submodul. Jangan reka kontrak provider.
 
-Bentangkan maksimum lima keputusan belum selesai pada satu masa. Berikan satu cadangan khusus, kesannya dan maklumat tambahan yang diperlukan.
+Jangan execute migrasi atau startup terhadap database sehingga pelan sasaran/execution dibenarkan. Jangan ubah scaffold atau fail terkunci. Laporkan fungsi/fail/results sebenar dan berhenti sebelum submodul lain.
+```
 
-Bezakan maklumat yang diperlukan sebelum pelaksanaan daripada konfigurasi persekitaran yang boleh diberikan sebelum ujian integrasi.
+## 13. Sediakan pelan execution database dan API tests tepat
 
-Tunggu jawapan saya. Jangan minta saya menerima atau mengunci reka bentuk yang belum lengkap.
+**Prompt:**
 
-Penjelasan:
-Ejen membantu anda membuat keputusan teknikal dalam kumpulan kecil.
+```text
+Sediakan pelan execution submodul semasa dalam TESTING.md terbuka: nama/checksum migrasi, environment/host/port/database/schema/roles sasaran, commands, startup, akaun/services, recovery dan bukti dijangka. Sasarkan database modul ini sahaja. Jangan dedah secrets.
 
-### 9. Luluskan pembetulan atau keputusan teknikal
+Sertakan commands sebenar JUnit 5/Mockito unit, @WebMvcTest controller, @DataJpaTest PostgreSQL repository dan @SpringBootTest integration (mvn test atau wrapper Maven/Gradle sedia ada serta integration profiles). Sertakan migration/rollback tests data representatif dan performance/locking checks terbatas; jangan anggap H2 atau production sebagai sasaran ujian.
 
-Prompt:
+Sertakan happy path endpoint, setiap medan/boundary, role/object scope, rekod missing/conflict/duplicate/concurrent, pagination/sort/filter/empty, integration failure/timeouts, kontrak response/error, SQL injection, mass assignment, IDOR, upload dan audit. Sertakan commands build/lint/format/dependency/security scan yang disokong projek.
 
-Saya meluluskan pembetulan konkrit dan cadangan dalam jawapan anda yang terakhir, tepat seperti yang ditulis.
+Jadual human review skema berasingan tidak diperlukan; execution masih memerlukan sasaran dikenal pasti. Jangan jalankan pelan atau dakwa semakan belum dijalankan lulus.
+```
 
-Terapkan keputusan tersebut secara konsisten pada draf scope, architecture, database, backend dan frontend yang belum dikunci.
+## 14. Jalankan pelan dikenal pasti dan uji backend
 
-Jika masih ada nilai atau pilihan yang belum dijawab, tanya saya sebelum menandakannya selesai.
+**Prompt:**
 
-Jangan mereka-reka kelulusan atau konfigurasi luar.
+```text
+Saya membenarkan fail/checksum migrasi, database sasaran, startup dan commands ujian tepat dalam pelan lengkap terakhir. Jika sasaran/prasyarat tidak diketahui atau fail berubah, tanya sebelum execution.
 
-Bentangkan kumpulan seterusnya, atau laporkan bahawa semua halangan pelaksanaan telah selesai. Jangan jana kod, migrasi atau kunci dokumen.
+Jalankan pelan itu sahaja. Uji API dan keselamatan sebenar dengan identiti ujian sebenar yang sesuai; tiada dummy production responses. Laporkan kegagalan/provider tiada dengan jujur; tiada fallback berjaya. Simpan bukti dan laporkan Pass/Fail/Blocked/Not run, scan findings dan critical warnings. Betulkan dalam skop sahaja; tanya jika reka bentuk/scaffold perlu berubah. Berhenti pada submodul dipilih.
+```
 
-Penjelasan:
-Gunakan selepas membaca dan bersetuju dengan cadangan tersebut. Ulang jika masih ada keputusan lain.
+## 15. Ganti data prototaip dan integrasi frontend dipilih
 
-### 10. Muktamadkan reka bentuk
+**Prompt:**
 
-Prompt:
+```text
+Saya membenarkan frontend submodul semasa disambung kepada API sebenar yang diuji. Aktifkan API calls disediakan dan buang/nyahaktif fixtures sintetik daripada production paths. Kekalkan kontrak getParams, returnResponseList/Details dan breadcrumbs. Backend mengurus pagination/filtering; jangan tinggal parseQuery/applyFilters demo sebagai logic production.
 
-Saya meluluskan pemuktamadan draf reka bentuk berdasarkan keputusan yang telah saya sahkan secara jelas.
+Jalankan ESLint/Prettier/build dan Playwright frontend/API sebenar bagi submodul ini. Tiada fallback fixture apabila HTTP gagal. Tunjuk loading, empty, validation, forbidden, conflict dan integration errors sebenar. Komponen shared tiada kekal dilabel, bukan direka atau dikira siap.
 
-Tetapkan jadual, constraints, indexes, payload API, kebenaran, status dan pemetaan frontend untuk skop pelaksanaan yang dipersetujui.
+Jangan sambung Shell atau edit scaffold tanpa kebenaran berasingan. Laporkan bukti dan berhenti untuk penerimaan submodul sebelum kitaran backend seterusnya.
+```
 
-Buang alternatif lama dan definisi yang bercanggah. Nyatakan perkara yang benar-benar belum selesai.
+## 16. Terima satu submodul berintegrasi dan cadangkan seterusnya
 
-Kekalkan rujukan sumber dan bezakan keperluan sumber daripada cadangan yang diluluskan.
+**Prompt:**
 
-Jika seksyen kelulusan manusia belum wujud, tambah reviewer, role, decision, reviewed schema revision, date dan approval scope yang kosong dengan decision PENDING. Jika sudah diisi manusia, kekalkan semua nilai tepat seperti sedia ada; jangan reset kelulusan. Betulkan penerangan yang bercanggah tanpa mengubah jadual manusia.
+```text
+Saya menerima submodul berintegrasi yang baru ditunjukkan dengan status ujian/batasan disenaraikan. Kemas kini PRD.md dengan implementasi/bukti sebenar dan cadangkan satu submodul backend seterusnya. Tunggu kebenaran; ulang Fasa 3 bagi setiap submodul.
 
-Jalankan semakan keselarasan terakhir. Jika ada halangan, terangkan dan berhenti. Jika tiada, nyatakan revision schema yang dimuktamadkan.
+Selepas semua submodul, sediakan pelan berasingan Shell MFE/SSO/menu/routes dan cross-submodule tests. Tunjuk fail tepat; minta kebenaran sebelum sentuh scaffold/konfigurasi Shell sedia ada. Jangan deploy automatik.
+```
 
-Jangan jana kod, migrasi atau kunci dokumen.
+## 17. Hasilkan README backend dan dokumentasi pengguna akhir
 
-Penjelasan:
-Hasilnya ialah satu reka bentuk yang lengkap untuk semakan manusia.
+**Prompt:**
 
-### 11. Terangkan cara merekodkan kelulusan database
+```text
+Kemas kini README backend yang dibenarkan supaya sepadan implementasi sebenar: tujuan/skop, submodul, architecture/packages, prerequisites/setup/run, nama env tanpa secrets, arahan database sendiri/Flyway, matriks Keycloak role/access dan senarai API dilaksanakan lengkap (submodul, method, path, fungsi, request/response form, role, source ID sebenar). Jangan reka SRS ID atau senarai endpoint belum siap sebagai tersedia. Jika README terkunci, minta dibuka dahulu.
 
-Prompt:
+Lengkapkan TESTING.md dengan hasil white-box/API/browser/security/dependency/lint/format/build sebenar. Tulis USERMANUAL.md daripada tingkah laku/screenshots sebenar mengikut role/submodul. Bezakan screenshots prototaip daripada live dan senaraikan batasan komponen tiada.
 
-Pastikan draf database mempunyai schema konkrit dan lengkap untuk penciptaan migrasi.
+Kemas kini PRD.md dengan ringkasan umum sistem/fasa akhir dan pautan bukti. Serahkan untuk penerimaan pengguna; minta pengguna mengunci TESTING.md dan USERMANUAL.md lengkap. Jangan kunci sendiri atau deploy.
+```
 
-Jika belum lengkap, terangkan perkara yang masih diperlukan dan berhenti.
+## 18. Sediakan deployment secara berasingan
 
-Jika lengkap, nyatakan revision tepat dan tunjukkan seksyen kelulusan manusia. Kenal pasti teks contoh atau medan tidak lengkap. Jika menggunakan fingerprint, asingkan kandungan skema daripada seksyen kelulusan yang boleh diisi manusia.
+**Prompt:**
 
-Terangkan nilai sebenar yang perlu saya isi sendiri: reviewer, role sebenar, decision, revision tepat yang disemak, tarikh semakan sebenar dan approval scope. Jangan cadangkan menyalin teks arahan contoh ke dalam medan.
+```text
+Sediakan, jangan jalankan, pelan deployment dengan artifact/commit tepat, environment/server, database modul sendiri, migrasi/checksum, env/secret references, konfigurasi Shell/remote/API, commands, backups/recovery dan health/security checks. Kenal pasti maklumat tiada sekali dan tanya sebelum kerja bergantung padanya.
 
-Bezakan kelulusan mencipta migrasi daripada kelulusan menjalankannya.
-
-Jangan isi APPROVED bagi pihak saya. Jangan cipta atau jalankan migrasi.
-
-Penjelasan:
-Anda menyemak schema dan mengisi rekod kelulusan dengan maklumat sebenar. Prompt sahaja tidak merekodkan kelulusan.
-
-### 12. Sahkan kelulusan dan berikan arahan mengunci
-
-Prompt:
-
-Saya menerima reka bentuk yang dimuktamadkan.
-
-Sahkan bahawa:
-
-- Tiada keputusan belum selesai yang menghalang skop pelaksanaan.
-- Kontrak database, API dan frontend adalah konkrit dan konsisten.
-- Kelulusan database mengandungi nama/peranan sebenar, keputusan, revision tepat, tarikh dan skop; bukan teks contoh.
-- Revision yang diluluskan sepadan dengan skema semasa; tiada perubahan skema selepas kelulusan tanpa review baharu.
-
-Jangan anggap APPROVED sahaja mencukupi. Asingkan halangan skema daripada kebergantungan provider/deployment.
-
-Jika mana-mana semakan gagal, terangkan dan jangan cadangkan penguncian.
-
-Jika semua lulus, berikan arahan untuk mengunci scope, architecture, database, backend dan frontend. Jangan jalankan arahan tersebut sendiri.
-
-Penjelasan:
-Jalankan arahan penguncian sendiri selepas semua semakan lulus.
-
-### 13. Pilih satu submodul dan tooling
-
-Prompt:
-
-Sebelum implementasi, cadangkan urutan submodul daripada reka bentuk diterima dan satu submodul untuk dimulakan. Nyatakan ID, fungsi, tables, endpoints, skrin dan shared prerequisites minimum.
-
-Semak konfigurasi frontend ESLint/Prettier serta lint/style dan formatter Java. Gunakan standard sedia ada. Jika belum tersedia, cadangkan versi dependency/plugin tepat, konfigurasi, sasaran fail dan commands check/fix untuk kelulusan; jangan install dahulu. Java menggunakan formatter Java, bukan Prettier frontend.
-
-Baca contoh ui-element/general-tab-crud tepat dan bentangkan pemetaan skrin → fail rujukan → komponen/helper shared → API. Mockup ialah draf fungsi, bukan visual akhir. Jangan salin dummy data, raw controls legacy atau CSS tidak diluluskan.
-
-Tunggu pilihan submodul dan kelulusan tooling saya. Jangan implement semua submodul, cipta migrasi atau ubah dokumen terkunci.
-
-Penjelasan: Pilih satu unit pelaksanaan dan tooling sebelum kod.
-
-### 14. Laksanakan backend
-
-Prompt:
-
-Saya meluluskan backend satu submodul dan tooling yang anda cadangkan dalam respons terakhir. Nyatakan ID submodul; kelulusan ini tidak meliputi submodul lain.
-
-Sahkan locks/hashes, kesediaan submodul dan rekod kelulusan skema terlebih dahulu.
-
-Laksanakan controllers, endpoints, forms/DTO, validasi, authorization, services, repositories, transaksi, audit dan outbox submodul tersebut sahaja. Hadkan shared infrastructure kepada prerequisites yang disenaraikan; jangan implement submodul lain di situ.
-
-Cipta migrasi hanya dalam skop kelulusan skema. Jelaskan dependencies FK; jika penciptaan seluruh skema diperlukan sebagai prerequisite, bentangkan pelan lebih luas itu dahulu. Jangan tulis semula migrasi yang telah dijalankan.
-
-Kekalkan Flyway aktif, Hibernate generation dan SQL initialization dimatikan, bearer authentication aktif secara default serta bypass local sahaja yang diluluskan. Jangan reka kontrak provider atau adapter berjaya palsu.
-
-Kekalkan sasaran Java diluluskan. Gunakan lint/style dan formatter Java diluluskan, format fail berubah yang dibenarkan sahaja, kemudian jalankan format check, lint/style check, compile dan ujian bermakna tanpa database/migrasi. Jangan guna Prettier frontend untuk Java atau disable rules untuk menyembunyikan failures.
-
-Jangan jalankan migrasi atau startup terhadap database. Jangan ubah dokumen terkunci; nyatakan jika revision diperlukan.
-
-Laporkan checklist fungsi submodul, fail berubah/baharu, commands dan hasil lint/format/build/tests sebenar serta blockers. Berhenti untuk review; jangan teruskan submodul seterusnya.
-
-Penjelasan: Laksanakan satu backend submodul dengan semakan Java dan tanpa migration execution.
-
-### 15. Laksanakan frontend
-
-Prompt:
-
-Saya meluluskan frontend submodul semasa yang backendnya baru diserahkan sahaja. Nyatakan ID sebelum bekerja.
-
-Gunakan reka bentuk diterima dan dikunci. Baca contoh ui-element/general-tab-crud tepat dan ikut struktur halaman/komponen, schema, tabs, modals, validasi, services/helpers dan styles shared menggunakan @2enapps/ui.
-
-Mockup ialah draf fungsi, bukan visual akhir. Jangan reka layout atau CSS untuk menirunya atau salin dummy data/training API. Jika contoh/komponen tidak menyokong interaction wajib, bentangkan pengecualian khusus sebelum menyimpang. Jika reka bentuk terkunci bercanggah, minta revision dahulu.
-
-Laksanakan skrin/services submodul semasa sahaja dengan REST sebenar. Padankan exposes.js dan import/routes Shell; Shell mengurus SSO dan refresh. Sediakan loading, empty, success, validation, forbidden, errors dan version conflicts tanpa kejayaan palsu.
-
-Gunakan ESLint/Prettier diluluskan. Format fail berubah yang dibenarkan sahaja dan jalankan lint, format check dan build. Semak sasaran script sebelum fix/write; jangan reformat seluruh repository atau disable rules.
-
-Laporkan pemetaan skrin → fail contoh → komponen/helper shared → API, checklist skrin/fungsi, fail, commands/results dan integration blockers. Jangan startup atau integration tests tanpa pelan diluluskan. Berhenti; jangan implement submodul lain.
-
-Selepas semakan/ujian dan review submodul semasa, cadangkan submodul seterusnya dan tunggu kelulusan. Ulang kitaran backend/frontend/tests bagi setiap submodul; bukti runtime tiada kekal Blocked/Not run. Selepas semua submodul, sediakan cross-submodule integration tests.
-
-Penjelasan: Ikut contoh shared UI tepat untuk satu submodul dan berhenti bagi review.
-
-### 16. Sediakan pelan pelaksanaan dan ujian
-
-Prompt:
-
-Saya meluluskan penyediaan .docs/testing.md yang belum dikunci.
-
-Sediakan ujian backend/API dan frontend/Playwright secara berasingan. Liputi fungsi, permissions, object access, validasi, workflow, duplikasi, concurrency dan kegagalan integrasi.
-
-Fokus pelan ini pada submodul semasa dan dependenciesnya. Selepas semua submodul siap, sediakan pusingan integrasi merentas submodul.
-
-Bandingkan fail migrasi dengan schema diluluskan. Sertakan hasil sebenar ESLint/Prettier frontend serta lint/formatter/build Java dan tooling yang masih tiada.
-
-Bentangkan fail migrasi tepat serta checksum, environment, host/port/nama/schema database, arahan startup/ujian, akaun, service, hasil dijangka, lokasi bukti dan langkah pemulihan.
-
-Jangan jalankan migrasi, hidupkan aplikasi atau jalankan ujian dahulu. Nyatakan prasyarat yang belum dijawab.
-
-Penjelasan:
-Anda menerima pelan sebenar sebelum database disentuh.
-
-### 17. Luluskan dan jalankan pelan
-
-Prompt:
-
-Saya meluluskan fail migrasi, checksum, environment, target database, arahan startup dan arahan ujian tepat dalam pelan yang anda bentangkan dalam jawapan terakhir.
-
-Jika pelan masih mempunyai target tidak diketahui atau prasyarat belum dijawab, berhenti dan minta saya menyelesaikannya sebelum pelaksanaan.
-
-Jika lengkap, jalankan pelan yang diluluskan sahaja. Simpan bukti sebenar dalam evidence/.
-
-Laporkan ujian lulus, gagal, terhalang dan belum dijalankan dengan tepat. Jangan deploy atau ubah reka bentuk yang dikunci.
-
-Penjelasan:
-Hantar hanya selepas memastikan pelan menggunakan database dan arahan yang betul.
-
-### 18. Cadangkan pembetulan kecacatan
-
-Prompt:
-
-Semak ujian gagal dan bukti runtime sebenar.
-
-Untuk setiap kecacatan, terangkan punca, fail terlibat, cadangan pembetulan dan sama ada reka bentuk yang diterima perlu berubah.
-
-Bentangkan pembetulan untuk kelulusan sebelum mengubah fail.
-
-Jika draf yang dikunci perlu disemak semula, nyatakan dokumen tersebut dan cara saya membukanya semula. Jangan buka kunci sendiri.
-
-Penjelasan:
-Ejen mencadangkan pembetulan berdasarkan bukti.
-
-### 19. Terapkan pembetulan dan uji semula
-
-Prompt:
-
-Saya meluluskan pembetulan khusus dalam cadangan anda yang terakhir.
-
-Laksanakan pembetulan tersebut dan jalankan semula semakan yang terjejas. Jangan tambah perubahan yang tidak berkaitan.
-
-Jika pembetulan memerlukan dokumen dikunci dibuka semula, tunggu sehingga saya membukanya.
-
-Jika skema berubah, dapatkan review/kelulusan terhadap revision baharu sebelum migrasi baharu; execution memerlukan kelulusan berasingan. Jangan tulis semula migrasi dilaksanakan.
-
-Ulang lint, format check, build dan ujian terjejas bagi fail/bahasa berubah. Jangan implement submodul lain. Simpan bukti sebenar dan laporkan kegagalan, ujian terhalang serta batasan.
-
-Penjelasan:
-Ulang Prompt 18–19 sehingga semakan wajib lulus atau anda menerima risiko yang masih ada secara jelas.
-
-### 20. Sediakan manual pengguna
-
-Prompt:
-
-Saya meluluskan penyediaan .docs/usermanual.md berdasarkan pelaksanaan yang telah disahkan.
-
-Susun mengikut role dan submodul. Terangkan navigasi, medan, tindakan, status, upload/download dan mesej biasa.
-
-Gunakan screenshot sebenar daripada aplikasi yang berjalan dan sembunyikan maklumat sensitif.
-
-Jangan terangkan fungsi belum dilaksanakan sebagai tersedia.
-
-Bentangkan manual, keputusan pengesahan terakhir dan batasan untuk penerimaan saya. Jangan deploy.
-
-Penjelasan:
-Manual mesti menggambarkan aplikasi sebenar yang telah diuji.
-
-### 21. Cadangkan rekod penyelenggaraan PRD
-
-Prompt:
-
-Sediakan cadangan kemas kini .docs/PRD.md yang ringkas.
-
-Sertakan:
-
-- Fungsi yang selesai.
-- Keputusan penting yang disahkan.
-- Versi sumber dan mockup rasmi yang disemak.
-- Fail yang berubah.
-- Bukti lint, formatting, build dan tests sebenar bagi setiap submodul.
-- Kecacatan, batasan dan langkah seterusnya.
-- Status penyediaan serta penerimaan draf.
-
-Ejen seterusnya perlu menggunakan PRD dan draf lengkap tanpa membaca semula sumber asal, kecuali saya meminta semakan.
-
-Tunjukkan cadangan sebelum menulisnya. Jangan mereka-reka kelulusan atau penerimaan manusia.
-
-Penjelasan:
-PRD menjadi rekod ringkas untuk penyelenggaraan seterusnya.
-
-### 22. Simpan rekod yang diluluskan dan tamatkan kerja
-
-Prompt:
-
-Saya meluluskan cadangan rekod PRD dalam jawapan anda yang terakhir. Tulis rekod tersebut dalam .docs/PRD.md.
-
-Sahkan penerimaan manusia sebenar terhadap testing dan usermanual sebelum memberi arahan penguncian. Jika penerimaan tiada, nyatakannya. Jangan jalankan penguncian sendiri. Berikan arahan untuk draf yang diterima sahaja. Laporkan baki kerja dan penerimaan manusia yang masih diperlukan.
-
-Jangan deploy. Deployment memerlukan pelan dan kelulusan berasingan.
-
-Penjelasan:
-Ejen menyimpan rekod yang diluluskan. Anda mengunci draf terakhir selepas menerimanya.
+Jangan deploy atau execute perubahan production sehingga pelan lengkap dikenal pasti dibenarkan secara jelas. Pastikan fixtures prototaip tidak aktif dan komponen belum selesai didokumentasi.
+```

@@ -1,24 +1,52 @@
-# Panduan penciptaan modul D-ReAMS hingga selesai
+# D-ReAMS — panduan Agile mengikut tiga fasa
 
-Contoh menggunakan **M12 / memorial**. Untuk modul lain, tukar nama modul, kod, lokasi workspace dan sumber mengikut modul tersebut. Jangan andaikan modul lain mempunyai keputusan perniagaan yang sama.
+Aliran baharu: **Fasa 1 dokumen → pengguna lock → Fasa 2 semua prototaip frontend, satu submodul pada satu masa → Fasa 3 backend dan integrasi, satu submodul pada satu masa.**
 
-**Skrip** dijalankan dalam terminal. **Prompt** dihantar kepada agent Codex dalam workspace. Jalankan satu fasa pada satu masa. Semua kelulusan merujuk proposal sebenar yang telah anda baca; jangan hantar kelulusan jika terdapat sasaran atau pilihan yang belum diketahui.
+Gunakan [prompts-ms.md](prompts-ms.md) atau [prompts.md](prompts.md). Setiap nombor prompt sama dalam kedua-dua bahasa. Seni bina bersama berada dalam [ARCHITECTURE.md](ARCHITECTURE.md). Contoh dokumen ringkas tersedia dalam `docs/workflow/` di repository installer; ia bukan dokumen modul yang sudah disemak.
 
-## Peraturan pelaksanaan, UI dan kualiti kod
+## Guna skills supaya tidak perlu tampal prompt setiap fasa
 
-Pustaka prompt tersedia dalam [prompts.md](prompts.md) (English) dan [prompts-ms.md](prompts-ms.md) (Bahasa Melayu). Nombor prompt pustaka tidak sama dengan nombor langkah panduan kerana panduan merangkumi pemasangan dan skrip terminal.
+Dari checkout installer, pilih harness anda:
 
-Panduan ini memerlukan pelaksanaan **satu submodul pada satu masa**. Tentukan submodul semasa terlebih dahulu, kemudian siapkan backend, frontend dan semakannya sebelum menerima kelulusan untuk submodul seterusnya. Jangan anggap kelulusan satu submodul meliputi semua submodul. Infrastruktur bersama yang benar-benar diperlukan boleh dibuat sebagai kebergantungan minimum dan mesti disenaraikan.
+```bash
+cd /home/lqmnwido/Projects/dreams/dreams-modules-agent
+node skills.js --codex
+# Pilihan lain (tidak perlu jalankan semua):
+# node skills.js --claude
+# node skills.js --opencode
+# node skills.js --cursor
+# node skills.js --gemini
+# node skills.js --copilot
+# node skills.js --windsurf
+```
 
-**Autoriti UI:** mockup ialah draf untuk mengenal pasti fungsi, medan, tindakan dan aliran kerja. Ia bukan spesifikasi visual akhir. Susunan halaman, komponen, schema borang/jadual, tabs, modal, validation, services dan helpers mesti mengikuti contoh sebenar `src/views/ui-element/` serta corak `training/general-tab-crud` yang dipilih. Gunakan komponen `@2enapps/ui`; jangan reka layout baharu hanya berdasarkan rupa mockup. Petakan setiap skrin kepada fail contoh tepat sebelum implementasi. Jangan salin data demo, API training, kawalan legacy atau gaya yang tidak dibenarkan sebagai kod domain. Jika tiada contoh atau komponen yang memenuhi keperluan, laporkan jurang dan cadangkan penyelesaian sebelum membuat penyimpangan.
+Kemudian buka sesi agent dalam workspace modul dan guna:
 
-**Kualiti kod:** frontend mesti melalui ESLint dan Prettier; Java mesti melalui lint/style checks dan formatter Java yang dikonfigurasi, bukan Prettier frontend. Gunakan konfigurasi repository/shared standards sedia ada. Jika tooling belum ada, agent perlu membentangkan konfigurasi, dependency/plugin dan versi tepat yang dicadangkan; jangan melaporkan check sebagai lulus jika tooling belum tersedia. Jangan disable rules atau exclude kod domain untuk menyembunyikan kegagalan. Format hanya fail berkaitan; jangan reformat seluruh repository, dokumen terkunci, generated files atau vendor code.
+| Fasa | Codex | Claude Code / OpenCode / Cursor / Cline |
+| --- | --- | --- |
+| Dokumentasi dan minta lock | `$d-dooc` | `/d-dooc` |
+| Satu prototaip frontend | `$d-frontend nama-submodul` | `/d-frontend nama-submodul` |
+| Satu backend dan integrasi | `$d-backend nama-submodul` | `/d-backend nama-submodul` |
 
-Peraturan ini ialah arahan untuk kerja seterusnya. Mengemas kini panduan tidak mengubah reka bentuk terkunci: jika reka bentuk visual terkunci bercanggah dengan autoriti UI di atas, ikut proses revision manusia dalam langkah 18 dahulu.
+Skill memuat arahan fasa dan references sendiri; prompt panjang di bawah kekal alternatif manual. Pengguna masih menjawab soalan sebenar, mengunci dokumen, menerima interface dan membenarkan execution target database. Skill tidak memasang Playwright MCP/JDK atau menjadikan tool browser tersedia secara automatik.
 
-## 1. Semak alat yang diperlukan
+`--dry-run` memaparkan lokasi tanpa menulis; `--project /path/workspace` memasang dalam projek; `--list-harnesses` menyenaraikan 79 harness serta portable target; `--harness nama` memilih adapter; `--all --dry-run` melihat semua sasaran registry bertarikh sebelum memasang; `--dest /path/skills` untuk harness lain yang menyokong Agent Skills. Lihat `docs/SKILLS.md` dalam repository installer untuk paths, kemas kini `--force` dan had keserasian. Restart sesi jika skill belum muncul. Pemasangan tidak mengubah scaffold, AGENTS projek atau locks.
 
-**Skrip:**
+Senarai penuh berada dalam `docs/HARNESS-SUPPORT.md` repository installer: Cursor, Gemini, Copilot, Windsurf, Cline, Roo, Kilo, Continue, Augment, Amp, Goose, Kiro, Qwen, OpenHands, Zed dan lain-lain. Evidence vendor-docs berbeza daripada registry-only; pemasangan fail bukan bukti semua harness berjalan. Windsurf menggunakan @skill; harness lain mungkin melalui skill selector/natural request, bukan /command. `--all` global melaporkan skip bagi target project-only; guna --project untuk target tersebut. Konfigurasi feature/trust/cloud worker tidak diubah automatik.
+
+## Peraturan terus
+
+- Setiap modul ada database PostgreSQL sendiri; modul lain melalui API pemilik sahaja. MFE remote frontend dan business API ialah dua mekanisme berbeza.
+- Shell mengurus menu/navbar/layout/login/SSO/token refresh. UI daripada `@2enapps/ui` Kai; modul tidak mencipta Shell kedua.
+- **Tiada human review database berasingan atau jadual APPROVED diperlukan.** Kesempurnaan schema tetap wajib; lock Fasa 1 ialah baseline reka bentuk. Execution database memerlukan sasaran/commands jelas dan kebenaran pelaksanaan, bukan upacara review schema berulang.
+- Pengguna mengunci dokumen; agent tidak mengubah manifest atau lock/unlock sendiri.
+- Jangan sentuh kod installer/scaffolder atau fail scaffold sedia ada. Jika ciri standalone/metadata/tooling memerlukannya, tunjuk fail/diff tepat dan tanya dahulu.
+- Jika tidak faham atau tidak pasti, tanya satu soalan khusus sebelum kerja bergantung padanya. Simpan ID/jawapan; jangan tanya soalan sama, cipta peraturan atau ulang kegagalan tanpa bukti baharu.
+- Fixtures dibenarkan **untuk prototaip Fasa 2 sahaja**. Backend/production tidak boleh menggunakan kejayaan dummy atau fallback fixture selepas API gagal.
+
+## 0. Cipta workspace sekali sahaja
+
+Semak alat:
 
 ```bash
 node --version
@@ -28,37 +56,28 @@ java --version
 mvn --version
 ```
 
-Installer memerlukan Node.js sekurang-kurangnya `22.12`, npm dan Git. Java/Maven perlu sepadan dengan konfigurasi backend yang dipilih. Akses GitLab syarikat diperlukan untuk dependencies berkaitan.
+Node sekurang-kurangnya 22.12; backend menggunakan Java 25 dan Spring Boot. Semak versi Spring Boot projek sebenar dan JDK yang menyokongnya; jangan tukar target secara senyap.
 
-## 2. Dapatkan installer
-
-Pilih **satu** kaedah di bawah. Laman yang dirujuk oleh README terkini ialah [D-ReAMS Modules Agent](https://dreams-agents.kohich.site/), dengan arahan pemasangan serta pustaka prompt English / Bahasa Melayu. Panduan ini diselaraskan dengan kod installer tempatan revision `184f171`; laman dan muat turun hosted belum diuji dalam semakan ini.
-
-### Pilihan A — Git clone, tanpa curl
-
-Jika belum mempunyai installer:
+Jika installer belum ada:
 
 ```bash
 mkdir -p /home/lqmnwido/Projects/dreams
 cd /home/lqmnwido/Projects/dreams
-
 git clone https://github.com/lqmnwido/dreams-modules-agent.git
 cd dreams-modules-agent
-
 node bin/install.mjs
 ```
 
-Jika installer sudah tersedia dan anda mahu mengambil versi terkini, semak dahulu:
+Jika sudah ada, semak perubahan/branch/remote dahulu:
 
 ```bash
 cd /home/lqmnwido/Projects/dreams/dreams-modules-agent
-
 git status --short
 git branch --show-current
 git remote -v
 ```
 
-Untuk working tree bersih pada `main` dengan remote GitHub yang betul:
+Hanya untuk working tree bersih, branch main dan remote betul:
 
 ```bash
 git fetch origin
@@ -66,492 +85,144 @@ git pull --ff-only origin main
 node bin/install.mjs
 ```
 
-Jika terdapat perubahan tempatan, branch lain atau pull gagal, berhenti dan semak dahulu. Jangan reset, stash atau timpa perubahan secara automatik.
-
-Jika tidak memerlukan kemas kini installer:
-
-```bash
-node /home/lqmnwido/Projects/dreams/dreams-modules-agent/bin/install.mjs
-```
-
-### Pilihan B — Skrip hosted Linux/macOS
-
-Muat turun skrip sahaja dahulu:
+Alternatif hosted: laman yang direkodkan dalam repository ialah https://dreams-agents.kohich.site/. Muat turun dan baca skrip sebelum menjalankannya; ketersediaan laman bukan dibuktikan oleh panduan ini.
 
 ```bash
 curl -fL 'https://dreams-agents.kohich.site/install.sh' -o dreams-agent-install.sh
-```
-
-Baca kandungannya sebelum menjalankan:
-
-```bash
 cat dreams-agent-install.sh
 ```
 
-Selepas menyemak skrip:
+Selepas semakan skrip, jalankan `bash dreams-agent-install.sh`. Untuk PowerShell, muat turun `install.ps1` dari laman sama menggunakan Invoke-WebRequest, baca dengan Get-Content, kemudian jalankan mengikut polisi organisasi; jangan memintas polisi.
 
-```bash
-bash dreams-agent-install.sh
-```
+Isi identiti/package/path modul sebenar, Java 25 dan versi Boot diluluskan. Pilih workspace kekal. Installer tidak perlukan npm install untuk dirinya sendiri; jangan jalankan semula untuk menimpa workspace lama.
 
-### Pilihan C — Skrip hosted Windows PowerShell
-
-Muat turun dan baca skrip:
-
-```powershell
-Invoke-WebRequest -Uri 'https://dreams-agents.kohich.site/install.ps1' -OutFile 'dreams-agent-install.ps1'
-Get-Content .\dreams-agent-install.ps1
-```
-
-Selepas menyemak skrip:
-
-```powershell
-.\dreams-agent-install.ps1
-```
-
-Jika polisi organisasi menyekat skrip PowerShell, gunakan kaedah Git clone yang dibenarkan; jangan ubah execution policy untuk memintas sekatan. Contoh path Linux dalam langkah seterusnya perlu diganti dengan lokasi workspace Windows sebenar.
-
-Skrip hosted mengambil branch `main` ke direktori sementara dan menjalankan soalan installer. Ia tidak memasang Node/Git/npm atau memerlukan administrator. Pilih lokasi workspace kekal secara jelas semasa menjawab soalan; jangan gunakan direktori sementara sebagai workspace projek.
-
-Installer sendiri tidak memerlukan `npm install`. Untuk pemasangan yang boleh diulang dengan versi sama, gunakan kaedah Git dengan commit atau tag yang telah disemak; kaedah hosted menggunakan `main` yang boleh berubah. Mengemas kini installer tidak menaik taraf workspace yang telah dihasilkan secara automatik.
-
-Isi soalan interaktif berdasarkan modul sebenar:
-
-| Soalan              | Contoh M12                                           |
-| ------------------- | ---------------------------------------------------- |
-| Module name         | `memorial`                                           |
-| Module code         | `MEM`                                                |
-| Target workspace    | `/home/lqmnwido/Projects/dreams/memorial-workspace`  |
-| Java group          | `com.dreams`                                         |
-| Java package        | `com.dreams.memorial`                                |
-| Java version        | Versi yang anda luluskan dan akan gunakan            |
-| Spring Boot version | Versi tepat yang diluluskan                          |
-| Frontend port       | `3004`, jika belum digunakan                         |
-| Submodules          | Isi jika telah diketahui; kosong jika belum disahkan |
-
-Arahan AGENTS.md terkini bagi workspace baharu menetapkan satu submodul pada satu masa, pemetaan contoh UI tepat dan semakan lint/format. Workspace lama tidak berubah hanya dengan git pull installer; perubahan arahan atau reka bentuk terkunci memerlukan proses revision yang dibenarkan.
-
-Baca ringkasan sebelum mengesahkan penciptaan fail. **Jangan jalankan installer semula untuk menimpa workspace sedia ada.**
-
-## 3. Pasang dependencies workspace
-
-Jika anda memilih pemasangan dependencies semasa installer dan ia berjaya, langkah ini tidak perlu diulang.
-
-Jika pemasangan ditangguhkan atau belum selesai:
+Jika dependencies workspace belum dipasang:
 
 ```bash
 cd /home/lqmnwido/Projects/dreams/memorial-workspace
-
 node scripts/maintenance.mjs install
 node scripts/maintenance.mjs check-docs
 ```
 
-Arahan `install` menjalankan pemasangan awal. Arahan maintenance biasa berikut digunakan kemudian apabila anda memang mahu penyelenggaraan dependencies:
+Ganti path contoh dengan workspace sebenar. `install` ialah initial npm install; `node scripts/maintenance.mjs` ialah maintenance Shell/npm update kemudian, bukan langkah initial tambahan wajib. Jangan buat dependency update tanpa skop dibenarkan.
 
-```bash
-node scripts/maintenance.mjs
-```
+## Keserasian huruf besar tanpa mengubah scaffold
 
-Jangan jalankan maintenance biasa sebagai pengganti pemasangan awal. Semak output sebenar; kegagalan rangkaian atau akses dependencies tidak bermaksud pemasangan telah selesai.
+Struktur sasaran menggunakan `.docs/SCOPE.md`, `ARCHITECTURE.md`, `DATABASE.md`, `BACKEND.md`, `FRONTEND.md`, `TESTING.md`, `USERMANUAL.md`, dengan `.docs/PRD.md` sebagai rekod umum.
 
-## 4. Letakkan dokumen sumber
+**Installer/maintenance sedia ada belum diubah:** ia menghasilkan draf lowercase dan `lock-doc` hanya menerima lowercase. Pada Linux, fail tersebut berbeza. Jangan jalankan `lock-doc scope` lalu mendakwa `SCOPE.md` sudah dikunci.
 
-Letakkan SDS, SRS jika wujud, dan mockup dalam:
+Mulakan Prompt 1 untuk menyemak nama sebenar. Bagi workspace baharu, pengguna mesti menetapkan nama kanonik uppercase dan kebenaran penciptaan/penamaan sebelum Fasa 1. Bagi workspace lama dengan hash/design terkunci, jangan auto-rename, padam rekod lama atau simpan dua sumber kebenaran; minta keputusan pemindahan khusus. Panduan ini tidak mengubah mana-mana workspace lama atau kelulusan terdahulu.
 
-```text
-memorial-workspace/.docs/documents/
-```
+## Fasa 1 — baca sumber, hasilkan dokumen, sahkan dan lock
 
-Contoh:
+Letakkan sumber sebenar dalam `.docs/documents/`. Jangan andaikan SRS wujud. Dated ZIP/mockup hanya rujukan sejarah jika pengguna menetapkannya begitu.
 
-```text
-.docs/documents/
-├── dokumen-SDS.docx
-└── mockup/
-    └── m12/
-```
+| Dokumen | Kandungan utama |
+| --- | --- |
+| PRD.md | Maklumat umum sistem, status fasa/submodul, keputusan penting, versi dan pautan evidence |
+| SCOPE.md | Semua keperluan sumber yang relevan: submodul, fungsi, aktor, workflow, peraturan, keputusan dan citations; router ke spesifikasi khusus |
+| ARCHITECTURE.md | Struktur bersama dan sempadan ownership/database/API/MFE/Shell/UI |
+| DATABASE.md | Jadual/kolum/types/null/default/keys/constraints/indexes/audit/deletion sebenar modul |
+| BACKEND.md | Controller/service/entity/repository/form, logic, request/response, permissions/errors/transaksi |
+| FRONTEND.md | Idea mockup, skrin/fields/actions, rujukan UI tepat, senario dummy dan API dirancang |
+| TESTING.md | Pelan kemudian serta bukti ujian sebenar, dipisahkan mengikut fasa/submodul |
+| USERMANUAL.md | Arahan berdasarkan fungsi disahkan; dilengkapkan kemudian |
 
-Gunakan file manager atau arahan salinan dengan lokasi sumber sebenar. Jangan reka nama atau lokasi sumber.
+Jangan salin semua sumber verbatim atau semua butiran ke setiap fail. Ayat ringkas, tetapi payload, storage dan permissions wajib tetap konkrit. Pautkan SCOPE.md kepada seksyen khusus; jangan jadikan SCOPE.md salinan DATABASE/BACKEND/FRONTEND.
 
-## 5. Pulihkan keperluan dan sediakan skop
+**Prompt 1–4:** kenal pasti modul/path/sumber, baca sumber, hasilkan dokumen dan selesaikan soalan benar-benar belum dijawab dalam kumpulan maksimum lima.
 
-**Prompt:**
+**Prompt 5:** lengkapkan ringkasan PRD, kemudian baca semula sumber berkaitan sekali untuk pengesahan. Rekod fail/seksyen diperiksa, betulkan kekurangan dan ringkaskan hasil sebenar. Selepas selesai, agent berhenti dan meminta pengguna lock lima reka bentuk. Jangan mulakan frontend dahulu.
 
-```text
-Baca AGENTS.md dan .docs/PRD.md untuk M12.
+### Skrip penguncian uppercase — pengguna sahaja
 
-Saya meluluskan penyempurnaan .docs/scope.md yang belum dikunci.
+Gunakan hanya selepas Fasa 1 disahkan lengkap, path kanonik uppercase dipersetujui, tiada dokumen bersaing dan pengguna menerima dokumen. Skrip ini merekod hash sahaja, tidak menukar kandungan, mencipta migrasi atau memberi kebenaran database execution. Ia bukan perubahan kepada skrip scaffold.
 
-Semak sumber yang dibekalkan. Jika dapatan semakan terdahulu tidak mencukupi, saya membenarkan pembacaan semula sumber yang diperlukan sahaja.
-
-Untuk M12, gunakan SDS yang dibekalkan dan .docs/documents/mockup/m12/ sebagai mockup autoritatif bagi dapatan fungsi, medan dan aliran kerja. Mockup ialah draf, bukan spesifikasi visual akhir; struktur UI pelaksanaan mengikuti contoh ui-element dan @2enapps/ui yang dipilih. Tiada SRS berasingan. Folder bertarikh dan ZIP ialah rujukan sejarah.
-
-Dokumentasikan submodul, fungsi, aktor, medan, aliran kerja, validasi dan kebenaran akses sebenar. Nyatakan nama fail dan seksyen sumber.
-
-Jangan biarkan fakta sumber sebagai TBD. Bezakan keperluan sumber daripada cadangan bagi peraturan yang bercanggah atau tidak dinyatakan.
-
-Simpan dapatan dan rujukan dalam draf skop.
-
-Jangan tulis kod, cipta migrasi atau kunci dokumen.
-```
-
-Untuk modul lain, ganti perenggan sumber dengan keadaan sebenar modul itu.
-
-## 6. Bentangkan keputusan skop
-
-**Prompt:**
-
-```text
-Gabungkan keputusan skop yang belum selesai.
-
-Buang pendua dan kenal pasti perkara yang sudah ditetapkan oleh sumber atau disahkan oleh saya.
-
-Bentangkan maksimum lima keputusan pada satu masa. Bagi setiap keputusan:
-- Berikan ID yang kekal.
-- Terangkan soalan dengan mudah.
-- Berikan satu cadangan jawapan lengkap.
-- Terangkan kesan kepada pengguna.
-- Nyatakan nilai atau bukti luaran yang masih diperlukan.
-- Nyatakan kerja yang terhalang.
-
-Asingkan keputusan dasar daripada kontrak provider dan nilai deployment.
-
-Jangan ulang permintaan maklumat yang telah saya nyatakan tidak tersedia. Teruskan keputusan bebas yang lain.
-
-Tunggu jawapan saya sebelum kumpulan seterusnya.
-```
-
-## 7. Luluskan kumpulan keputusan skop
-
-**Prompt, hanya jika anda bersetuju:**
-
-```text
-Saya meluluskan cadangan dalam kumpulan keputusan skop terakhir anda, tepat seperti yang ditulis.
-
-Nyatakan ID yang diliputi kelulusan ini.
-
-Terapkan keputusan yang telah selesai dalam .docs/scope.md.
-
-Kelulusan tidak membekalkan nilai atau kontrak yang masih tiada. Kekalkan perkara tersebut sebagai belum selesai.
-
-Jangan tangguhkan fungsi tanpa persetujuan saya.
-
-Bentangkan kumpulan bebas seterusnya, atau laporkan semua keputusan dasar yang menghalang reka bentuk telah selesai.
-
-Jangan tulis kod, cipta migrasi atau kunci dokumen.
-```
-
-Ulang langkah 6–7 sehingga selesai. Jika tidak bersetuju dengan seluruh kumpulan, berikan jawapan khusus mengikut ID.
-
-## 8. Semak kesediaan skop
-
-**Prompt:**
-
-```text
-Semak kesediaan .docs/scope.md untuk reka bentuk teknikal.
-
-Pastikan fungsi, aktor, medan, aliran kerja, validasi dan kebenaran akses adalah konkrit.
-
-Asingkan:
-- Keputusan dasar yang menghalang reka bentuk.
-- Kontrak luaran yang menghalang pelaksanaan.
-- Nilai persekitaran yang diperlukan kemudian.
-- Fungsi yang saya tangguhkan secara jelas.
-
-Jika keputusan dasar masih menghalang reka bentuk, bentangkan penyelesaiannya dan tunggu jawapan.
-
-Jika skop bersedia, serahkan untuk penerimaan saya.
-
-Jangan kunci dokumen atau mereka-reka rekod penerimaan.
-```
-
-## 9. Sediakan reka bentuk teknikal
-
-**Prompt selepas menerima skop:**
-
-```text
-Saya menerima skop lengkap dan meluluskan penyediaan:
-- .docs/architecture.md
-- .docs/database.md
-- .docs/backend.md
-- .docs/frontend.md
-
-Sediakan reka bentuk konkrit.
-
-Architecture:
-Sempadan modul, Shell, SSO, konfigurasi dan deployment.
-
-Database:
-Jadual PostgreSQL, kolum, jenis, NULL, defaults, PK/FK, hubungan, constraints, indexes, audit dan deletion rules.
-
-Backend:
-Controller, service, form, DTO, endpoint REST, request/response, validasi, errors, transactions dan permissions.
-
-Frontend:
-Skrin, medan, tindakan, services, exposes.js dan route Shell menggunakan @2enapps/ui serta corak training. Bagi setiap skrin, nyatakan fail contoh ui-element/general-tab-crud tepat dan pemetaan komponen, schema, helpers serta layout. Mockup menentukan keperluan fungsi; ia tidak menentukan reka bentuk visual akhir. Jangan invent layout baharu jika contoh yang sesuai tersedia.
-
-Tangani pagination, N+1, concurrency, duplicates dan integration failures.
-
-Gunakan skop dan rujukan sumber yang disimpan.
-
-Bezakan reka bentuk disahkan daripada cadangan bersyarat.
-
-Jangan tulis kod, cipta migrasi atau kunci dokumen.
-```
-
-## 10. Semak keselarasan reka bentuk
-
-**Prompt:**
-
-```text
-Semak kelima-lima draf bersama-sama.
-
-Bagi setiap fungsi:
-- Pastikan data mempunyai storan.
-- Pastikan API mempunyai request, response dan permissions.
-- Pastikan frontend menggunakan API dan medan tersebut.
-- Selaraskan validasi, status, errors, transaksi dan indexes.
-
-Semak juga penciptaan draf, penjanaan nombor rujukan dan perubahan medan yang mempengaruhi nombor tersebut.
-
-Asingkan pembetulan konkrit, keputusan belum dijawab dan bukti luaran yang tiada.
-
-Berikan ID serta cadangan khusus.
-
-Jangan nyatakan sedia untuk pelaksanaan selagi kontrak wajib belum selesai.
-
-Jangan tulis kod atau cipta migrasi.
-```
-
-## 11. Selesaikan keputusan teknikal
-
-**Prompt untuk membentangkan kumpulan:**
-
-```text
-Bentangkan maksimum lima keputusan teknikal yang belum selesai.
-
-Buang pendua dan keputusan yang sudah diluluskan.
-
-Berikan ID, penjelasan mudah, cadangan lengkap, kesan pengguna dan halangan kerja.
-
-Asingkan kontrak provider yang tidak tersedia daripada pilihan yang boleh saya jawab.
-
-Semak kod Shell atau shared services yang dibenarkan jika membantu. Jangan anggap kod pengguna API membuktikan kontrak provider.
-
-Jangan minta penerimaan atau penguncian reka bentuk yang belum lengkap.
-```
-
-**Prompt kelulusan:**
-
-```text
-Saya meluluskan pembetulan dan cadangan dalam proposal terakhir anda, tepat seperti yang ditulis.
-
-Nyatakan ID yang diluluskan dan terapkan secara selaras dalam lima draf yang belum dikunci.
-
-Tanya saya jika masih ada pilihan atau nilai yang diperlukan. Jangan mereka-reka kontrak, konfigurasi atau kelulusan manusia.
-
-Bentangkan kumpulan bebas seterusnya.
-
-Jangan tulis kod, cipta migrasi atau kunci dokumen.
-```
-
-Ulang sehingga keputusan berkaitan selesai.
-
-## 12. Muktamadkan reka bentuk
-
-**Prompt:**
-
-```text
-Muktamadkan lima draf menggunakan keputusan yang telah saya sahkan sahaja.
-
-Buang alternatif yang digantikan dan penerangan bercanggah. Kekalkan sumber serta beza antara fakta sumber dan cadangan diluluskan.
-
-Pastikan database.md mempunyai seksyen kelulusan manusia dengan:
-reviewer, role, decision, reviewed schema revision, date dan approval scope.
-
-Jika seksyen belum wujud, tambah medan kosong dengan decision PENDING.
-Jika sudah mengandungi catatan manusia, kekalkan catatan tersebut tepat seperti sedia ada.
-
-Jangan nyatakan medan kosong jika sudah diisi.
-
-Jalankan semakan akhir. Asingkan halangan skema daripada kebergantungan pelaksanaan dan deployment.
-
-Jika skema lengkap, nyatakan revision tepat yang diserahkan untuk semakan.
-
-Jangan tulis kod, cipta migrasi atau kunci dokumen.
-```
-
-## 13. Semak dan isi kelulusan database sendiri
-
-**Prompt:**
-
-```text
-Sahkan sama ada skema lengkap dan konkrit untuk penciptaan migrasi.
-
-Jika belum lengkap, nyatakan perkara yang masih diperlukan dan berhenti.
-
-Jika lengkap:
-- Nyatakan revision skema tepat.
-- Tunjukkan seksyen kelulusan.
-- Kenal pasti medan kosong atau teks contoh.
-- Terangkan nilai sebenar yang perlu saya isi sendiri.
-
-Bezakan kelulusan penciptaan migrasi daripada pelaksanaannya.
-
-Jika menggunakan fingerprint, tentukan kandungan skema yang diliputi dan asingkan rekod kelulusan supaya pengisian kelulusan tidak dianggap perubahan skema.
-
-Jangan edit rekod kelulusan atau cipta migrasi.
-```
-
-Selepas membaca skema, buka `.docs/database.md` dalam editor dan isi sendiri:
-
-| Medan                    | Nilai yang perlu anda isi                                              |
-| ------------------------ | ---------------------------------------------------------------------- |
-| Reviewer                 | Nama sebenar                                                           |
-| Role                     | Kapasiti atau jawatan sebenar semasa semakan                           |
-| Decision                 | Keputusan sebenar, contohnya `APPROVED`                                |
-| Reviewed schema revision | Revision tepat yang disemak                                            |
-| Date                     | Tarikh sebenar semakan                                                 |
-| Approval scope           | Contohnya penciptaan fail migrasi sahaja; pelaksanaan belum diluluskan |
-
-**Simpan fail. Jangan salin teks arahan contoh sebagai nilai.**
-
-## 14. Sahkan sebelum penguncian
-
-**Prompt:**
-
-```text
-Saya telah menyimpan rekod kelulusan manusia dan menerima reka bentuk yang diserahkan.
-
-Sahkan:
-- Skema dan keputusan wajib lengkap.
-- Lima draf selaras.
-- Kelulusan mengandungi nilai sebenar.
-- Revision yang diluluskan sepadan dengan skema semasa.
-- Tiada perubahan skema selepas kelulusan tanpa semakan baharu.
-
-Asingkan kebergantungan provider yang masih menghalang fungsi tertentu.
-
-Jika syarat penguncian tidak dipenuhi, jelaskan dan berhenti.
-Jika dipenuhi, berikan arahan penguncian.
-
-Jangan edit rekod kelulusan atau jalankan penguncian sendiri.
-```
-
-## 15. Kunci lima dokumen
-
-**Hanya selepas semakan lulus, jalankan:**
+Semak dahulu:
 
 ```bash
 cd /home/lqmnwido/Projects/dreams/memorial-workspace
-
 node scripts/maintenance.mjs check-docs
 ```
 
-Selepas semakan berjaya:
+Jika berjaya, pengguna menjalankan:
 
 ```bash
-node scripts/maintenance.mjs lock-doc scope
-node scripts/maintenance.mjs lock-doc architecture
-node scripts/maintenance.mjs lock-doc database
-node scripts/maintenance.mjs lock-doc backend
-node scripts/maintenance.mjs lock-doc frontend
+node --input-type=module <<'NODE'
+import { readFile, writeFile, lstat } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { checkDocuments } from './scripts/maintenance.mjs';
+
+await checkDocuments(process.cwd());
+const manifestPath = 'document-integrity.json';
+if ((await lstat(manifestPath)).isSymbolicLink() || (await lstat('.docs')).isSymbolicLink()) {
+  throw new Error('Manifest/.docs symlink: berhenti untuk semakan.');
+}
+const hashes = JSON.parse(await readFile(manifestPath, 'utf8'));
+const documents = [
+  '.docs/SCOPE.md', '.docs/ARCHITECTURE.md', '.docs/DATABASE.md',
+  '.docs/BACKEND.md', '.docs/FRONTEND.md'
+];
+const additions = {};
+for (const path of documents) {
+  const legacy = path.replace(/([^/]+)\.md$/, name => name.toLowerCase());
+  try {
+    await lstat(legacy);
+    throw new Error(`Fail lowercase ${legacy} masih wujud; selesaikan pemindahan dahulu.`);
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+  if (Object.hasOwn(hashes, path) || Object.hasOwn(hashes, legacy)) {
+    throw new Error(`${path} atau path lama masih dikunci; jangan timpa baseline.`);
+  }
+  const info = await lstat(path);
+  if (!info.isFile() || info.isSymbolicLink()) throw new Error(`${path}: bukan fail biasa.`);
+  additions[path] = createHash('sha256').update(await readFile(path)).digest('hex');
+}
+await writeFile(manifestPath, JSON.stringify({ ...hashes, ...additions }, null, 2) + '\n');
+for (const path of documents) console.log(`${path}: locked`);
+NODE
+
 node scripts/maintenance.mjs check-docs
 ```
 
-Berhenti jika mana-mana arahan gagal. Lock tidak memberikan kelulusan database atau migrasi secara automatik. Jangan ulang lock pada dokumen yang sudah dikunci.
+Tiada automasi membuka lock dalam panduan ini. Perubahan selepas lock memerlukan pengguna membuka dokumen terjejas sahaja dan mengarahkan revision secara jelas. Agent tidak boleh mengubah manifest.
 
-## 16. Pilih satu submodul dan laksanakan backend
+## Fasa 2 — frontend dahulu, satu submodul pada satu masa
 
-### 16A. Tetapkan submodul semasa dan tooling
+Selepas pengguna lock dan bersedia meneruskan, gunakan **Prompt 6** untuk verify hashes, baca SCOPE/FRONTEND dan pilih satu submodul. **Prompt 7** membina prototaip; **Prompt 8** menguji dan menunjukkannya; **Prompt 9** merekod penerimaan interface dan mencadangkan submodul seterusnya. Ulang 6–9 sehingga semua interface diterima. Jangan mulakan backend sepanjang pusingan ini.
 
-**Prompt:**
+### UI dan service mesti mengikut contoh tepat
 
-```text
-Sediakan urutan pelaksanaan satu submodul pada satu masa daripada reka bentuk diterima dan dikunci.
+Rujuk `general-tab-crud/list-main.vue` sebagai utama. Baca `tab.vue`, `details-one.vue`..`details-four.vue`, `list-two.vue`..`list-five.vue` apabila berkaitan. Jangan tukar kepada general-crud, training/crud/list atau admin Shell sebagai rujukan lengkap. Rujuk enjin `list-data.vue` dan `form-data.vue` dalam @2enapps/ui untuk behaviour sebenar. Jangan edit node_modules/library.
 
-Senaraikan submodul serta dependencies dan cadangkan satu submodul untuk dimulakan. Bagi submodul tersebut, senaraikan fungsi, tables, endpoints dan skrin yang termasuk serta shared infrastructure minimum yang diperlukan.
+| Feature | Gunakan |
+| --- | --- |
+| List/search/dashboard initialization | getSchemaList, getSchemaFormCarian, initStatsSchema, loadDashboardStats |
+| Paging/filter params | getParams("", page, this), qSearch dan searchObject |
+| Service list envelope | returnResponseList; kekalkan data.data, pageNo, totalItems, totalPages serta list/total aliases |
+| List decoration | assignSchemaToListData melalui listCondition |
+| Details/breadcrumb | detailsBreadcrumbMixin, openDetails, backToList, onBreadcrumbScreenChange |
+| Form validation | standardValidation dan customValidator contoh |
+| Cards/search/notifications | StatCardGrid, ComponentCarian dan store/helpers contoh |
+| Bulk/print/export/dynamic columns/tabs | schema/event wiring sebenar contoh, hanya fungsi domain yang diperlukan |
 
-Semak tooling sedia ada:
-- Frontend: ESLint dan Prettier.
-- Java: Checkstyle atau lint/style tool standard repository, serta formatter Java seperti Spotless dengan formatter yang dipersetujui.
+Reset carian mengosongkan qSearch dan searchObject. Breadcrumb label menggunakan nama rekod. Export masih boleh membaca finalRes.data?.data; jangan buang envelope ketika menambah aliases. Tidak semua modul memerlukan enam tabs atau delete: guna struktur contoh bagi fungsi sebenar, jangan cipta use case daripada demo.
 
-Jika tooling belum ada, cadangkan konfigurasi, versi dependency/plugin tepat dan commands check/fix. Gunakan standard pasukan yang tersedia; jangan pilih versi secara tekaan.
+Komponen tidak tersedia selepas semakan library: gunakan card shared, kosongkan kawasan itu dan label tepat **`[ component not available ]`**. Jangan cipta button/input/modal/chart baru atau CSS sendiri. Rekod jurang; jangan menyembunyikan label atau mengisytiharkan interaction itu siap.
 
-Nyatakan fail contoh ui-element/general-tab-crud tepat bagi setiap skrin submodul pertama. Mockup ialah draf fungsi, bukan visual akhir.
+### Dummy dan API standby
 
-Jangan mulakan kod. Tunggu saya memilih submodul dan meluluskan tooling yang perlu ditambah.
-```
+Gunakan fixtures sintetik domain dalam service modul, bukan data peribadi sebenar atau salinan fixture training yang tidak berkaitan. API call sebenar yang dirancang disediakan sebagai komen tidak aktif; jangan reka endpoint yang belum didokumenkan. Imports tidak digunakan dibuang/dikomen agar lint lulus. Dummy CRUD/mesej mesti jelas prototaip, bukan bukti backend disimpan. Tiada business API/Shell/SSO sebenar semasa review standalone.
 
-### 16B. Luluskan dan laksanakan backend submodul dipilih
+Dummy service mengekalkan bentuk service sebenar supaya penggantian kemudian tidak menukar view. Filter/paging demo konsisten dengan fixtures; pilihan dropdown berdasarkan data demo relevan. Production nanti menggunakan server paging/filtering, bukan parseQuery/applyFilters demo.
 
-Hantar selepas agent menamakan **satu** submodul dan anda bersetuju. Jika anda mahu submodul lain, nyatakan IDnya secara jelas dalam jawapan.
+### Standalone, lint dan ujian
 
-**Prompt:**
+Gunakan harness dev-only sedia ada tanpa Shell. Jika belum ada dan memerlukan edit scaffold, agent bertanya dahulu sebelum mengedit. Harness boleh menyediakan plugin/store/i18n demo yang diperlukan, bukan login/Shell production kedua.
 
-```text
-Saya meluluskan satu submodul yang anda cadangkan dalam respons terakhir serta konfigurasi tooling yang anda bentangkan.
-
-Nyatakan semula ID submodul semasa. Kelulusan ini tidak meliputi pelaksanaan submodul lain.
-
-Sahkan locks, hashes, kesediaan fungsi dan kelulusan skema dahulu.
-
-Laksanakan backend submodul semasa sahaja: controllers, REST endpoints, forms, DTO, validation, authorization, services, repositories, transactions, audit dan outbox yang berkaitan.
-
-Laksanakan shared infrastructure minimum yang diperlukan dan senaraikan penggunaannya. Jangan implement endpoint atau workflow submodul lain secara senyap.
-
-Cipta migrasi hanya dalam skop skema diluluskan. Jelaskan dependencies FK dan sempadan migration. Jika skema penuh perlu diwujudkan sebagai prasyarat, bentangkan pilihan itu dahulu; jangan anggap kelulusan submodul ini membenarkan semua perubahan sekali gus.
-
-Kekalkan Flyway aktif, Hibernate schema generation none dan SQL initialization never. Kekalkan bearer authentication serta pintasan local sahaja yang diluluskan.
-
-Jangan reka kontrak provider yang belum tersedia. Laporkan adapter terhalang.
-
-Pastikan JDK sepadan dengan sasaran projek. Jangan turunkan sasaran tanpa kelulusan.
-
-Ikut konfigurasi lint/style dan formatter Java yang diluluskan. Format fail Java berkaitan, kemudian jalankan formatter check, lint/style check, kompilasi dan ujian bermakna yang tidak menyambung database atau menjalankan migrasi. Jangan format Java menggunakan Prettier frontend.
-
-Jangan jalankan migrasi atau startup menggunakan database. Jangan ubah dokumen terkunci.
-
-Laporkan checklist fungsi submodul semasa, fail berubah, commands dan hasil sebenar, serta baki kerja.
-
-Berhenti selepas submodul ini. Jangan teruskan submodul lain tanpa kelulusan saya.
-```
-
-## 17. Laksanakan frontend submodul yang sama
-
-**Prompt:**
-
-```text
-Saya meluluskan frontend untuk submodul semasa yang backendnya baru dilaksanakan sahaja. Nyatakan IDnya sebelum bekerja.
-
-Ikut reka bentuk diterima dan dikunci. Jika reka bentuk bercanggah dengan arahan UI, jelaskan revision yang diperlukan sebelum mengedit kod.
-
-Baca fail contoh ui-element/general-tab-crud tepat yang telah dipilih. Ikut struktur komponen, schema borang/jadual, tabs, modal, services dan helpers contoh tersebut. Gunakan @2enapps/ui. Jangan reka layout alternatif atau custom styling hanya untuk meniru mockup.
-
-Mockup ialah draf keperluan fungsi, medan, tindakan dan aliran kerja. Jangan anggap ia spesifikasi visual akhir. Jangan salin dummy data atau training API ke fungsi domain.
-
-Laksanakan skrin dan services submodul semasa sahaja. Sambungkan kepada kontrak backend sebenar. Senaraikan pemetaan skrin → fail contoh → komponen shared → endpoint.
-
-Padankan exposes.js dengan import dan route Shell. Shell mengurus SSO dan pembaharuan token.
-
-Sertakan loading, empty, validation, success, forbidden, errors dan version conflicts. Jangan gunakan kejayaan palsu.
-
-Ikut konfigurasi ESLint dan Prettier yang diluluskan. Format fail berkaitan dan jalankan lint, format check serta build. Jangan disable rules atau reformat fail tidak berkaitan.
-
-Jika contoh atau komponen tidak menyokong sesuatu interaction, laporkan jurang dan cadangkan penyelesaian sebelum membuat penyimpangan.
-
-Jangan ubah dokumen terkunci atau jalankan startup/ujian integrasi tanpa pelan diluluskan.
-
-Laporkan checklist skrin submodul semasa, mapping kepada contoh, fail berubah, commands check dan hasil sebenar serta baki integrasi.
-
-Berhenti selepas submodul ini. Jangan teruskan submodul lain tanpa kelulusan saya.
-```
-
-### Commands lint dan format
-
-Agent mesti menyediakan commands sebenar daripada package.json dan pom.xml. Contoh di bawah **hanya digunakan jika scripts/plugins tersebut telah dikonfigurasi dan diluluskan**; ia bukan bukti bahawa workspace semasa sudah mempunyai tooling tersebut.
-
-Frontend, dari direktori frontend modul:
+Commands berikut hanya jika scripts sudah wujud dan sasaran failnya telah disemak:
 
 ```bash
 npm run lint
@@ -559,17 +230,65 @@ npm run format:check
 npm run build
 ```
 
-Jika pembetulan formatting diperlukan dan script wujud:
+Jika tooling belum ada, cadangkan konfigurasi/versi tepat dahulu. Jangan reka npm scripts atau run format seluruh repository. Fix hanya fail dibenarkan, ulang check.
+
+White-box menguji logic/state/service fixture sebenar; Playwright MCP visible browser menguji behaviour black-box. Liputi happy/negative/edge, validasi, navigation, paging/search/reset, console/network errors. Browser tests sahaja bukan white-box. Paparkan UI dan screenshot sebenar untuk review pengguna. Tooling/browser unavailable ialah Blocked, bukan Pass. Simpan evidence mengikut fasa/submodul.
+
+### Selepas semua prototaip diterima
+
+**Prompt 10:** sediakan metadata dan federation contract sebenar mengikut ARCHITECTURE.md. remote-entry.js mengandungi `export {};`. Jika fail ini sudah scaffold, minta kebenaran khusus fail sebelum perubahan. Jangan sambung Shell secara automatik. Update PRD dengan status prototype/UI accepted, bukan production complete.
+
+## Fasa 3 — backend, Flyway dan API sebenar
+
+**Prompt 11–12:** baca SCOPE/BACKEND/DATABASE, pilih satu submodul, implement dengan Spring Boot Java 25, own PostgreSQL database dan Flyway. Database tidak perlu jadual kelulusan manusia. Jangan reka schema yang tiada atau mengubah locked design tanpa reopening. Dependencies module lain hanya API.
+
+Backend docs/implementation perlu mempunyai kontrak berikut; isi nilai sebenar, bukan placeholders:
+
+| Bahagian | Kandungan |
+| --- | --- |
+| Controller | Class, method HTTP, endpoint, fungsi, request/response form, role, source ID |
+| Entity | Satu entity/table, hubungan, audit/soft delete, notes |
+| Repository | Signature query, tujuan, pagination, index berkaitan |
+| Service | Satu service/submodul; function/input/output/rules/transaction/source ID |
+| Form | Field, validation, entity/service mapping, sensitive flag |
+| Errors | Condition, status HTTP, code, message dan logging |
+
+Gunakan ID sumber sebenar; SDS/UC jika tiada SRS. Contoh findAllByFlagAktif hanya sesuai jika field flagAktif sebenar wujud; jangan cipta kolum untuk meniru contoh.
+
+### Database implementation dan corak backend
+
+Rujuk [DATABASE-PATTERNS.md](docs/DATABASE-PATTERNS.md) dan [BACKEND-PATTERNS.md](docs/BACKEND-PATTERNS.md). Ikut corak projek/modul sedia ada dahulu, bukan restructure repo mengikut tutorial framework. Jangan install framework scaffolding tools tanpa approval.
+
+Database: snake_case/unquoted, PK id BIGINT GENERATED ALWAYS AS IDENTITY (SERIAL alternatif corak projek), NUMERIC, TIMESTAMPTZ, CREATE TYPE bagi enum tertutup, nama idx_/uniq_/fk_ dan FK ON DELETE/UPDATE jelas. Rekod standard ini semasa Fasa 1. Jangan auto-convert schema UUID, katalog dinamik atau kontrak pagination terkunci; minta revision khusus jika bercanggah.
+
+Sebelum query, semak query/index/relationship sedia ada, batching, page-size limits dan timeouts. Elak N+1, gunakan eager/join/batch fetch bersasar. Keyset/cursor untuk hasil besar mesti serasi kontrak API/UI; getParams/pageNo tidak boleh ditukar senyap. Caching memerlukan keys berskop, TTL/invalidation dan ketepatan permissions. Partial/expression indexes berdasarkan query sebenar, bukan tambahan rawak.
+
+Semua schema changes melalui Flyway dan migrasi baharu. Setiap migrasi diuji forward dan rollback/recovery pada data representatif non-production. Sahkan Flyway edition/undo support; jika tiada, gunakan compensating migration atau backup/restore yang diuji, bukan down command rekaan. Production read-only kecuali mutation khusus dibenarkan; DROP/destructive change perlu approval dan backup disahkan. Jangan modify/delete data senyap.
+
+Guna EXPLAIN (ANALYZE, BUFFERS) bagi slow-query diagnosis pada sasaran dibenarkan; ia execute query. Transaksi pendek dan atomic. Advisory locks untuk coordination jika selamat dengan keys/order/timeouts jelas; jangan buang row locks yang masih diperlukan untuk correctness/queue claims.
+
+### Testing backend mengikut scope
+
+Stack: PostgreSQL + Spring Data JPA; JUnit 5 + Mockito + Spring Boot Test. Service unit tests menggunakan Mockito; controller @WebMvcTest; repository @DataJpaTest pada PostgreSQL; integration @SpringBootTest. Jangan tukar kepada H2 secara senyap atau jalankan context/Flyway tests ke database tidak dikenal pasti.
+
+Gunakan build system sedia ada. Dari folder backend, commands berikut ialah alternatif, bukan semua wajib dijalankan:
 
 ```bash
-npm run format
-npm run format:check
-npm run lint
+# Maven project dengan Maven dipasang:
+mvn test
+# Jika Maven wrapper sudah wujud:
+./mvnw test
+# Untuk projek Gradle yang memang mempunyai wrapper:
+./gradlew test
 ```
 
-Script format/fix mesti dihadkan kepada fail berkaitan atau dilaksanakan sebelum terdapat perubahan luar skop; jangan menerima reformat seluruh repository secara automatik. Agent perlu menjelaskan sasaran script tersebut.
+Jangan tambah Gradle kepada projek Maven atau cipta wrapper tanpa keperluan/approval. Integration tests mungkin memerlukan verify/profile khusus; baca plugin/profil sebenar dan semak test discovery/reports. Startup/database-backed tests hanya melalui pelan execution dibenarkan. Unit mocks tidak membuktikan provider/database sebenar.
 
-Java, dari direktori backend, jika Spotless dan Checkstyle telah dikonfigurasi:
+### Java lint/format dan keselamatan
+
+Ikut standard pasukan/projek sebenar. Cadangan seperti Checkstyle dan Spotless mesti mempunyai versi/formatter/settings jelas; tiada formatter universal Spring Boot yang boleh diandaikan. Prettier frontend tidak digunakan untuk Java.
+
+Hanya jika plugins dikonfigurasi:
 
 ```bash
 mvn spotless:check
@@ -577,299 +296,26 @@ mvn checkstyle:check
 mvn -DskipTests compile
 ```
 
-Untuk pembetulan format Java yang disasarkan mengikut konfigurasi formatter:
+Format/fix Java menyasarkan fail berubah sahaja, kemudian ulang check/build/tests. Jangan run startup/Flyway kerana sekadar ingin format kod.
 
-```bash
-mvn spotless:apply
-mvn spotless:check
-mvn checkstyle:check
-```
+Semak setiap endpoint: happy path, setiap field/boundary, role/object permissions, missing/conflict/duplicates/concurrency, pagination/sort/filter/empty, integration errors/timeouts dan consistent payload/errors. Uji SQL injection, mass assignment, IDOR, upload, audit dan logs tanpa secrets/PII. Review dependency/security scans, critical warnings dan architecture boundaries. Repositories data sahaja; services transactions; tiada giant service campur submodul, dummy backend responses, hidden TODOs atau unused code.
 
-Pastikan `spotless:apply` menyasarkan fail yang dibenarkan sahaja sebelum menjalankannya. Jika repository menggunakan formatter/linter lain atau Maven wrapper, gunakan commands sebenar tersebut. Ujian dengan database dan startup kekal memerlukan pelan pelaksanaan diluluskan.
+### Execution bukan human review schema
 
-### Semakan dan kelulusan submodul seterusnya
+**Prompt 13** menyediakan pelan exact scripts/checksums, target environment/database/roles, startup/tests/recovery/evidence. **Prompt 14** memberi kebenaran pelaksanaan pelan tepat selepas pengguna memastikan sasaran betul. Jangan connect ke database yang tidak dikenal pasti; jangan jalankan migrasi production melalui andaian. Flyway enabled tidak bermaksud semua pending migration boleh terus dijalankan. Jangan rewrite executed migrations.
 
-Selepas backend/frontend submodul semasa siap, gunakan langkah 19–21 untuk pelan dan ujian submodul itu. Jika runtime checks belum dapat dijalankan, rekodkan Blocked dan minta keputusan sebelum meneruskan; jangan dakwa submodul selesai sepenuhnya.
+### Sambung API sebenar dan kemudian Shell
 
-**Prompt penerimaan dan sambungan, hanya selepas membaca laporan:**
+**Prompt 15** menggantikan fixtures dengan API sebenar bagi submodul backend yang diuji. Kekalkan service contract/UI examples, buang fixture production fallback dan ulang frontend/API tests. **Prompt 16** menerima submodul dan mencadangkan satu backend seterusnya; ulang 11–16.
 
-```text
-Saya menerima hasil submodul yang baru diserahkan dengan status dan batasan yang telah dinyatakan.
+Selepas semua submodul, sediakan pelan Shell MFE/SSO/menu/routes dan cross-submodule tests. Paparkan exact diffs dan minta kebenaran file-specific bagi scaffold/Shell config. Jangan buat login baru atau sambung database dari browser. Tests standalone tidak membuktikan federation, SSO atau backend authorization.
 
-Ringkaskan checklist fungsi, skrin, lint, formatting, build dan tests. Kekalkan perbezaan Pass, Fail, Blocked dan Not run.
+## Penutupan
 
-Cadangkan satu submodul seterusnya dan dependencies minimum. Tunggu kelulusan saya sebelum implementasi.
-```
+**Prompt 17:** hasilkan README backend sebenar: tujuan/skop, submodul, package structure, prerequisites/setup/run, env tanpa secrets, own-database/migration instructions, Keycloak access matrix dan API list lengkap. README terkunci perlu reopening dahulu. Lengkapkan TESTING/USERMANUAL daripada bukti sebenar dan PRD ringkasan umum. Pengguna menerima dan mengunci dokumen akhir melalui prosedur serasi uppercase; agent tidak lock.
 
-Ulang langkah 16B–17 serta semakan/ujian bagi setiap submodul. Jangan tunggu semua submodul siap untuk membuat lint/format checks. Infrastruktur dan migrasi yang telah dilaksanakan tidak ditulis semula pada pusingan seterusnya. Selepas semua submodul selesai, jalankan semakan integrasi merentas submodul melalui pelan yang diluluskan sebelum manual dan penerimaan akhir.
+**Prompt 18:** deployment ialah pelan dan kebenaran berasingan. Jangan deploy hanya kerana kod/tests selesai. Catat missing components/integrations sebagai batasan sebenar, bukan siap.
 
-## 18. Jika reka bentuk terkunci perlu dibetulkan
+## Bukti minimum, bukan dakwaan
 
-Gunakan langkah ini **hanya apabila pembetulan tertentu telah dicadangkan dan anda meluluskannya**.
-
-**Prompt dahulu:**
-
-```text
-Jelaskan pembetulan reka bentuk yang diperlukan.
-
-Nyatakan dokumen tepat yang perlu dibuka, perubahan yang dicadangkan dan sama ada skema atau kelulusan terdahulu terjejas.
-
-Berikan arahan membuka dokumen tersebut sahaja. Jangan ubah manifest sendiri.
-```
-
-Contoh skrip berikut membuka **scope, backend dan frontend sahaja**. Gunakan hanya jika itulah dokumen yang diluluskan untuk dibuka:
-
-```bash
-cd /home/lqmnwido/Projects/dreams/memorial-workspace
-
-node scripts/maintenance.mjs check-docs
-```
-
-Selepas semakan berjaya:
-
-```bash
-node --input-type=module <<'NODE'
-import { readFile, writeFile } from 'node:fs/promises';
-
-const path = 'document-integrity.json';
-const hashes = JSON.parse(await readFile(path, 'utf8'));
-const documents = [
-  '.docs/scope.md',
-  '.docs/backend.md',
-  '.docs/frontend.md'
-];
-
-for (const document of documents) {
-  if (!Object.hasOwn(hashes, document)) {
-    throw new Error(`${document} tidak dikunci; manifest tidak diubah.`);
-  }
-}
-
-for (const document of documents) {
-  delete hashes[document];
-}
-
-await writeFile(path, JSON.stringify(hashes, null, 2) + '\n');
-
-for (const document of documents) {
-  console.log(`${document}: dibuka semula`);
-}
-NODE
-
-node scripts/maintenance.mjs check-docs
-```
-
-**Prompt selepas membuka:**
-
-```text
-Saya telah membuka dokumen yang dipersetujui dan meluluskan pembetulan khusus dalam proposal terakhir anda.
-
-Sahkan dokumen terbuka, terapkan pembetulan dan semak keselarasan.
-
-Kekalkan dokumen lain serta rekod kelulusan manusia.
-
-Jika skema berubah, nyatakan revision baharu untuk semakan manusia; jangan anggap kelulusan lama meliputinya.
-
-Berikan arahan penguncian semula selepas semakan lulus. Jangan jalankan sendiri.
-```
-
-Selepas pembetulan diterima, kunci semula dokumen yang dibuka menggunakan `lock-doc`.
-
-## 19. Sediakan pelan migrasi, startup dan ujian
-
-**Prompt:**
-
-```text
-Saya meluluskan penyediaan .docs/testing.md yang belum dikunci.
-
-Untuk pusingan semasa, fokus submodul yang dipilih dan dependenciesnya. Selepas semua submodul siap, sediakan pusingan integrasi merentas submodul. Jangan implement submodul lain dalam fasa ujian.
-
-Bandingkan migrasi dengan skema diluluskan. Sahkan lint frontend, Prettier, lint/style Java dan formatter Java telah dijalankan; sertakan commands serta hasil sebenar.
-
-Bentangkan:
-- Fail migrasi tepat dan checksum.
-- Environment, database host, port, name dan schema.
-- Database roles.
-- Arahan migration dan startup.
-- Arahan backend/API serta Playwright tests.
-- Akaun, permissions dan services diperlukan.
-- Hasil dijangka dan lokasi evidence.
-- Langkah pemulihan.
-
-Liputi workflows, validation, object access, duplicates, concurrency dan integration failures.
-
-Kenal pasti prasyarat belum tersedia.
-Jangan dedahkan credentials.
-
-Jangan jalankan migrasi, startup atau pelan ujian ini lagi.
-Jangan tandakan ujian belum dijalankan sebagai lulus.
-```
-
-Arahan Maven, frontend, Shell dan Flyway mesti ditentukan daripada projek serta sasaran sebenar—bukan diteka dalam panduan ini.
-
-## 20. Luluskan dan jalankan pelan sebenar
-
-**Prompt selepas menyemak sasaran dan arahan:**
-
-```text
-Saya meluluskan fail migrasi, checksum, environment, database sasaran, startup dan test commands dalam pelan terakhir anda.
-
-Kelulusan hanya meliputi pelan tersebut.
-
-Semak checksum dan sasaran sebelum pelaksanaan.
-Jika fail berubah atau prasyarat belum selesai, berhenti dan jelaskan.
-
-Jika lengkap, jalankan hanya pelan diluluskan.
-
-Simpan bukti dalam evidence/.
-Laporkan Pass, Fail, Blocked dan Not run dengan tepat.
-
-Jangan deploy atau ubah reka bentuk terkunci.
-```
-
-## 21. Cadangkan dan laksanakan pembetulan ujian
-
-**Prompt cadangan:**
-
-```text
-Semak failed tests dan runtime evidence.
-
-Nyatakan punca, fungsi dan fail terjejas, pembetulan konkrit serta ujian semula.
-
-Nyatakan sama ada reka bentuk atau skema berubah.
-
-Bentangkan pembetulan sebelum mengedit.
-Jangan unlock sendiri atau tulis semula migrasi yang telah dijalankan.
-```
-
-**Prompt kelulusan:**
-
-```text
-Saya meluluskan pembetulan khusus dalam proposal terakhir anda.
-
-Laksanakan pembetulan tersebut sahaja dan ulang semakan berkaitan yang diluluskan.
-
-Jika dokumen terkunci atau skema perlu berubah, berhenti untuk proses revision dan kelulusan dahulu.
-
-Jangan jalankan migrasi baharu tanpa kelulusan execution.
-
-Jalankan semula lint, format check, build dan ujian terjejas bagi bahasa/fail yang berubah. Jangan teruskan submodul lain dalam pembetulan ini.
-
-Simpan bukti dan laporkan baki isu.
-```
-
-Ulang sehingga semakan wajib lulus atau batasan diterima secara jelas.
-
-## 22. Sediakan manual pengguna
-
-**Prompt:**
-
-```text
-Saya meluluskan penyediaan .docs/usermanual.md daripada pelaksanaan yang disahkan.
-
-Susun mengikut peranan dan submodul.
-Terangkan navigation, fields, actions, statuses, uploads/downloads dan mesej lazim.
-
-Gunakan screenshots sebenar daripada aplikasi berjalan yang dibenarkan. Lindungi maklumat sensitif.
-
-Jangan gambarkan fungsi belum siap atau belum disahkan sebagai tersedia.
-
-Serahkan manual, keputusan ujian akhir dan batasan untuk semakan.
-Jangan deploy.
-```
-
-## 23. Terima dan kunci testing serta manual
-
-**Prompt selepas membaca dokumen:**
-
-```text
-Saya menerima testing.md dan usermanual.md yang diserahkan.
-
-Sahkan kedua-duanya menggambarkan bukti serta fungsi sebenar, termasuk batasan.
-
-Jika sesuai dikunci, berikan arahan penguncian.
-Jangan jalankan sendiri.
-```
-
-**Selepas semakan lulus, jalankan:**
-
-```bash
-cd /home/lqmnwido/Projects/dreams/memorial-workspace
-
-node scripts/maintenance.mjs lock-doc testing
-node scripts/maintenance.mjs lock-doc usermanual
-node scripts/maintenance.mjs check-docs
-```
-
-## 24. Sediakan rekod PRD
-
-**Prompt:**
-
-```text
-Sediakan cadangan entri .docs/PRD.md:
-- Fungsi siap.
-- Keputusan disahkan.
-- Sumber dan versi.
-- Revision skema diluluskan.
-- Fail berubah.
-- Bukti lint, formatting, build dan ujian bagi setiap submodul.
-- Penerimaan dan locks.
-- Kecacatan, batasan dan next steps.
-
-Bezakan design, implementation dan runtime verification.
-
-Future agents perlu menggunakan rekod serta draf lengkap tanpa mengulang source review kecuali revision dibenarkan memerlukannya.
-
-Tunjukkan entri sebelum menulis.
-Jangan reka kelulusan.
-```
-
-**Prompt selepas bersetuju:**
-
-```text
-Saya meluluskan entri PRD dalam respons terakhir anda.
-
-Tulis entri tersebut tepat seperti diluluskan ke .docs/PRD.md.
-
-Laporkan status akhir dan outstanding work.
-Jangan deploy.
-```
-
-## 25. Jika mahu deployment
-
-Pembangunan selesai tidak bermaksud deployment telah diluluskan.
-
-**Prompt pelan deployment:**
-
-```text
-Sediakan pelan deployment untuk versi aplikasi yang telah disahkan.
-
-Nyatakan:
-- Commit atau artifact tepat.
-- Environment dan server sasaran.
-- Konfigurasi serta secret references.
-- Database target dan migrasi tambahan jika ada.
-- Build, release dan startup commands.
-- Integrasi Shell/remote/API.
-- Backup, recovery dan rollback.
-- Health checks dan ujian selepas deployment.
-- Risiko serta prasyarat belum selesai.
-
-Jangan deploy, ubah server atau jalankan migrasi.
-Bentangkan pelan untuk kelulusan saya dahulu.
-```
-
-**Prompt pelaksanaan selepas pelan lengkap dan disemak:**
-
-```text
-Saya meluluskan pelan deployment terakhir anda untuk artifact, environment, server, database dan commands yang dinyatakan.
-
-Jika mana-mana sasaran, artifact atau prerequisite berubah, berhenti sebelum pelaksanaan.
-
-Jalankan hanya pelan yang diluluskan.
-Simpan deployment evidence dan laporkan health checks, failures serta recovery yang dilakukan.
-
-Jangan tambah perubahan atau sasaran lain.
-```
-
-Jika semua deployment checks lulus, minta agent mencadangkan kemas kini PRD dan luluskan entri tersebut sebelum ditulis.
+Setiap laporan: phase/submodule, fungsi/skrin, fail berubah, commands, hasil Pass/Fail/Blocked/Not run, screenshot/trace/log paths, batasan dan keputusan seterusnya. Jangan isi test result sebelum ujian dijalankan. Jangan menyalin angka baris/warning rujukan lama sebagai bukti semakan hari ini.

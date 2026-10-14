@@ -1,0 +1,1166 @@
+{
+  "checkedAt": "2026-10-14",
+  "source": "https://github.com/vercel-labs/skills/blob/main/src/agents.ts",
+  "sourceSnapshotSha256": "9c64197246db1b61c0b2777114e2e01dd60f503129842ce7eeb78a3c3f2caa25",
+  "aliases": {
+    "claude-code": "claude",
+    "gemini": "gemini-cli",
+    "copilot": "github-copilot",
+    "github": "github-copilot",
+    "roo-code": "roo",
+    "kilo-code": "kilo",
+    "kiro": "kiro-cli",
+    "qwen": "qwen-code",
+    "kimi": "kimi-code-cli",
+    "kimi-cli": "kimi-code-cli",
+    "hermes": "hermes-agent",
+    "vibe": "mistral-vibe",
+    "aiderdesk": "aider-desk"
+  },
+  "harnesses": [
+    {
+      "id": "adal",
+      "displayName": "AdaL",
+      "projectSkills": ".adal/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".adal/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "agents",
+      "displayName": "Portable Agent Skills directory",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".agents/skills"
+      },
+      "evidence": "portable",
+      "sources": [
+        "https://agentskills.io/specification"
+      ],
+      "invocation": "discover",
+      "generic": true
+    },
+    {
+      "id": "aider-desk",
+      "displayName": "AiderDesk",
+      "projectSkills": ".aider-desk/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".aider-desk/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "amp",
+      "displayName": "Amp",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "config",
+        "path": "agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "antigravity",
+      "displayName": "Antigravity",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".gemini/antigravity/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "antigravity-cli",
+      "displayName": "Antigravity CLI",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".gemini/antigravity-cli/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "astrbot",
+      "displayName": "AstrBot",
+      "projectSkills": "data/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".astrbot/data/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "augment",
+      "displayName": "Augment",
+      "projectSkills": ".augment/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".augment/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "autohand-code",
+      "displayName": "Autohand Code CLI",
+      "projectSkills": ".autohand/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".autohand/skills",
+        "env": "AUTOHAND_HOME",
+        "envSuffix": "skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "bob",
+      "displayName": "IBM Bob",
+      "projectSkills": ".bob/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".bob/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "claude",
+      "displayName": "Claude Code",
+      "projectSkills": ".claude/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".claude/skills",
+        "env": "CLAUDE_CONFIG_DIR",
+        "envSuffix": "skills"
+      },
+      "evidence": "vendor-docs",
+      "sources": [
+        "https://code.claude.com/docs/en/skills",
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "slash"
+    },
+    {
+      "id": "cline",
+      "displayName": "Cline",
+      "projectSkills": ".cline/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".cline/skills"
+      },
+      "evidence": "vendor-docs",
+      "sources": [
+        "https://docs.cline.bot/customization/skills",
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "slash"
+    },
+    {
+      "id": "codearts-agent",
+      "displayName": "CodeArts Agent",
+      "projectSkills": ".codeartsdoer/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".codeartsdoer/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "codebuddy",
+      "displayName": "CodeBuddy",
+      "projectSkills": ".codebuddy/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".codebuddy/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "codemaker",
+      "displayName": "Codemaker",
+      "projectSkills": ".codemaker/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".codemaker/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "codestudio",
+      "displayName": "Code Studio",
+      "projectSkills": ".codestudio/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".codestudio/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "codex",
+      "displayName": "Codex",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".agents/skills"
+      },
+      "evidence": "vendor-docs",
+      "sources": [
+        "https://learn.chatgpt.com/docs/build-skills",
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "dollar"
+    },
+    {
+      "id": "command-code",
+      "displayName": "Command Code",
+      "projectSkills": ".commandcode/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".commandcode/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "continue",
+      "displayName": "Continue",
+      "projectSkills": ".continue/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".continue/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "cortex",
+      "displayName": "Cortex Code",
+      "projectSkills": ".cortex/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".snowflake/cortex/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "crush",
+      "displayName": "Crush",
+      "projectSkills": ".crush/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".config/crush/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "cursor",
+      "displayName": "Cursor",
+      "projectSkills": ".cursor/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".cursor/skills"
+      },
+      "evidence": "vendor-docs",
+      "sources": [
+        "https://cursor.com/docs/skills",
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "slash"
+    },
+    {
+      "id": "deepagents",
+      "displayName": "Deep Agents",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".deepagents/agent/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "devin",
+      "displayName": "Devin for Terminal",
+      "projectSkills": ".devin/skills",
+      "userSkills": {
+        "base": "config",
+        "path": "devin/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "dexto",
+      "displayName": "Dexto",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "droid",
+      "displayName": "Droid",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".factory/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "eve",
+      "displayName": "Eve",
+      "projectSkills": "agent/skills",
+      "userSkills": null,
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "firebender",
+      "displayName": "Firebender",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".firebender/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "forgecode",
+      "displayName": "ForgeCode",
+      "projectSkills": ".forge/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".forge/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "fx",
+      "displayName": "fx",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "gemini-cli",
+      "displayName": "Gemini CLI",
+      "projectSkills": ".gemini/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".gemini/skills"
+      },
+      "evidence": "vendor-docs",
+      "sources": [
+        "https://geminicli.com/docs/cli/skills/",
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "github-copilot",
+      "displayName": "GitHub Copilot",
+      "projectSkills": ".github/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".copilot/skills"
+      },
+      "evidence": "vendor-docs",
+      "sources": [
+        "https://docs.github.com/en/copilot/concepts/agents/about-agent-skills",
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "goose",
+      "displayName": "Goose",
+      "projectSkills": ".goose/skills",
+      "userSkills": {
+        "base": "config",
+        "path": "goose/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "grok",
+      "displayName": "Grok Build",
+      "projectSkills": ".grok/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".grok/skills",
+        "env": "GROK_HOME",
+        "envSuffix": "skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "hermes-agent",
+      "displayName": "Hermes Agent",
+      "projectSkills": ".hermes/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".hermes/skills",
+        "env": "HERMES_HOME",
+        "envSuffix": "skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "iflow-cli",
+      "displayName": "iFlow CLI",
+      "projectSkills": ".iflow/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".iflow/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "inference-sh",
+      "displayName": "inference.sh",
+      "projectSkills": ".inferencesh/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".inferencesh/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "jazz",
+      "displayName": "Jazz",
+      "projectSkills": ".jazz/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".jazz/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "junie",
+      "displayName": "Junie",
+      "projectSkills": ".junie/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".junie/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "kilo",
+      "displayName": "Kilo Code",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".kilo/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "kimchi",
+      "displayName": "Kimchi",
+      "projectSkills": ".kimchi/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".config/kimchi/harness/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "kimi-code-cli",
+      "displayName": "Kimi Code CLI",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "kiro-cli",
+      "displayName": "Kiro CLI",
+      "projectSkills": ".kiro/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".kiro/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover",
+      "notes": [
+        "Kiro may require skill resources to be enabled in its agent configuration; this installer does not modify that configuration."
+      ]
+    },
+    {
+      "id": "kode",
+      "displayName": "Kode",
+      "projectSkills": ".kode/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".kode/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "lingma",
+      "displayName": "Lingma",
+      "projectSkills": ".lingma/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".lingma/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "loaf",
+      "displayName": "Loaf",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "mcpjam",
+      "displayName": "MCPJam",
+      "projectSkills": ".mcpjam/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".mcpjam/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "minimax-code",
+      "displayName": "MiniMax Code",
+      "projectSkills": ".minimax/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".minimax/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "mistral-vibe",
+      "displayName": "Mistral Vibe",
+      "projectSkills": ".vibe/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".vibe/skills",
+        "env": "VIBE_HOME",
+        "envSuffix": "skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "moxby",
+      "displayName": "Moxby",
+      "projectSkills": ".moxby/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".moxby/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "mux",
+      "displayName": "Mux",
+      "projectSkills": ".mux/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".mux/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "neovate",
+      "displayName": "Neovate",
+      "projectSkills": ".neovate/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".neovate/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "ona",
+      "displayName": "Ona",
+      "projectSkills": ".ona/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".ona/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "openclaw",
+      "displayName": "OpenClaw",
+      "projectSkills": "skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".openclaw/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover",
+      "notes": [
+        "Uses the current .openclaw directory; use --dest for older .clawdbot/.moltbot workspaces."
+      ]
+    },
+    {
+      "id": "opencode",
+      "displayName": "OpenCode",
+      "projectSkills": ".opencode/skills",
+      "userSkills": {
+        "base": "config",
+        "path": "opencode/skills"
+      },
+      "evidence": "vendor-docs",
+      "sources": [
+        "https://opencode.ai/docs/skills/",
+        "https://opencode.ai/docs/commands/",
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "opencode-command"
+    },
+    {
+      "id": "openhands",
+      "displayName": "OpenHands",
+      "projectSkills": ".openhands/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".openhands/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "pi",
+      "displayName": "Pi",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "pochi",
+      "displayName": "Pochi",
+      "projectSkills": ".pochi/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".pochi/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "posit-assistant",
+      "displayName": "Posit Assistant",
+      "projectSkills": ".posit/assistant/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".posit/assistant/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "promptscript",
+      "displayName": "PromptScript",
+      "projectSkills": ".agents/skills",
+      "userSkills": null,
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "qoder",
+      "displayName": "Qoder",
+      "projectSkills": ".qoder/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".qoder/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "qoder-cn",
+      "displayName": "Qoder CN",
+      "projectSkills": ".qoder/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".qoder-cn/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "qwen-code",
+      "displayName": "Qwen Code",
+      "projectSkills": ".qwen/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".qwen/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "reasonix",
+      "displayName": "Reasonix",
+      "projectSkills": ".reasonix/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".reasonix/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "replit",
+      "displayName": "Replit",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "config",
+        "path": "agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "roo",
+      "displayName": "Roo Code",
+      "projectSkills": ".roo/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".roo/skills"
+      },
+      "evidence": "vendor-docs",
+      "sources": [
+        "https://roocodeinc.github.io/Roo-Code/features/skills/",
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "rovodev",
+      "displayName": "Rovo Dev",
+      "projectSkills": ".rovodev/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".rovodev/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "sarvam-code",
+      "displayName": "Sarvam Code",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "tabnine-cli",
+      "displayName": "Tabnine CLI",
+      "projectSkills": ".tabnine/agent/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".tabnine/agent/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "terramind",
+      "displayName": "Terramind",
+      "projectSkills": ".terramind/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".terramind/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "tinycloud",
+      "displayName": "Tinycloud",
+      "projectSkills": ".tinycloud/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".tinycloud/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "trae",
+      "displayName": "Trae",
+      "projectSkills": ".trae/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".trae/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "trae-cn",
+      "displayName": "Trae CN",
+      "projectSkills": ".trae/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".trae-cn/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "universal",
+      "displayName": "Universal",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "config",
+        "path": "agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "warp",
+      "displayName": "Warp",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "windsurf",
+      "displayName": "Windsurf",
+      "projectSkills": ".windsurf/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".codeium/windsurf/skills"
+      },
+      "evidence": "vendor-docs",
+      "sources": [
+        "https://docs.devin.ai/desktop/cascade/skills",
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "mention",
+      "notes": [
+        "Windsurf/Devin Desktop documentation still accepts this legacy path; newer desktop versions also use .devin/skills."
+      ]
+    },
+    {
+      "id": "zcode",
+      "displayName": "ZCode",
+      "projectSkills": ".zcode/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".zcode/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "zed",
+      "displayName": "Zed",
+      "projectSkills": ".agents/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".agents/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "zencoder",
+      "displayName": "Zencoder",
+      "projectSkills": ".zencoder/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".zencoder/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    },
+    {
+      "id": "zenflow",
+      "displayName": "Zenflow",
+      "projectSkills": ".zencoder/skills",
+      "userSkills": {
+        "base": "home",
+        "path": ".zencoder/skills"
+      },
+      "evidence": "registry",
+      "sources": [
+        "https://github.com/vercel-labs/skills/blob/main/src/agents.ts"
+      ],
+      "invocation": "discover"
+    }
+  ]
+}

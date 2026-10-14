@@ -1,0 +1,4 @@
+interface:
+  display_name: "D-ReAMS Frontend"
+  short_description: "One standalone shared-UI prototype at a time"
+  default_prompt: "Use $d-frontend to build the selected Phase 2 frontend prototype."

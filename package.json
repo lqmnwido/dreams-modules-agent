@@ -4,18 +4,26 @@
   "description": "Interactive D-ReAMS module scaffold with read-only AI governance documents",
   "type": "module",
   "bin": {
-    "dreams-modules-agent": "bin/install.mjs"
+    "dreams-modules-agent": "bin/install.mjs",
+    "dreams-skills": "skills.js"
   },
   "scripts": {
     "test": "node --test",
-    "check": "node --check bin/install.mjs && node --check lib/scaffold.mjs && node --check lib/maintenance.mjs"
+    "check": "node --check bin/install.mjs && node --check lib/scaffold.mjs && node --check lib/maintenance.mjs && node --check skills.js && node --check lib/skills.mjs && node --check lib/harnesses.mjs"
   },
   "files": [
     "bin/",
     "lib/",
     "templates/",
     "README.md",
-    "installers/"
+    "installers/",
+    "skills.js",
+    "skills/",
+    "docs/",
+    "guide.md",
+    "prompts.md",
+    "prompts-ms.md",
+    "ARCHITECTURE.md"
   ],
   "engines": {
     "node": ">=22.12.0"
