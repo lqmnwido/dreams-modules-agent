@@ -29,8 +29,10 @@ Then open an agent session in the module workspace:
 | Documentation and request user locking | `$d-documents` | `/d-documents` |
 | One frontend prototype | `$d-frontend submodule-name` | `/d-frontend submodule-name` |
 | One backend and integration | `$d-backend submodule-name` | `/d-backend submodule-name` |
+| Scoped tests and TESTING evidence | `$d-testing submodule-name` | `/d-testing submodule-name` |
+| Verified USERMANUAL and handover | `$d-manual submodule-name` | `/d-manual submodule-name` |
 
-Skills load their own phase instructions and references. The numbered prompts remain a manual alternative. Users still answer unresolved questions, lock documents, accept interfaces and authorize identified database execution. Skills do not install Playwright MCP/JDK or automatically make browser tools available.
+Default installation includes all five skills. Skills load their own phase instructions and references. The numbered prompts remain a manual alternative. Users still answer unresolved questions, lock documents, accept interfaces and authorize identified database execution. Skills do not install Playwright MCP/JDK or automatically make browser tools available.
 
 `--dry-run` previews destinations without writes; `--project /path/workspace` installs project-local skills; `--list-harnesses` lists 79 named harnesses and a portable target; `--harness name` selects an adapter; `--all --dry-run` previews the dated registry before installation; `--dest /path/skills` supports another Agent Skills directory. See `docs/SKILLS.md` for paths, managed `--force` updates and compatibility limits. Restart the session if skills have not appeared. Installation does not change scaffolds, project AGENTS files or locks.
 
@@ -195,6 +197,36 @@ This guide does not automate unlocking. Changes after locking require the user t
 
 After user locking and authorization, use **Prompt 6** to verify hashes, read SCOPE/FRONTEND and select one submodule. **Prompt 7** builds its prototype; **Prompt 8** tests and shows it; **Prompt 9** records interface acceptance and proposes the next submodule. Repeat 6–9 until all interfaces are accepted. Do not start the backend during this cycle.
 
+### Frontend service layout
+
+Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.
+
+The submodule service defines WHAT to call: business-function names, endpoint paths, payload mapping and explicitly approved fallback selection. It imports the shared client instead of calling fetch, assembling URLs/auth headers, parsing raw responses or duplicating audit/error plumbing. The module https.js defines HOW requests run: fetch, URL construction, host credentials/authId policy, serialization/parsing, response wrappers, approved audit transport and transport errors. Services may handle documented domain errors after the transport propagates them. Audit event intent/metadata may originate in the service; transport delivery belongs in https.js under the confirmed host/provider contract. Do not invent an audit endpoint or report audit delivery implemented merely because the layer is documented. Phase 2 may explicitly select fixtures; never silently fall back to dummy success after a production API error.
+
+### Frontend environment and remote mode
+
+Generated frontend .env, .env.local and .env.example default to VUE_APP_REMOTE=off. Use off for standalone work; set on only when serving the module through Shell, then restart/rebuild. Only on enables Module Federation, remoteEntry.js publication and the Shell remote configuration. The off setting does not create a standalone preview harness or bypass backend authentication; Phase 2 still needs its identified dev-only preview setup. Vue CLI loads .env.local as an override, so keep its value consistent with the intended mode. Existing workspaces are unchanged.
+
+
+Generated frontend environment files also set the module bucket name:
+
+```dotenv
+VUE_APP_REMOTE=off
+VUE_APP_BUCKET_MEMORIAL=memorial
+```
+
+Use `VUE_APP_BUCKET_{MODULE}={module}` for the actual module. The default appears in .env, .env.local and .env.example; it does not provision storage or verify permissions. UPLOAD_BUCKET_{MODULE} remains a separate unconfigured setting. Real uploads need an identified authorized integration, not Phase 2 fixtures.
+
+```text
+src/services/{module}/
+├── https.js
+├── hardcode-data.js
+├── upload.js
+└── {submodule}.service.js
+```
+
+The fixture helper returns independent synthetic document rows. The upload example follows the shared GeneratedFormData schema with type file, example size 5 MiB, center alignment and the module bucket variable. Adapt limits/required/type rules to accepted requirements; Tus remains commented out. Do not upload twice through both the shared form and service helper. Existing workspaces are not automatically migrated.
+
 ### Follow the exact UI and service references
 
 Use `general-tab-crud/list-main.vue` as the main reference. Read `tab.vue`, `details-one.vue` through `details-four.vue`, and `list-two.vue` through `list-five.vue` where relevant. Do not substitute general-crud, training/crud/list or Shell administration screens as complete references. Inspect the @2enapps/ui `list-data.vue` and `form-data.vue` engines for actual behavior. Do not edit node_modules or the library.
@@ -234,6 +266,8 @@ npm run build
 
 If tooling is missing, propose exact configuration/versions first. Do not invent npm scripts or format the entire repository. Fix authorized files only, then rerun checks.
 
+Use `$d-testing submodule-name` in Codex, or `/d-testing submodule-name` in a slash-capable harness, to run the selected verification scope and record actual TESTING.md evidence. Keep VUE_APP_REMOTE=off and external API/storage calls inactive for Phase 2.
+
 White-box tests exercise actual logic, state and fixture services. Playwright MCP visible-browser tests exercise black-box behavior. Cover happy/negative/edge cases, validation, navigation, paging/search/reset and console/network errors. Browser tests alone are not white-box tests. Show the actual UI and screenshots for user review. Missing tooling/browser access is Blocked, not Pass. Save evidence by phase/submodule.
 
 ### After all prototypes are accepted
@@ -270,6 +304,8 @@ All schema changes use new Flyway migrations. Test every migration forward and t
 Use EXPLAIN (ANALYZE, BUFFERS) for slow-query diagnosis on authorized targets; it executes queries. Keep transactions short and atomic. Use advisory coordination where safe with defined keys/order/timeouts; preserve row locks needed for correctness or queue claims.
 
 ### Backend testing by scope
+
+Use d-testing for the selected backend/integration unit after its implementation exists. Confirm actual test profiles, accounts, database target and authorized writes before execution. Testing does not authorize production mutations or another submodule.
 
 Stack: PostgreSQL + Spring Data JPA; JUnit 5 + Mockito + Spring Boot Test. Use Mockito for service unit tests, @WebMvcTest for controllers, @DataJpaTest with PostgreSQL for repositories and @SpringBootTest for integration. Do not silently substitute H2 or run context/Flyway tests against unidentified databases.
 
@@ -314,6 +350,8 @@ After all submodules, plan Shell MFE/SSO/menu/routes and cross-submodule tests. 
 
 ## Completion
 
+Use d-manual after verified behavior exists. It writes unlocked USERMANUAL.md for the selected roles/tasks, links actual TESTING evidence and uses real masked screenshots. Missing screenshots remain Not captured; mockups are not runtime proof. Ask user acceptance before providing final locking instructions.
+
 **Prompt 17:** generate an accurate backend README covering purpose/scope, submodules, package structure, prerequisites/setup/run, environment variables without secrets, own-database/migration instructions, Keycloak access matrix and complete API list. Reopen a locked README before editing. Complete TESTING/USERMANUAL from actual evidence and keep PRD as a general summary. Users accept and lock final documents through an uppercase-compatible procedure; agents do not lock them.
 
 **Prompt 18:** deployment requires a separate plan and authorization. Do not deploy merely because code/tests are complete. Record missing components/integrations as actual limitations.
@@ -326,16 +364,6 @@ Each report identifies phase/submodule, functions/screens, changed files, comman
 
 Every frontend/backend change must pass both formatting and linting checks. Use approved ESLint/Prettier for frontend and the project’s Java formatter/lint configuration for backend. Write readable multiline methods; never compress declarations, conditions and returns into one line. Missing tooling or failed/unrun checks block a completion claim. Report each command/result separately and format authorized changed files only. See [CODE-STYLE.md](docs/CODE-STYLE.md) for examples and the verification procedure.
 
-## Frontend service layout
-
-Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.
-
-The submodule service defines WHAT to call: business-function names, endpoint paths, payload mapping and explicitly approved fallback selection. It imports the shared client instead of calling fetch, assembling URLs/auth headers, parsing raw responses or duplicating audit/error plumbing. The module https.js defines HOW requests run: fetch, URL construction, host credentials/authId policy, serialization/parsing, response wrappers, approved audit transport and transport errors. Services may handle documented domain errors after the transport propagates them. Audit event intent/metadata may originate in the service; transport delivery belongs in https.js under the confirmed host/provider contract. Do not invent an audit endpoint or report audit delivery implemented merely because the layer is documented. Phase 2 may explicitly select fixtures; never silently fall back to dummy success after a production API error.
-
-## Frontend remote mode
-
-Generated frontend .env, .env.local and .env.example default to VUE_APP_REMOTE=off. Use off for standalone work; set on only when serving the module through Shell, then restart/rebuild. Only on enables Module Federation, remoteEntry.js publication and the Shell remote configuration. The off setting does not create a standalone preview harness or bypass backend authentication; Phase 2 still needs its identified dev-only preview setup. Vue CLI loads .env.local as an override, so keep its value consistent with the intended mode. Existing workspaces are unchanged.
-
 ## Testing and manual skills
 
 Use `$d-testing <submodule>` and `$d-manual <submodule>` in Codex, or `/d-testing <submodule>` and `/d-manual <submodule>` in Claude Code/OpenCode/Cursor/Cline. Other harnesses use their supported skill invocation. Testing records actual results in TESTING.md; manual work documents verified behavior in USERMANUAL.md with real masked evidence. Both preserve locks, scoped execution and user acceptance.
@@ -345,3 +373,16 @@ node skills.js --codex --skill d-testing --skill d-manual
 ```
 
 Replace --codex with your harness flag. Default installation includes all five skills; no MCP/browser/JDK or application dependencies are installed automatically.
+
+## Keep the hosted prompts synchronized
+
+From dreams-modules-agent after editing either Markdown prompt library:
+
+```bash
+npm run sync:prompts
+npm run check
+npm test
+git diff --check
+```
+
+The sync command refreshes public/index.html with 18 prompts per language; its Skills section lists all five skills. Repository syntax/tests are separate from module lint/format/browser/database verification. Dedicated formatter/linter scripts are not currently configured in the installer repository; report them as unavailable rather than passed. A Git push does not prove the hosted site deployed successfully.

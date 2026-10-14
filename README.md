@@ -1,44 +1,55 @@
 # dreams-modules-agent
 
-Write Markdown documentation in English. Only `prompts-ms.md` uses Malay; retain source-defined names, code identifiers and quoted UI labels.
+D-ReAMS module scaffolder and portable workflow skills. Create a module workspace, prepare and lock its design, review frontend prototypes one submodule at a time, then implement and integrate one backend submodule at a time.
 
-Interactive D-ReAMS module scaffolder. No installer dependencies or npm registry publication needed: download/clone the tool and run its Node.js CLI. Frontend/Shell dependencies still use npm.
+Write Markdown documentation in English. Only `prompts-ms.md` uses Malay; preserve source-defined names, identifiers and quoted UI labels.
 
-Requires Node.js >=22.12 (with npm), Git and access to company GitLab. Backend build requires your approved Java/Maven. This supports Spring Boot 3.x/Maven; other versions/build tools need reviewed templates.
+## Start here
 
-The questionnaire asks module name/code, target workspace, Java group/package, approved Java/Boot versions, frontend port and submodules/use cases. Press Enter at the Java/version prompts to use Java 25 (LTS) and Spring Boot 3.5.16. These are reviewed defaults, not a live latest-version lookup; you may enter another approved version. Boot 3.5 has extended commercial support, not free LTS coverage. [Spring requirements](https://docs.spring.io/spring-boot/3.5/system-requirements.html), [support policy](https://spring.io/support-policy/). Blank business answers become TBD. It previews dependencies/folders and asks confirmation before writing. Cancellation writes nothing. It refuses existing files and symlink parents.
+- [Workflow guide](guide.md): setup, phase sequence, review gates and human-run locking.
+- [English prompts](prompts.md) / [Malay prompts](prompts-ms.md): 18 copyable prompts per language.
+- [Skill installation](docs/SKILLS.md) and [79-harness support matrix](docs/HARNESS-SUPPORT.md).
+- [Shared architecture](ARCHITECTURE.md), [code style](docs/CODE-STYLE.md), [backend patterns](docs/BACKEND-PATTERNS.md) and [database patterns](docs/DATABASE-PATTERNS.md).
+- [Hosted installer and prompt library](https://dreams-agents.kohich.site/): searchable harness installation and all five skill commands.
 
-## Installation
+## Install the workspace generator
 
-Visit [D-ReAMS Modules Agent](https://dreams-agents.kohich.site/) for installation commands and the English / Bahasa Melayu prompt library. Use the Skills section to search supported harnesses and copy installation and phase commands. Enter your Module Code to add module and mockup context to prompts 1 and 2 in English or Malay. Run `npm run sync:prompts` after changing the Markdown prompt libraries to refresh the website.
+Requirements: Node.js >=22.12 with npm, Git and access to the private Kai UI/Shell repositories. The installer itself has no npm dependencies. Generated frontend/Shell projects use npm; backend builds require the selected Java version and Maven.
 
-The bootstrap scripts below use main, check prerequisites, clone the tool and run the questionnaire. They do not install system tools or require administrator access. For repeatable installation, use a reviewed release tag or commit.
+```bash
+git clone https://github.com/lqmnwido/dreams-modules-agent.git
+cd dreams-modules-agent
+node bin/install.mjs
+```
 
-Linux/macOS:
+The questionnaire asks module name/code, workspace path, Java package/toolchain, frontend port, submodules and use-case inputs. Current installer defaults are Java 25 and Spring Boot 3.5.16; these are repository defaults, not a live latest-version lookup. Confirm project compatibility before changing versions. Blank business answers remain TBD. The installer previews the plan and asks before writing; cancellation writes nothing, and existing files/symlink parents are rejected. Never rerun it to overwrite an existing workspace.
 
-```sh
-# Inspect the script before running it:
-curl -fsSL 'https://dreams-agents.kohich.site/install.sh' | bash
+For hosted installation, download and inspect the script before execution:
+
+```bash
+curl -fL 'https://dreams-agents.kohich.site/install.sh' -o dreams-agent-install.sh
+cat dreams-agent-install.sh
+# After review:
+bash dreams-agent-install.sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-# Inspect the script before running it:
-irm 'https://dreams-agents.kohich.site/install.ps1' | iex
+Invoke-WebRequest 'https://dreams-agents.kohich.site/install.ps1' -OutFile dreams-agent-install.ps1
+Get-Content dreams-agent-install.ps1
+# After review, follow organizational execution policy:
+.\dreams-agent-install.ps1
 ```
 
-Windows policy may require an organization-approved signed script or direct Git clone + `node bin/install.mjs`. No policy bypass is built in. Use Git credential management for private repositories; keep tokens out of commands/documents.
+Use organizational Git credentials; never put tokens in commands or documentation. No execution-policy bypass or system-tool installation is included. Optional npm packaging exists but is not published by these instructions.
 
-Optional npm/npx packaging is included but not published. After publication: `npx @lqmnwido/dreams-modules-agent`. The same interactive CLI runs.
+## Install skills for your harness
 
-## Phase skills — install once, use short commands
+Run from this repository. Choose the harness you use; do not run every example:
 
-The workflow is available as portable Agent Skills, without changing the workspace scaffolder:
-
-```sh
+```bash
 node skills.js --codex
-# Or choose your harness:
 node skills.js --claude
 node skills.js --opencode
 node skills.js --cursor
@@ -47,11 +58,41 @@ node skills.js --copilot
 node skills.js --windsurf
 ```
 
-Use `$d-documents`, `$d-frontend <submodule>`, `$d-backend <submodule>` in Codex; use `/d-documents`, `/d-frontend <submodule>`, `/d-backend <submodule>` in Claude Code/OpenCode/Cursor/Cline. Other harnesses use their documented skill invocation. These replace repeated long phase prompts; phase locks, user interface review and execution authorization still apply.
+All five skills are installed by default across the same 79 named adapters plus the portable directory target:
 
-See [skills installation and invocation](docs/SKILLS.md) for user/project scope, dry runs, safe updates, custom destinations and exact harness compatibility. `node skills.js --list-harnesses` lists 79 named harness targets plus a portable directory, with paths and sources. Use `--harness NAME` or a direct flag. `--all --dry-run` previews the full dated registry; it does not claim every tool in existence. See the [complete support matrix](docs/HARNESS-SUPPORT.md). Skill instructions follow the current [three-phase guide](guide.md); older generated scaffold text and lowercase filenames are not silently migrated by installing skills.
+| Skill | Purpose | Codex | Claude Code / OpenCode / Cursor / Cline |
+| --- | --- | --- | --- |
+| d-documents | Phase 1 source-based documents and request user locking | `$d-documents` | `/d-documents` |
+| d-frontend | One standalone frontend prototype | `$d-frontend attendance` | `/d-frontend attendance` |
+| d-backend | One backend submodule and real integration | `$d-backend attendance` | `/d-backend attendance` |
+| d-testing | Scoped verification and actual TESTING evidence | `$d-testing attendance` | `/d-testing attendance` |
+| d-manual | Verified USERMANUAL and handover | `$d-manual attendance` | `/d-manual attendance` |
 
-## Generated workspace
+Replace attendance with an actual submodule. Windsurf uses @skill mentions; other tools may use skill discovery rather than slash commands. Registry-based installation paths are not live harness tests. The legacy installer selection `--skill d-dooc` resolves to d-documents; old installed copies are not removed automatically.
+
+```bash
+node skills.js --list
+node skills.js --list-harnesses
+node skills.js --cursor --dry-run
+node skills.js --harness NAME --project /path/to/module-workspace
+node skills.js --opencode --skill d-testing --skill d-manual
+```
+
+Default installation is user-wide. `--project` targets an existing workspace. Review changed managed skills before using `--force`; unowned packages are never overwritten. Preview `--all` with `--all --dry-run`. Installing skills does not modify project locks/configuration or install MCP servers, browsers, JDKs or application dependencies. Refresh your harness session if necessary.
+
+## Workflow and ownership
+
+1. **Documents:** read actual sources, settle missing design decisions, confirm relevant sources once, then ask the user to lock the five design documents.
+2. **Frontend:** build a synthetic standalone prototype for one submodule, run quality/tests, show it and wait for user interface review. Repeat until all interfaces are accepted.
+3. **Backend/integration:** implement and verify one submodule using its locked contracts, authorize identified database execution separately, then connect real APIs. Stop for review before the next submodule.
+
+Use d-testing within the relevant phase and d-manual after verified behavior exists. They do not introduce extra implementation phases or record user acceptance automatically.
+
+Every module owns a separate PostgreSQL database. Only its backend/workers/migrations access it; other modules use its API. Shell owns menu/navbar/layout/login/SSO/token refresh. Vue MFEs load through Module Federation; business data travels through HTTP APIs. UI uses `@2enapps/ui` from Kai.
+
+**Current workflow:** no separate human database-review table or APPROVED record is required. A complete locked database design is still required for migration creation. Executing migrations or starting a database-backed application requires exact scripts, target and execution authorization. Never modify locked designs silently or execute production changes under a general implementation request.
+
+## Workspace documents and Module Code
 
 ```text
 workspace/
@@ -75,15 +116,18 @@ workspace/
 └── shell/                   # cloned by network setup/maintenance
 ```
 
-Frontend includes the current training `src/views/ui-element/` and supporting `src/services/training/` snapshot. These contain mock data, legacy raw controls/styles and training integrations; they are reference material and excluded from the default expose map. Approved domain views/APIs and Shell route wiring remain pending.
+The tree shows canonical uppercase design names. **Compatibility limitation:** the current generator still emits lowercase design drafts and `lock-doc` accepts lowercase names. Inspect actual paths; do not silently rename locked files or claim `lock-doc scope` locks `SCOPE.md`. Follow the [guide’s uppercase compatibility and locking procedure](guide.md#uppercase-compatibility-without-scaffold-changes). Some legacy generated templates still describe the older database approval gate; reconcile them under explicit document revision before locking rather than inventing another approval record.
 
-## Frontend structure
+Read Module Code from `module.config.json` field `code`, not the module name/package. Select `.docs/documents/mockup/{module code}/` using the actual matching directory. For example, M12 may resolve to an existing m12 folder. Report the code/path and ask if missing or ambiguous; never substitute another module’s mockups or a dated ZIP without explicit source selection. Record sources in SCOPE.md and the PRD summary.
+
+## Frontend layout and environment
 
 ```text
 {module}_fe/
 ├── package.json
 ├── exposes.js                       # single federation contract
 ├── vue.config.js                    # federation, publicPath, singletons
+├── .env                             # remote mode and module bucket defaults
 ├── .env.local                       # module environment for local work
 ├── .env.example                     # safe environment template
 ├── CRUD-REFERENCE.md                # copied training revision reference
@@ -92,7 +136,7 @@ Frontend includes the current training `src/views/ui-element/` and supporting `s
     ├── metadata.js                  # remote name, version, route prefix
     ├── services/
     │   ├── {module}/
-    │   │   ├── https.js              # transport; credentials from host
+    │   │   ├── https.js            # transport; credentials from host
     │   │   ├── hardcode-data.js     # synthetic Phase 2 fixture example
     │   │   ├── upload.js            # shared UI upload schema/service example
     │   │   └── {submodule}.service.js # service scaffold per submodule
@@ -102,13 +146,54 @@ Frontend includes the current training `src/views/ui-element/` and supporting `s
         └── ui-element/             # training references
 ```
 
-`exposes.js` matches training's contract naming. Each entered submodule exposes `./views/{submodule}/interface`, consumed as `{module}/views/{submodule}/interface` by Shell. Page scaffolds use only shared PageHeader; approved fields/actions are pending. Shell routes/permissions are not registered automatically. Metadata's route prefix is the scaffold default `/{module}`; confirm it before Shell registration.
+Generated `.env`, `.env.local` and `.env.example` include:
 
-`services/{module}/https.js` adapts training's generic transport and obtains credentials through `useHostAdapter`. The caller supplies the approved API base URL; public-prefix/authId policies default off and require explicit confirmation. Use the CRUD reference's `getParams`, `detailsBreadcrumbMixin`, `returnResponseList` envelope (preserving `data`, `list`, `total`) and shared validation helpers when implementing real flows.
+```dotenv
+VUE_APP_REMOTE=off
+VUE_APP_BUCKET_MEMORIAL=memorial
+```
 
-## Backend structure
+The generic bucket pattern is `VUE_APP_BUCKET_{MODULE}={module}`. This names storage but does not provision the bucket or verify access. `UPLOAD_BUCKET_{MODULE}` remains a separate unconfigured setting.
 
-Example module `memorial`, package `com.dreams.memorial`:
+- `off`: disables Module Federation for standalone development. It does not create the Phase 2 preview harness; the initial remote-entry.js remains `export {};`.
+- `on`: enables Module Federation and remoteEntry.js publication for serving through Shell. Confirm Shell exposes/routes/permissions and host integration before use.
+- Restart/rebuild after changing the flag. `.env.local` overrides `.env`; keep the effective mode consistent. Remote mode does not bypass backend authentication.
+
+### Service responsibilities
+
+| File | Responsibility |
+| --- | --- |
+| `{submodule}.service.js` | WHAT: business functions, endpoint paths, payload mapping and explicitly approved fallback selection |
+| `https.js` | HOW: fetch, URL construction, host credentials/authId policy, serialization/parsing, response wrappers, confirmed audit transport and transport errors |
+| `hardcode-data.js` | Synthetic Phase 2 examples; `createDemoDocuments()` returns independent mutable rows |
+| `upload.js` | Shared UI document-upload schema and host attachment/read-client examples |
+
+Services import from `./https`; they do not duplicate fetch/auth/parse/audit plumbing. Module https.js follows the bundled training http.js structure. Preserve host credentials, response metadata and list/detail envelopes. Public-prefix/authId policies remain off unless the integration contract enables them. Audit event intent may come from services; actual audit delivery requires its confirmed contract and is not implemented merely by documenting the layer.
+
+Use fixtures explicitly in Phase 2 and prepare real API calls as inactive comments. Production must never fall back to dummy success after an API failure. Views remain under `{submodule}/interface.vue`; only services use the flat file layout. Existing workspaces are not renamed automatically.
+
+### Shared UI and uploads
+
+Use `general-tab-crud/list-main.vue`, related details/tabs and @2enapps/ui form/table engines. Mockups supply functional ideas, not replacement visual components. Preserve getParams, returnResponseList envelopes and detailsBreadcrumbMixin. If a required component is unavailable, show an empty shared card labeled exactly `[ component not available ]` and record the gap.
+
+The generated upload field follows V2T’s document example:
+
+```javascript
+upload: {
+  type: "file",
+  size: 5,
+  align: "center",
+  // isTus: true,
+  // tusEndPoint: "http://localhost:1080/files/",
+  bucketname: process.env.VUE_APP_BUCKET_MEMORIAL
+}
+```
+
+The 5 MiB/required settings are examples; use accepted domain limits and backend validation. Tus remains inactive. The shared form already invokes its uploader; do not also call uploadExampleAttachment for the same selection. Real uploads require the configured host adapter and authorized private storage. No V2T ASR endpoint or automatic live upload is copied. Reference ui-element/training snapshots remain excluded from default exposes and may contain legacy code; they are not approved business implementations.
+
+## Backend layout and security
+
+Example module memorial, package com.dreams.memorial:
 
 ```text
 memorial_be/
@@ -127,14 +212,11 @@ memorial_be/
     │   │   └── controller/{submodule}/
     │   └── resources/
     │       ├── application.properties
-    │       └── db/migration/        # Flyway; database approval required
+    │       └── db/migration/        # Flyway; locked design, separate execution authorization
     └── test/java/com/dreams/memorial/
 ```
 
-The application class derives from the entered module name; package paths derive from the approved package. Backend creates package directories per entered submodule, application/security configuration and Maven build. No domain endpoints/entities/queries are invented. No SQL migrations are generated. Flyway is enabled; SQL initialization and Hibernate DDL remain disabled. A human must approve the schema before migration creation, then review the exact scripts and target database before execution or backend startup. MinIO, confirmed roles/audience/errors and deployment settings remain TBD.
-
-
-## API authentication and local Postman testing
+The generator creates package directories, the application/security configuration and Maven build. It does not implement business APIs/entities or generate SQL migrations. Use Spring Data JPA with the module’s own PostgreSQL database. Keep Flyway enabled, Hibernate generation none and SQL initialization never.
 
 Authentication is enabled by default (`API_SECURITY_ENABLED=true`). Set `KEYCLOAK_ISSUER_URI` for secure mode; Shell obtains the access token and the backend validates it. Audience/role mappings and record access remain module-specific reviewed requirements.
 
@@ -150,73 +232,40 @@ No-token mode disables JWT/request and method authorization and provides no auth
 
 Run `mvn -Dtest=SecurityConfigTest test` for the generated filter/guard tests. These use test controllers and a stub decoder; they do not prove live Keycloak connectivity or token signatures.
 
-## Daily work
 
-From generated workspace root:
+## Formatting, linting and evidence
 
-```sh
+Every frontend/backend change requires both formatter and linter checks. Frontend uses approved ESLint/Prettier; backend uses approved Java formatter/style tools such as configured Spotless/Checkstyle. Write multiline methods, one statement per line, braced conditions and readable signatures. Format authorized changed files only. Missing tooling or failed/unrun checks block a completion claim; syntax/build checks do not substitute for lint/format checks. See [code style](docs/CODE-STYLE.md).
+
+Use JUnit 5/Mockito/Spring Boot Test for backend scope and white-box plus Playwright MCP visible-browser tests for frontend behavior. Identify database-backed test targets first. Record actual Pass/Fail/Blocked/Not run outcomes and masked evidence under evidence/. Mocks, static checks and fixture screens are not live integration proof. d-manual documents verified tasks and real screenshots only; users accept and lock final documents.
+
+## Workspace maintenance
+
+From the generated workspace root:
+
+```bash
 node scripts/maintenance.mjs install    # initial npm install only
-node scripts/maintenance.mjs            # daily Shell fetch check + npm update
-node scripts/maintenance.mjs check-docs # compare generated Markdown hashes
+node scripts/maintenance.mjs            # later Shell check and npm update
+node scripts/maintenance.mjs check-docs # check protected Markdown hashes
 ```
 
-AI must obtain human approval before invoking maintenance; running it directly as a human authorizes its documented actions. Maintenance clones missing Shell, validates its origin, fetches at least once per local calendar day and fast-forward pulls only when safe. Local changes/divergence stop branch switching/pulling; no reset/stash/force operations. Initial setup runs only npm install; agents run npm update through daily maintenance. Both commands use --legacy-peer-deps. Before every install/update, both manifests use exactly:
+Maintenance clones missing Shell, checks its origin, fetches at least once per local day and fast-forwards only when safe. Local changes/divergence stop switching/pulling. Initial installation and later updates use --legacy-peer-deps and enforce:
 
 ```json
 "@2enapps/ui": "git+https://kai.2enapps.my/d-reams/frontend/ui.git#develop"
 ```
 
-This runs on sessions, not as a background scheduled service. Generated configuration uses sample local ports; humans confirm environment settings. Dependency maintenance does not claim build/browser success.
+Agents need authorization for dependency maintenance; running it yourself authorizes the documented operation. No background scheduler is created. Hash checks are not an OS permission boundary. Users lock/reopen documents; agents never alter the integrity manifest. See guide.md for the exact path-compatible procedure.
 
-Read `.docs/PRD.md` first. On the first drafting pass, agents read all supplied SRS/SDS/mockups in `.docs/documents/`, including nested folders, without waiting for extra permission to read. They report missing/unreadable files. AI edits unlocked scope/architecture/database/backend/frontend/testing/usermanual drafts only within approved scope, faithfully using those sources and citing versions/sections. Missing or conflicting facts remain TBD. After drafting is complete, agents use PRD and completed drafts; they reread original sources only on explicit human request for revision or clarification. Once a draft is complete, AI stops editing and submits it for human review. After acceptance, a human runs:
+## Maintain this repository
 
-```sh
-node scripts/maintenance.mjs lock-doc scope  # repeat for each accepted draft
-```
-
-The integrity manifest locks accepted drafts; AI must never alter it or invoke lock-doc. Revised sources require a human to explicitly reopen affected drafts (remove their hashes and approve revision). PRD entries still need completion and separate approval. Sources, instructions and other Markdown remain read-only. Locking does not grant migration approval. The hash checker detects edits; it is not an OS permission boundary. Evidence goes in `evidence/`. Never rerun the installer over existing files.
-
-## Dummy-data and upload examples
-
-New scaffolds include `src/services/{module}/hardcode-data.js` and `upload.js`, adapted from the V2T references. `createDemoDocuments()` returns independent synthetic rows for Phase 2 prototypes. These fixtures are not business requirements and must never become production API fallbacks.
-
-`upload.js` exports `documentUploadField`, `uploadExampleAttachment(field, file)` and `uploadReadClient()`. The field follows V2T’s `maklumat-dokumen.vue` shared form schema:
-
-```javascript
-upload: {
-  type: "file",
-  size: 5,
-  align: "center",
-  // isTus: true,
-  // tusEndPoint: "http://localhost:1080/files/",
-  bucketname: process.env.VUE_APP_BUCKET_MEMORIAL
-}
-```
-
-The generator substitutes the actual module environment suffix, not V2T’s bucket. Generated `.env`, `.env.local` and `.env.example` set `VUE_APP_BUCKET_{MODULE}={module}`, for example `VUE_APP_BUCKET_MEMORIAL=memorial`. This names the bucket; it does not provision storage or verify access. The 5 MiB value and required flag are examples; actual domain limits, file types and server validation follow the accepted design. Tus remains commented out and unconfigured.
-
-Use the shared form uploader during authorized integration; it already calls the host’s attachment helper, so do not also invoke the service helper for the same selection. Host transport owns credentials and storage requests. No V2T `/upload-asr` endpoint, public-prefix fallback, custom uploader or automatic upload is added. The examples are not imported or exposed by default. Standalone Phase 2 remains offline; real uploads require the configured host adapter, authorized storage access and backend validation. Existing workspaces and the original V2T files are not modified.
-
-## Required formatting and linting
-
-Every frontend/backend change must pass both formatting and linting checks. Use approved ESLint/Prettier for frontend and the project’s Java formatter/lint configuration for backend. Write readable multiline methods; never compress declarations, conditions and returns into one line. Missing tooling or failed/unrun checks block a completion claim. Report each command/result separately and format authorized changed files only. See [CODE-STYLE.md](docs/CODE-STYLE.md) for examples and the verification procedure.
-
-## Frontend service layout
-
-Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.
-
-The submodule service defines WHAT to call: business-function names, endpoint paths, payload mapping and explicitly approved fallback selection. It imports the shared client instead of calling fetch, assembling URLs/auth headers, parsing raw responses or duplicating audit/error plumbing. The module https.js defines HOW requests run: fetch, URL construction, host credentials/authId policy, serialization/parsing, response wrappers, approved audit transport and transport errors. Services may handle documented domain errors after the transport propagates them. Audit event intent/metadata may originate in the service; transport delivery belongs in https.js under the confirmed host/provider contract. Do not invent an audit endpoint or report audit delivery implemented merely because the layer is documented. Phase 2 may explicitly select fixtures; never silently fall back to dummy success after a production API error.
-
-## Frontend remote mode
-
-Generated frontend .env, .env.local and .env.example default to VUE_APP_REMOTE=off. Use off for standalone work; set on only when serving the module through Shell, then restart/rebuild. Only on enables Module Federation, remoteEntry.js publication and the Shell remote configuration. The off setting does not create a standalone preview harness or bypass backend authentication; Phase 2 still needs its identified dev-only preview setup. Vue CLI loads .env.local as an override, so keep its value consistent with the intended mode. Existing workspaces are unchanged.
-
-## Testing and manual skills
-
-Use `$d-testing <submodule>` and `$d-manual <submodule>` in Codex, or `/d-testing <submodule>` and `/d-manual <submodule>` in Claude Code/OpenCode/Cursor/Cline. Other harnesses use their supported skill invocation. Testing records actual results in TESTING.md; manual work documents verified behavior in USERMANUAL.md with real masked evidence. Both preserve locks, scoped execution and user acceptance.
+After changing prompts.md or prompts-ms.md, refresh the hosted prompt data:
 
 ```bash
-node skills.js --codex --skill d-testing --skill d-manual
+npm run sync:prompts
+npm run check
+npm test
+git diff --check
 ```
 
-Replace --codex with your harness flag. Default installation includes all five skills; no MCP/browser/JDK or application dependencies are installed automatically.
+The sync command updates public/index.html with 18 prompts per language. Keep its skill cards aligned with all five installed skills. These commands verify prompt generation, syntax and repository tests; they do not run a module database, browser or deployment. This repository currently has no dedicated formatter/linter scripts; report those checks as unavailable instead of claiming they passed. Pushing Git changes does not by itself verify hosted deployment.
