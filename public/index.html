@@ -393,5 +393,9 @@
       if(/Windows/i.test(navigator.userAgent))select(tabs[1]);
       document.querySelector('#copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(document.querySelector('#command').textContent);document.querySelector('#copy').textContent='Copied!';document.querySelector('#status').textContent='Paste the command into your terminal.'}catch{const range=document.createRange();range.selectNodeContents(document.querySelector('#command'));const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);document.querySelector('#status').textContent='Press Ctrl+C or ⌘C to copy the selected command.'}});
     </script>
+    <style>
+      #install .workflow .next-link{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;margin:15px 8px 0 0;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);font-size:12px}
+      #install .workflow .next-link:hover{background:var(--subtle);border-color:var(--secondary)}
+    </style>
   </body>
 </html>
