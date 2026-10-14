@@ -42,3 +42,24 @@ Views import the flat service from `@/services/{module}/{submodule}.service` and
 ## Verification
 
 After an authorized rename/move, update every import, test, expose target and relevant navigation mapping. Check case-sensitive paths, cycles, lint/format/build and selected screen/service tests. Confirm standalone fixture behavior without real upload/API calls in Phase 2. Record exact changed paths and actual results. Updating these repository instructions does not rename or move files in an existing module workspace.
+
+## Register each completed screen immediately
+
+As soon as one authorized screen is implemented, add or update its mapping in the module's existing `exposes.js` before presenting it for review. Do not defer this step until every prototype/submodule is finished. The scaffold's canonical filename is `exposes.js`; do not create a second `expose.js`. If an existing project's webpack configuration uses another filename, follow that actual configuration.
+
+This per-screen mapping update is included in the authorized screen implementation workflow. Do not request the same permission again merely because exposes.js originated in the scaffold. Other scaffold/configuration changes still need their existing authorization, and a locked document must be reopened by the user before editing.
+
+For a new source-mapped screen, a federation entry may be:
+
+```javascript
+"./views/permohonan-lawatan/SenaraiPermohonanLawatan":
+  "./src/views/permohonan-lawatan/SenaraiPermohonanLawatan.vue"
+```
+
+Its Shell import is `memorial/views/permohonan-lawatan/SenaraiPermohonanLawatan`. Use the actual module, submodule and reviewed expose key; preserve existing public keys when already consumed. Where a placeholder key remains required for compatibility, map it directly to the named file rather than introducing an empty Vue wrapper. Do not remove unrelated mappings or expose service/helpers, fixtures or training examples.
+
+Before calling the screen complete, verify that its target file exists with exact case, its expose key is unique, imports resolve and configured format/lint/build checks pass. Report the screen path, expose key and expected Shell import together. VUE_APP_REMOTE=off remains the Phase 2 default; an expose mapping does not enable federation, connect Shell, register menus/routes or prove live SSO. After all prototypes are accepted, metadata finalization audits these already-added mappings rather than postponing their creation.
+
+## Normal standalone serve command
+
+Standalone development uses the normal npm run serve command with VUE_APP_REMOTE=off, VUE_APP_MODUL and VUE_APP_MODUL_PORT from the environment. vue.config.js selects src/main.js when off and src/remote-entry.js when on. main.js activates Pinia before importing @2enapps/ui, installs i18n/shared UI and mounts local hash routes from standalone-routes.js. It does not supply real identity or permit external API/upload/audit calls. When a named screen is completed, update its local route target alongside its exposes.js mapping. Do not create preview/run.cjs, override VUE_CLI_SERVICE_CONFIG_PATH or hardcode another port in a runner. Add actual locale messages required by the selected screens during implementation. Existing workspace files are not changed by this generator update.

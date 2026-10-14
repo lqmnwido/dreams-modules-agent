@@ -144,6 +144,28 @@ node skills.js --opencode
 node skills.js --opencode --project .
 ```
 
-Choose one scope. Replace --opencode with any supported harness flag. Default installation is user-wide. No network or npm dependencies are required by the skills installer itself. Restart/refresh the harness after installation.
+Choose one scope. Replace --opencode with any supported harness flag. Default installation is user-wide. Normal installation/deletion uses no network or npm dependencies; --update explicitly needs Git/network access. Restart/refresh the harness after installation.
 
 Older workspaces are not patched automatically. If skills.js is absent, invoke it from the dreams-modules-agent checkout (using an absolute path if necessary), with --project /path/to/workspace for project scope. Never rerun the module generator over existing files just to add this launcher. These instructions describe the updated generator; publishing or refreshing the hosted website is separate from local verification.
+
+## Update or delete installed skills
+
+Run from an updated installer checkout or a new workspace containing the updated skills installer. Replace --codex with --opencode, --claude, --cursor or any supported harness flag; the same actions apply to every adapter.
+
+```bash
+# Preview updates from the latest official GitHub main branch:
+node skills.js --codex --update --dry-run
+# Apply updates to all five skills for that harness:
+node skills.js --codex --update
+
+# Preview removal of one installed skill:
+node skills.js --codex --skill d-manual --delete --dry-run
+# Remove that skill and its managed command wrapper, if applicable:
+node skills.js --codex --skill d-manual --delete
+```
+
+Add `--project .` for workspace-local installations; omit it for the harness's user-wide directory. Without --skill, the action selects all five skills. Review the preview before removing everything. Delete refuses unowned packages/commands and symlinks; it does not remove harness settings, application files or document locks. Missing installations are reported as absent.
+
+`--update` needs Git/network access and reads skill resources from the official dreams-modules-agent main branch without executing the downloaded code. It explicitly replaces selected managed packages, including local edits, while preserving unowned destinations. `--update --dry-run` downloads to a temporary directory but leaves installed skills unchanged. A normal install is offline and uses the bundled snapshot; unchanged means that snapshot matches the installation, not that GitHub was checked. Use --force only to reinstall the current bundle after reviewing local edits.
+
+An update refreshes installed SKILL.md/reference resources and managed command wrappers only. It does not upgrade an older workspace's skills.js/runtime, add future CLI features to it, update application scaffolds or alter the harness registry bundled with that installer. Older workspace commands that reject --update/--delete need an authorized runtime upgrade or invocation from the updated dreams-modules-agent checkout. Refresh/restart your agent session afterward. Do not run concurrent updates, installs or deletes against the same paths.

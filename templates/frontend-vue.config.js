@@ -46,7 +46,9 @@ module.exports = {
   chainWebpack(config) {
     config.resolve.alias.set("@", path.resolve(__dirname, "src"));
     config.entryPoints.clear();
-    config.entry("app").add("./src/remote-entry.js");
+    config.entry("app").add(
+      isRemote ? "./src/remote-entry.js" : "./src/main.js"
+    );
     config.optimization.splitChunks({ chunks: "async" });
     config.resolve.symlinks(false);
 

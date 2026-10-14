@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { SKILL_NAMES, parseArgs, targetsFor, installSkills } from '../lib/skills.mjs';
+import { SKILL_NAMES, parseArgs, targetsFor, installSkills, deleteSkills, updateSkills } from '../lib/skills.mjs';
 import { HARNESS_REGISTRY, HARNESS_NAMES, canonicalHarness } from '../lib/harnesses.mjs';
 
 const temporary = () => mkdtemp(join(tmpdir(), 'dreams-skills-test-'));
@@ -255,4 +255,54 @@ test('testing and manual skills can be selected independently with matching nati
     assert.ok(metadata.includes(`$${name}`));
     assert.ok((await readFile(join(project, '.opencode/commands', `${name}.md`), 'utf8')).includes(`\`${name}\``));
   }
+});
+
+
+test('delete previews then removes only selected owned skills and OpenCode wrappers', async () => {
+  const project = await temporary();
+  await installSkills(parseArgs(['--opencode', '--project', project]));
+  const args = ['--opencode', '--project', project, '--skill', 'd-manual', '--delete'];
+  const preview = await deleteSkills(parseArgs([...args, '--dry-run']));
+  assert.ok(preview.operations.every((operation) => operation.action === 'delete'));
+  assert.equal(await exists(join(project, '.opencode/skills/d-manual')), true);
+  const result = await deleteSkills(parseArgs(args));
+  assert.ok(result.operations.every((operation) => operation.action === 'deleted'));
+  assert.equal(await exists(join(project, '.opencode/commands/d-manual.md')), false);
+  assert.equal(await exists(join(project, '.opencode/skills/d-testing')), true);
+  assert.ok((await deleteSkills(parseArgs(args))).operations.every((operation) => operation.action === 'absent'));
+});
+
+test('delete preflights unowned packages without removing other selections', async () => {
+  const project = await temporary();
+  await installSkills(parseArgs(['--codex', '--project', project]));
+  await writeFile(join(project, '.agents/skills/d-manual/.dreams-install.json'), '{}');
+  await assert.rejects(deleteSkills(parseArgs(['--codex', '--project', project, '--delete'])), /Unowned skill/);
+  assert.equal(await exists(join(project, '.agents/skills/d-documents')), true);
+  assert.throws(() => parseArgs(['--codex', '--delete', '--update']), /cannot be combined/);
+  assert.throws(() => parseArgs(['--codex', '--delete', '--force']), /does not accept/);
+});
+
+test('update replaces selected managed local edits from supplied resources without touching other skills', async () => {
+  const project = await temporary();
+  await installSkills(parseArgs(['--codex', '--project', project]));
+  const manual = join(project, '.agents/skills/d-manual/SKILL.md');
+  await writeFile(manual, 'Local edit');
+  const options = parseArgs(['--codex', '--project', project, '--skill', 'd-manual', '--update']);
+  const result = await updateSkills(options, { source });
+  assert.equal(result.operations.length, 1);
+  assert.equal(result.operations[0].action, 'replace');
+  assert.equal(await readFile(manual, 'utf8'), await readFile(join(source, 'd-manual/SKILL.md'), 'utf8'));
+  assert.equal(await exists(join(project, '.agents/skills/d-backend')), true);
+});
+
+
+test('delete refuses symlinked skills without touching their target', async (t) => {
+  if (process.platform === 'win32') return t.skip('Symlink permission depends on Windows configuration');
+  const project = await temporary();
+  const outside = await temporary();
+  await writeFile(join(outside, 'keep.txt'), 'User file');
+  await mkdir(join(project, '.agents/skills'), { recursive: true });
+  await symlink(outside, join(project, '.agents/skills/d-manual'), 'dir');
+  await assert.rejects(deleteSkills(parseArgs(['--codex', '--project', project, '--skill', 'd-manual', '--delete'])), /Refusing symlink/);
+  assert.equal(await readFile(join(outside, 'keep.txt'), 'utf8'), 'User file');
 });

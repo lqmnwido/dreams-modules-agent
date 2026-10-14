@@ -229,12 +229,29 @@ test('remote mode defaults off and enables federation only for explicit on', asy
         throw new Error(`Unexpected dependency: ${name}`);
       }
     };
+    context.require.resolve = (name) => `/dependencies/${name}`;
     runInNewContext(source, context);
     return context.module.exports;
   }
   assert.equal(load().configureWebpack.plugins.length, 0);
   assert.equal(load('off').configureWebpack.plugins.length, 0);
   assert.equal(load('off').publicPath, '/');
+  function selectedEntry(configuration) {
+    let entry;
+    const aliases = { set() {} };
+    configuration.chainWebpack({
+      resolve: { alias: aliases, symlinks() {} },
+      entryPoints: { clear() {} },
+      entry() { return { add(value) { entry = value; } }; },
+      optimization: { splitChunks() {} }
+    });
+    return entry;
+  }
+  assert.equal(selectedEntry(load('off')), './src/main.js');
+  assert.equal(selectedEntry(load('on')), './src/remote-entry.js');
+  assert.ok(files.has('memorial_fe/src/main.js'));
+  assert.ok(files.has('memorial_fe/src/standalone-routes.js'));
+  assert.ok(![...files.keys()].some((path) => path.includes('/preview/')));
   const remote = load('on');
   assert.equal(remote.configureWebpack.plugins.length, 1);
   assert.equal(remote.configureWebpack.plugins[0].options.filename, 'remoteEntry.js');
@@ -369,4 +386,47 @@ test('unlock refuses unrelated integrity violations and invalid selections', asy
   await writeFile(join(root, 'AGENTS.md'), 'Unexpected protected change');
   await assert.rejects(unlockDocuments(root), /Protected Markdown changed.*AGENTS.md/);
   assert.equal(await readFile(manifest, 'utf8'), original);
+});
+
+
+test('standalone bootstrap initializes Pinia before UI and mounts with blocked external services', async () => {
+  const files = await plan(config);
+  let source = files.get('memorial_fe/src/main.js').toString();
+  const events = [];
+  let adapter;
+  const app = {
+    use(plugin, options) {
+      if (options?.hostAdapter) adapter = options.hostAdapter;
+      events.push('use');
+      return app;
+    },
+    mount(target) { events.push(target); }
+  };
+  globalThis.__dreamsStandaloneTest = {
+    createApp: () => app,
+    h: () => null,
+    createPinia: () => ({}),
+    setActivePinia: () => events.push('pinia'),
+    createI18n: () => ({}),
+    createRouter: () => ({ async isReady() { events.push('router-ready'); } }),
+    createWebHashHistory: () => ({}),
+    RouterView: {},
+    routes: [{}],
+    loadUi() { events.push('ui'); return { default: {} }; }
+  };
+  source = source.replace(/^import .*;\n/gm, '');
+  source = 'const { createApp, h, createPinia, setActivePinia, createI18n, createRouter, createWebHashHistory, RouterView, routes, loadUi } = globalThis.__dreamsStandaloneTest;\n' + source;
+  source = source.replace('await import("@2enapps/ui")', 'await loadUi()');
+  source = source.replace('await import("@2enapps/ui/styles.css");', '');
+  try {
+    const module = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
+    await module.standaloneReady;
+    assert.ok(events.indexOf('pinia') < events.indexOf('ui'));
+    assert.ok(events.indexOf('router-ready') < events.indexOf('#app'));
+    assert.throws(() => adapter.getAuthHeaders(), /External services are disabled/);
+    assert.throws(() => adapter.uploadAttachment(), /External services are disabled/);
+    assert.equal(adapter.getUploadClient(), null);
+  } finally {
+    delete globalThis.__dreamsStandaloneTest;
+  }
 });

@@ -14,7 +14,7 @@ Write Markdown documentation in English. Only `prompts-ms.md` uses Malay; preser
 
 ## Install the workspace generator
 
-Requirements: Node.js >=22.12 with npm, Git and access to the private Kai UI/Shell repositories. The installer itself has no npm dependencies. Generated frontend/Shell projects use npm; backend builds require the selected Java version and Maven.
+Requirements: Node.js >=22.12 with npm, Git and access to the private Kai UI/Shell repositories. The installer itself has no npm dependencies. Skill --update explicitly needs Git/network access. Generated frontend/Shell projects use npm; backend builds require the selected Java version and Maven.
 
 ```bash
 git clone https://github.com/lqmnwido/dreams-modules-agent.git
@@ -172,6 +172,8 @@ Read Module Code from `module.config.json` field `code`, not the module name/pac
 ├── .env.example                     # safe environment template
 ├── CRUD-REFERENCE.md                # copied training revision reference
 └── src/
+    ├── main.js                      # standalone mount for normal npm run serve
+    ├── standalone-routes.js         # local prototype route targets
     ├── remote-entry.js
     ├── metadata.js                  # remote name, version, route prefix
     ├── services/
@@ -195,7 +197,7 @@ VUE_APP_BUCKET_MEMORIAL=memorial
 
 The generic bucket pattern is `VUE_APP_BUCKET_{MODULE}={module}`. This names storage but does not provision the bucket or verify access. `UPLOAD_BUCKET_{MODULE}` remains a separate unconfigured setting.
 
-- `off`: disables Module Federation for standalone development. It does not create the Phase 2 preview harness; the initial remote-entry.js remains `export {};`.
+- `off`: disables Module Federation for standalone development. It selects src/main.js, which mounts the local app with Pinia, i18n, shared UI and standalone-routes.js. No separate preview runner is required.
 - `on`: enables Module Federation and remoteEntry.js publication for serving through Shell. Confirm Shell exposes/routes/permissions and host integration before use.
 - Restart/rebuild after changing the flag. `.env.local` overrides `.env`; keep the effective mode consistent. Remote mode does not bypass backend authentication.
 
@@ -322,7 +324,7 @@ node skills.js --opencode
 node skills.js --opencode --project .
 ```
 
-Choose one scope. Replace --opencode with any supported harness flag. Default installation is user-wide. No network or npm dependencies are required by the skills installer itself. Restart/refresh the harness after installation.
+Choose one scope. Replace --opencode with any supported harness flag. Default installation is user-wide. Normal installation/deletion uses no network or npm dependencies; --update explicitly needs Git/network access. Restart/refresh the harness after installation.
 
 Older workspaces are not patched automatically. If skills.js is absent, invoke it from the dreams-modules-agent checkout (using an absolute path if necessary), with --project /path/to/workspace for project scope. Never rerun the module generator over existing files just to add this launcher. These instructions describe the updated generator; publishing or refreshing the hosted website is separate from local verification.
 
@@ -331,3 +333,33 @@ Older workspaces are not patched automatically. If skills.js is absent, invoke i
 Use source-screen names from FRONTEND.md as PascalCase Vue filenames: `src/views/{submodule}/{ScreenName}.vue`, for example Senarai Permohonan Lawatan → SenaraiPermohonanLawatan.vue. interface.vue is an initial scaffold placeholder only. Keep the flat API entry at `src/services/{module}/{submodule}.service.js`; place extracted schemas, demo/file logic and .mjs/.js helpers under `src/services/{module}/{submodule}/`, not views/{submodule}/. Update authorized imports, tests and exposes/Shell mappings together; do not change locked designs or existing workspaces silently.
 
 See [frontend layout](docs/FRONTEND-LAYOUT.md) for exact examples. The generator currently creates interface.vue before source screens are known; these instructions govern its replacement during authorized implementation.
+
+## Federation mapping after each screen
+
+After completing each authorized screen, immediately add/update its mapping in the existing exposes.js before review; do not wait for all screens. This narrow per-screen exposes.js change is part of screen implementation authorization, even when that file came from the scaffold. Preserve consumed expose keys and unrelated entries, map to the actual case-sensitive named Vue file, and report screen path + expose key + expected Shell import. Do not expose helpers/fixtures or create a second expose.js. Verify configured format/lint/build checks. Keep VUE_APP_REMOTE=off for standalone work; Shell route/menu/SSO changes remain separately authorized. Final metadata work audits the mappings already added per screen.
+
+## Normal standalone serve command
+
+Standalone development uses the normal npm run serve command with VUE_APP_REMOTE=off, VUE_APP_MODUL and VUE_APP_MODUL_PORT from the environment. vue.config.js selects src/main.js when off and src/remote-entry.js when on. main.js activates Pinia before importing @2enapps/ui, installs i18n/shared UI and mounts local hash routes from standalone-routes.js. It does not supply real identity or permit external API/upload/audit calls. When a named screen is completed, update its local route target alongside its exposes.js mapping. Do not create preview/run.cjs, override VUE_CLI_SERVICE_CONFIG_PATH or hardcode another port in a runner. Add actual locale messages required by the selected screens during implementation. Existing workspace files are not changed by this generator update.
+
+## Update or delete installed skills
+
+Run from an updated installer checkout or a new workspace containing the updated skills installer. Replace --codex with --opencode, --claude, --cursor or any supported harness flag; the same actions apply to every adapter.
+
+```bash
+# Preview updates from the latest official GitHub main branch:
+node skills.js --codex --update --dry-run
+# Apply updates to all five skills for that harness:
+node skills.js --codex --update
+
+# Preview removal of one installed skill:
+node skills.js --codex --skill d-manual --delete --dry-run
+# Remove that skill and its managed command wrapper, if applicable:
+node skills.js --codex --skill d-manual --delete
+```
+
+Add `--project .` for workspace-local installations; omit it for the harness's user-wide directory. Without --skill, the action selects all five skills. Review the preview before removing everything. Delete refuses unowned packages/commands and symlinks; it does not remove harness settings, application files or document locks. Missing installations are reported as absent.
+
+`--update` needs Git/network access and reads skill resources from the official dreams-modules-agent main branch without executing the downloaded code. It explicitly replaces selected managed packages, including local edits, while preserving unowned destinations. `--update --dry-run` downloads to a temporary directory but leaves installed skills unchanged. A normal install is offline and uses the bundled snapshot; unchanged means that snapshot matches the installation, not that GitHub was checked. Use --force only to reinstall the current bundle after reviewing local edits.
+
+An update refreshes installed SKILL.md/reference resources and managed command wrappers only. It does not upgrade an older workspace's skills.js/runtime, add future CLI features to it, update application scaffolds or alter the harness registry bundled with that installer. Older workspace commands that reject --update/--delete need an authorized runtime upgrade or invocation from the updated dreams-modules-agent checkout. Refresh/restart your agent session afterward. Do not run concurrent updates, installs or deletes against the same paths.
