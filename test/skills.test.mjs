@@ -58,7 +58,7 @@ test('target resolution distinguishes global/project roots and honors OpenCode X
 test('dry run writes no target directories and shared Codex/agents target is deduplicated', async () => {
   const home = await temporary();
   const plan = await installSkills(parseArgs(['--codex', '--agents', '--dry-run']), { home, env: {} });
-  assert.equal(plan.operations.length, 3);
+  assert.equal(plan.operations.length, SKILL_NAMES.length);
   assert.deepEqual(await readdir(home), []);
   assert.ok(plan.operations.every(operation => operation.action === 'create'));
 });
@@ -66,7 +66,7 @@ test('dry run writes no target directories and shared Codex/agents target is ded
 test('original three adapters retain self-contained skills and OpenCode slash wrappers', async () => {
   const project = await temporary();
   const plan = await installSkills(parseArgs(['--codex', '--claude', '--opencode', '--project', project]));
-  assert.equal(plan.operations.length, 12);
+  assert.equal(plan.operations.length, SKILL_NAMES.length * 4);
   for (const directory of ['.agents/skills', '.claude/skills', '.opencode/skills']) {
     for (const name of SKILL_NAMES) {
       const installed = join(project, directory, name);
@@ -239,4 +239,20 @@ test('harness list JSON exposes complete path/provenance inventory without writi
     assert.ok(target.skills || target.projectOnly);
   }
   assert.deepEqual(await readdir(cwd), []);
+});
+
+
+test('testing and manual skills can be selected independently with matching native metadata', async () => {
+  const project = await temporary();
+  const options = parseArgs(['--opencode', '--project', project, '--skill', 'd-testing', '--skill', 'd-manual']);
+  const installed = await installSkills(options);
+  assert.equal(installed.operations.length, 4);
+  assert.equal(await exists(join(project, '.opencode/skills/d-backend')), false);
+  for (const name of ['d-testing', 'd-manual']) {
+    const skillRoot = join(project, '.opencode/skills', name);
+    await assertPortableReferences(skillRoot);
+    const metadata = await readFile(join(skillRoot, 'agents/openai.yaml'), 'utf8');
+    assert.ok(metadata.includes(`$${name}`));
+    assert.ok((await readFile(join(project, '.opencode/commands', `${name}.md`), 'utf8')).includes(`\`${name}\``));
+  }
 });

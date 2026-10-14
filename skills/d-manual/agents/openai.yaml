@@ -1,0 +1,4 @@
+interface:
+  display_name: "D-ReAMS User Manual"
+  short_description: "Verified user instructions and handover evidence"
+  default_prompt: "Use $d-manual to document verified submodule behavior with real evidence."

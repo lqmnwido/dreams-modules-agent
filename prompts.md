@@ -108,6 +108,8 @@ Frontend services are flat files at `src/services/{module}/{submodule}.service.j
 
 The submodule service defines WHAT to call: business-function names, endpoint paths, payload mapping and explicitly approved fallback selection. It imports the shared client instead of calling fetch, assembling URLs/auth headers, parsing raw responses or duplicating audit/error plumbing. The module https.js defines HOW requests run: fetch, URL construction, host credentials/authId policy, serialization/parsing, response wrappers, approved audit transport and transport errors. Services may handle documented domain errors after the transport propagates them. Audit event intent/metadata may originate in the service; transport delivery belongs in https.js under the confirmed host/provider contract. Do not invent an audit endpoint or report audit delivery implemented merely because the layer is documented. Phase 2 may explicitly select fixtures; never silently fall back to dummy success after a production API error.
 
+Keep VUE_APP_REMOTE=off for standalone work. Set on only for authorized Shell integration, then restart/rebuild; verify .env.local overrides. The flag does not supply the preview harness or bypass authentication.
+
 Use ESLint and Prettier, remove unused training imports/stubs and format changed files only.
 
 Formatting and linting are mandatory for every code change: run the configured formatter check and linter check separately and report actual commands/results. Write multiline methods with one statement per line, braced conditions and expanded long calls/objects. Never compress declarations, branches and return into one line. Missing tools or failed/unrun checks block a completion claim; propose exact setup instead of skipping checks. Run standalone without Shell, using the agreed harness. Do not alter scaffold files without separate file-specific authorization.
@@ -252,3 +254,13 @@ Prepare, do not execute, a deployment plan with exact artifact/commit, environme
 
 Do not deploy or execute production changes until the complete identified plan is explicitly authorized. Keep prototype fixtures disabled and unresolved components documented.
 ```
+
+## Testing and manual skills
+
+Use `$d-testing <submodule>` and `$d-manual <submodule>` in Codex, or `/d-testing <submodule>` and `/d-manual <submodule>` in Claude Code/OpenCode/Cursor/Cline. Other harnesses use their supported skill invocation. Testing records actual results in TESTING.md; manual work documents verified behavior in USERMANUAL.md with real masked evidence. Both preserve locks, scoped execution and user acceptance.
+
+```bash
+node skills.js --codex --skill d-testing --skill d-manual
+```
+
+Replace --codex with your harness flag. Default installation includes all five skills; no MCP/browser/JDK or application dependencies are installed automatically.

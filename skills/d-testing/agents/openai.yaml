@@ -1,0 +1,4 @@
+interface:
+  display_name: "D-ReAMS Testing"
+  short_description: "Scoped verification and actual test evidence"
+  default_prompt: "Use $d-testing to verify the selected submodule and record actual results."

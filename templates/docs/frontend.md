@@ -15,4 +15,4 @@ Read `CRUD-REFERENCE.md` first: use general-tab-crud/list-main.vue, `getParams`,
 
 Show standard loading/empty/success/validation/forbidden/error states. Use project upload helper, frontend/backend file validation and backend download authorization. No frontend credentials.
 
-Bucket variables: `VUE_APP_BUCKET_{{env}}`, `UPLOAD_BUCKET_{{env}}`; bucket/prefix TBD. Environment values/ports are installer selections, not verified deployment settings. Run `npm run build`; verify `remoteEntry.js` and real Shell routes in browser.
+Frontend bucket default: `VUE_APP_BUCKET_{{env}}={{module}}` in .env, .env.local and .env.example. `UPLOAD_BUCKET_{{env}}` remains a separate unconfigured setting. Storage provisioning, access and object-prefix contracts still need verification. Environment values/ports are installer selections, not verified deployment settings. Run `npm run build`; verify `remoteEntry.js` and real Shell routes in browser.

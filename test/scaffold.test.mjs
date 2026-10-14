@@ -4,6 +4,7 @@ import { mkdtemp, readFile, writeFile, mkdir, readdir, symlink } from 'node:fs/p
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { runInNewContext } from 'node:vm';
 import { plan, writePlan, validate } from '../lib/scaffold.mjs';
 import { checkDocuments, lockDraft, DRAFT_DOCUMENTS, maintain, enforceUi, UI_DEPENDENCY, SHELL_URL } from '../lib/maintenance.mjs';
 const config={module:'memorial',code:'MEM',group:'com.dreams',package:'com.dreams.memorial',java:'21',boot:'3.5.0',port:3004,submodules:['feedback','visitors'],answers:[{question:'feedback purpose?',answer:'TBD'}]};
@@ -175,6 +176,9 @@ test('generated backend keeps security on by default and includes local-only byp
 
 test('module fixture and upload examples use the actual module bucket without wiring live calls', async () => {
   const files = await plan({ ...config, module: 'records', package: 'com.dreams.records' });
+  for (const name of ['.env', '.env.local', '.env.example']) {
+    assert.match(files.get(`records_fe/${name}`).toString(), /^VUE_APP_BUCKET_RECORDS=records$/m);
+  }
   const fixture = files.get('records_fe/src/services/records/hardcode-data.js').toString();
   const upload = files.get('records_fe/src/services/records/upload.js').toString();
   assert.match(upload, /process\.env\.VUE_APP_BUCKET_RECORDS/);
@@ -193,4 +197,41 @@ test('module fixture and upload examples use the actual module bucket without wi
   const page = files.get('records_fe/src/views/feedback/interface.vue').toString();
   assert.doesNotMatch(page, /upload|hardcode-data/);
   assert.doesNotMatch(files.get('records_fe/exposes.js').toString(), /upload|hardcode-data/);
+});
+
+
+test('remote mode defaults off and enables federation only for explicit on', async () => {
+  const files = await plan(config);
+  for (const name of ['.env', '.env.local', '.env.example']) {
+    assert.match(files.get(`memorial_fe/${name}`).toString(), /^VUE_APP_REMOTE=off$/m);
+    assert.match(files.get(`memorial_fe/${name}`).toString(), /^VUE_APP_BUCKET_MEMORIAL=memorial$/m);
+  }
+  const source = files.get('memorial_fe/vue.config.js').toString();
+  function load(mode) {
+    const context = {
+      module: { exports: {} },
+      __dirname: '/example/memorial_fe',
+      process: { env: mode === undefined ? {} : { VUE_APP_REMOTE: mode } },
+      require(name) {
+        if (name === 'path') return { resolve: (...parts) => parts.join('/') };
+        if (name === './exposes') return { './metadata': './src/metadata.js' };
+        if (name === 'webpack') {
+          return { container: { ModuleFederationPlugin: class {
+            constructor(options) { this.options = options; }
+          } } };
+        }
+        throw new Error(`Unexpected dependency: ${name}`);
+      }
+    };
+    runInNewContext(source, context);
+    return context.module.exports;
+  }
+  assert.equal(load().configureWebpack.plugins.length, 0);
+  assert.equal(load('off').configureWebpack.plugins.length, 0);
+  assert.equal(load('off').publicPath, '/');
+  const remote = load('on');
+  assert.equal(remote.configureWebpack.plugins.length, 1);
+  assert.equal(remote.configureWebpack.plugins[0].options.filename, 'remoteEntry.js');
+  assert.equal(remote.configureWebpack.plugins[0].options.remotes.shell, 'shell@http://localhost:3000/remoteEntry.js');
+  assert.throws(() => load('true'), /VUE_APP_REMOTE must be off or on/);
 });

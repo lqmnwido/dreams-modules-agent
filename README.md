@@ -193,7 +193,7 @@ upload: {
 }
 ```
 
-The generator substitutes the actual module environment suffix, not V2T’s bucket. Set its bucket only after the storage mapping is confirmed. The 5 MiB value and required flag are examples; actual domain limits, file types and server validation follow the accepted design. Tus remains commented out and unconfigured.
+The generator substitutes the actual module environment suffix, not V2T’s bucket. Generated `.env`, `.env.local` and `.env.example` set `VUE_APP_BUCKET_{MODULE}={module}`, for example `VUE_APP_BUCKET_MEMORIAL=memorial`. This names the bucket; it does not provision storage or verify access. The 5 MiB value and required flag are examples; actual domain limits, file types and server validation follow the accepted design. Tus remains commented out and unconfigured.
 
 Use the shared form uploader during authorized integration; it already calls the host’s attachment helper, so do not also invoke the service helper for the same selection. Host transport owns credentials and storage requests. No V2T `/upload-asr` endpoint, public-prefix fallback, custom uploader or automatic upload is added. The examples are not imported or exposed by default. Standalone Phase 2 remains offline; real uploads require the configured host adapter, authorized storage access and backend validation. Existing workspaces and the original V2T files are not modified.
 
@@ -206,3 +206,17 @@ Every frontend/backend change must pass both formatting and linting checks. Use 
 Frontend services are flat files at `src/services/{module}/{submodule}.service.js`, beside `https.js`, `hardcode-data.js` and `upload.js`. Import the transport and response wrappers from `./https`. Follow the bundled training `http.js` request/helper/client/response-wrapper structure; the module transport is named `https.js`. Preserve host credentials, response metadata and list/detail envelopes. Do not copy training-specific provider clients, legacy public/authId policies, IP lookups or audit side effects without an approved integration contract. New scaffolds do not create per-submodule service folders. Existing workspaces are not automatically renamed.
 
 The submodule service defines WHAT to call: business-function names, endpoint paths, payload mapping and explicitly approved fallback selection. It imports the shared client instead of calling fetch, assembling URLs/auth headers, parsing raw responses or duplicating audit/error plumbing. The module https.js defines HOW requests run: fetch, URL construction, host credentials/authId policy, serialization/parsing, response wrappers, approved audit transport and transport errors. Services may handle documented domain errors after the transport propagates them. Audit event intent/metadata may originate in the service; transport delivery belongs in https.js under the confirmed host/provider contract. Do not invent an audit endpoint or report audit delivery implemented merely because the layer is documented. Phase 2 may explicitly select fixtures; never silently fall back to dummy success after a production API error.
+
+## Frontend remote mode
+
+Generated frontend .env, .env.local and .env.example default to VUE_APP_REMOTE=off. Use off for standalone work; set on only when serving the module through Shell, then restart/rebuild. Only on enables Module Federation, remoteEntry.js publication and the Shell remote configuration. The off setting does not create a standalone preview harness or bypass backend authentication; Phase 2 still needs its identified dev-only preview setup. Vue CLI loads .env.local as an override, so keep its value consistent with the intended mode. Existing workspaces are unchanged.
+
+## Testing and manual skills
+
+Use `$d-testing <submodule>` and `$d-manual <submodule>` in Codex, or `/d-testing <submodule>` and `/d-manual <submodule>` in Claude Code/OpenCode/Cursor/Cline. Other harnesses use their supported skill invocation. Testing records actual results in TESTING.md; manual work documents verified behavior in USERMANUAL.md with real masked evidence. Both preserve locks, scoped execution and user acceptance.
+
+```bash
+node skills.js --codex --skill d-testing --skill d-manual
+```
+
+Replace --codex with your harness flag. Default installation includes all five skills; no MCP/browser/JDK or application dependencies are installed automatically.

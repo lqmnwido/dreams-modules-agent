@@ -106,6 +106,8 @@ Gunakan fail service rata src/services/{module}/{submodule}.service.js, sebaris 
 
 Service submodul menentukan APA yang dipanggil: nama fungsi business, endpoint, pemetaan payload dan pemilihan fallback yang diluluskan secara jelas. https.js menentukan MACAM MANA: fetch, bina URL, credentials host/dasar authId, serialize/parse, response wrapper, pengangkutan audit diluluskan dan ralat transport. Jangan ulang fetch/auth/parse/audit dalam service. Service boleh mengendalikan ralat domain yang didokumenkan selepas transport meneruskannya. Kontrak host/provider sebenar diperlukan sebelum pengangkutan audit dilaksanakan; jangan reka endpoint audit. Fixtures hanya dipilih secara jelas dalam Fasa 2; jangan fallback kepada kejayaan dummy selepas ralat API production.
 
+Kekalkan VUE_APP_REMOTE=off untuk standalone. Tetapkan on hanya bagi integrasi Shell yang dibenarkan, kemudian restart/build semula; semak override .env.local. Flag ini tidak menyediakan preview harness atau memintas authentication.
+
 Guna ESLint dan Prettier, buang import/stub training tidak digunakan dan format fail berubah sahaja.
 
 Formatting dan linting wajib bagi setiap perubahan kod: jalankan semakan formatter dan linter secara berasingan serta laporkan commands/hasil sebenar. Tulis method berbilang baris, satu statement setiap baris, braces bagi syarat dan pecahkan panggilan/object panjang. Jangan padatkan deklarasi, cabang syarat dan return dalam satu baris. Tooling tiada atau semakan gagal/tidak dijalankan menghalang dakwaan siap; cadangkan setup tepat, jangan langkau semakan. Jalankan standalone tanpa Shell dengan harness dipersetujui. Jangan ubah fail scaffold tanpa kebenaran khusus fail.
@@ -250,3 +252,13 @@ Sediakan, jangan jalankan, pelan deployment dengan artifact/commit tepat, enviro
 
 Jangan deploy atau execute perubahan production sehingga pelan lengkap dikenal pasti dibenarkan secara jelas. Pastikan fixtures prototaip tidak aktif dan komponen belum selesai didokumentasi.
 ```
+
+## Skills ujian dan manual
+
+Codex: `$d-testing nama-submodul` dan `$d-manual nama-submodul`. Claude Code/OpenCode/Cursor/Cline: `/d-testing nama-submodul` dan `/d-manual nama-submodul`. Harness lain menggunakan kaedah invocation yang disokong. d-testing merekod keputusan sebenar dalam TESTING.md; d-manual mendokumenkan fungsi disahkan dalam USERMANUAL.md bersama bukti sebenar yang dimask. Kedua-duanya mengekalkan locks, skop execution dan penerimaan pengguna.
+
+```bash
+node skills.js --codex --skill d-testing --skill d-manual
+```
+
+Ganti --codex dengan flag harness anda. Pemasangan default kini merangkumi lima skills; MCP/browser/JDK atau dependencies aplikasi tidak dipasang automatik.

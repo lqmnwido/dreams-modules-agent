@@ -70,6 +70,8 @@ Only vendor-docs entries have additional vendor-path verification; other entries
 | 1: source documents, confirmation, request user locking | `$d-documents` | `/d-documents` |
 | 2: one standalone frontend prototype | `$d-frontend attendance` | `/d-frontend attendance` |
 | 3: one Java backend and real integration | `$d-backend attendance` | `/d-backend attendance` |
+| Scoped verification and TESTING evidence | `$d-testing attendance` | `/d-testing attendance` |
+| Verified USERMANUAL and handover | `$d-manual attendance` | `/d-manual attendance` |
 
 `attendance` is an example; use an actual scope submodule. `d-documents` is the document-phase skill; legacy installer selection `--skill d-dooc` resolves to it. Existing installed d-dooc copies are not automatically removed. The user still answers unresolved decisions, locks Phase 1 files, accepts each interface and authorizes any real database target execution. Installing or invoking a skill is not acceptance of its results.
 
@@ -112,6 +114,8 @@ Do not install the same names to several discovery roots unnecessarily. `--dest`
 - `d-documents`: Phase 1 instructions and eight self-contained document templates.
 - `d-frontend`: Phase 2 prototype/UI/test instructions plus the shared UI/service contract.
 - `d-backend`: Phase 3 own-database Java/Flyway/API/integration instructions, backend contract tables, database implementation patterns and existing-project/JUnit 5 test rules.
+- `d-testing`: selected-submodule test plans/execution, mandatory format/lint checks, actual TESTING evidence and defect reporting.
+- `d-manual`: verified user instructions, actual masked screenshots, evidence links and handover review.
 - Each has Codex UI metadata in `agents/openai.yaml`; other harnesses use portable `SKILL.md` frontmatter.
 
 The skills preserve the current three-phase workflow, no separate database human-review record, human-only design locks, one submodule per cycle, explicit missing-component cards, ESLint/Prettier and Java lint/format checks. They ask on ambiguity rather than invent rules or repeat unavailable-information questions.
@@ -119,3 +123,11 @@ The skills preserve the current three-phase workflow, no separate database human
 No MCP server, browser, JDK, npm dependency, harness binary or authentication is installed by this script. Playwright MCP browser tests still require the actual tool to be configured. No working harness UI has been exercised by filesystem installation tests alone.
 
 Phase 1 reads Module Code from `module.config.json` field `code` and selects `.docs/documents/mockup/{module code}/` (the actual matching folder, for example M12 → m12). Missing or ambiguous codes/folders require clarification; other modules’ mockups are excluded.
+
+Install only the two additional skills without replacing existing phase skills:
+
+```bash
+node skills.js --codex --skill d-testing --skill d-manual
+```
+
+Replace --codex with your harness flag. Default installation now includes all five skills. Testing and manual skills support the same three-phase workflow; they do not add implementation phases or bypass user acceptance, document locks or identified database execution authorization.
