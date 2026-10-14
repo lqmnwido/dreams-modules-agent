@@ -182,7 +182,7 @@ Read Module Code from `module.config.json` field `code`, not the module name/pac
     │   │   └── {submodule}.service.js # service scaffold per submodule
     │   └── training/               # reference services for ui-element
     └── views/
-        ├── {submodule}/interface.vue # exposed page scaffold per submodule
+        ├── {submodule}/{ScreenName}.vue # implemented screen from FRONTEND.md
         └── ui-element/             # training references
 ```
 
@@ -210,7 +210,7 @@ The generic bucket pattern is `VUE_APP_BUCKET_{MODULE}={module}`. This names sto
 
 Services import from `./https`; they do not duplicate fetch/auth/parse/audit plumbing. Module https.js follows the bundled training http.js structure. Preserve host credentials, response metadata and list/detail envelopes. Public-prefix/authId policies remain off unless the integration contract enables them. Audit event intent may come from services; actual audit delivery requires its confirmed contract and is not implemented merely by documenting the layer.
 
-Use fixtures explicitly in Phase 2 and prepare real API calls as inactive comments. Production must never fall back to dummy success after an API failure. Views remain under `{submodule}/interface.vue`; only services use the flat file layout. Existing workspaces are not renamed automatically.
+Use fixtures explicitly in Phase 2 and prepare real API calls as inactive comments. Production must never fall back to dummy success after an API failure. Implemented views use `{submodule}/{ScreenName}.vue` from FRONTEND.md; the flat service entry may use a sibling helper directory. Existing workspaces are not renamed automatically.
 
 ### Shared UI and uploads
 
@@ -325,3 +325,9 @@ node skills.js --opencode --project .
 Choose one scope. Replace --opencode with any supported harness flag. Default installation is user-wide. No network or npm dependencies are required by the skills installer itself. Restart/refresh the harness after installation.
 
 Older workspaces are not patched automatically. If skills.js is absent, invoke it from the dreams-modules-agent checkout (using an absolute path if necessary), with --project /path/to/workspace for project scope. Never rerun the module generator over existing files just to add this launcher. These instructions describe the updated generator; publishing or refreshing the hosted website is separate from local verification.
+
+## Named frontend screens and helper placement
+
+Use source-screen names from FRONTEND.md as PascalCase Vue filenames: `src/views/{submodule}/{ScreenName}.vue`, for example Senarai Permohonan Lawatan → SenaraiPermohonanLawatan.vue. interface.vue is an initial scaffold placeholder only. Keep the flat API entry at `src/services/{module}/{submodule}.service.js`; place extracted schemas, demo/file logic and .mjs/.js helpers under `src/services/{module}/{submodule}/`, not views/{submodule}/. Update authorized imports, tests and exposes/Shell mappings together; do not change locked designs or existing workspaces silently.
+
+See [frontend layout](docs/FRONTEND-LAYOUT.md) for exact examples. The generator currently creates interface.vue before source screens are known; these instructions govern its replacement during authorized implementation.
