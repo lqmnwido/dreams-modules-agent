@@ -1,7 +1,9 @@
 import { useHostAdapter } from "@2enapps/ui";
 
 // Module https.js follows the bundled services/training/http.js structure.
-// Request helpers -> client factory -> response wrappers.
+// HOW: request helpers -> authenticated client factory -> response wrappers/errors.
+// Business names/endpoints and approved fallback selection belong in *.service.js.
+// Audit transport requires the confirmed host/provider contract before wiring.
 // Training-specific providers, IP lookup and audit side effects are not module defaults.
 // Caller supplies approved baseURL and explicit routing/authId policies.
 // Credentials are obtained from the Shell host adapter per request.
