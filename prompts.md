@@ -1,5 +1,7 @@
 # D-ReAMS — three-phase Agile prompts
 
+Write Markdown documentation in English. Only `prompts-ms.md` uses Malay; retain source-defined names, code identifiers and quoted UI labels.
+
 Use one prompt at a time. Read and approve the actual proposal before sending an approval prompt. No placeholders are business answers. Phase 1 ends with user locking; Phase 2 is frontend-first, standalone and synthetic; Phase 3 is backend plus real integration. No separate database human-review record. Never modify scaffold files without exact authorization. See guide.md and ARCHITECTURE.md.
 
 ## Short phase commands

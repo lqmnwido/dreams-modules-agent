@@ -1,5 +1,7 @@
 # dreams-modules-agent
 
+Write Markdown documentation in English. Only `prompts-ms.md` uses Malay; retain source-defined names, code identifiers and quoted UI labels.
+
 Interactive D-ReAMS module scaffolder. No installer dependencies or npm registry publication needed: download/clone the tool and run its Node.js CLI. Frontend/Shell dependencies still use npm.
 
 Requires Node.js >=22.12 (with npm), Git and access to company GitLab. Backend build requires your approved Java/Maven. This supports Spring Boot 3.x/Maven; other versions/build tools need reviewed templates.

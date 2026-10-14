@@ -1,25 +1,25 @@
-# SCOPE — templat penghubung keperluan modul
+# SCOPE — module requirements routing template
 
-Templat dokumentasi, bukan skop modul yang telah disemak. Isi daripada sumber sebenar pada Fasa 1; jangan dakwa lengkap selagi belum diisi/disahkan.
+This documentation template is not a reviewed module scope. Fill it from actual Phase 1 sources; do not claim completeness before it is populated and confirmed.
 
-## Identiti dan sumber
+## Identity and sources
 
-Nama/kod modul daripada module.config.json. Senaraikan fail, versi, seksyen dan sumber autoritatif; rekod fail hilang/tidak boleh dibaca. Jangan cipta SRS jika tiada.
+Read the module name and code from module.config.json. Use its code field to select the actual matching .docs/documents/mockup/{module code}/ folder; ask if missing or ambiguous. List files, versions, sections and authoritative sources; record missing or unreadable files. Do not invent an SRS when none exists.
 
-## Peta fungsi
+## Function map
 
-| Submodul / fungsi / source ID | Aktor / akses rekod | Input / hasil / workflow | Peraturan / exceptions | Rujukan sumber | Storage / API / skrin |
+| Submodule / function / source ID | Actor / record access | Input / outcome / workflow | Rules / exceptions | Source reference | Storage / API / screen |
 | --- | --- | --- | --- | --- | --- |
 
-Isi setiap fungsi sebenar. Gunakan pautan seksyen DATABASE.md, BACKEND.md dan FRONTEND.md; jangan ulang semua kolum/payload di sini. Simpan fakta sumber, konflik dan keputusan eksplisit dengan jelas.
+Include every actual function. Link to DATABASE.md, BACKEND.md and FRONTEND.md sections instead of repeating all columns and payloads. Clearly distinguish source facts, conflicts and explicit decisions.
 
-## Keputusan dan sempadan
+## Decisions and boundaries
 
-| ID | Fakta sumber / soalan | Cadangan | Jawapan eksplisit | Status / kesan |
+| ID | Source fact / question | Recommendation | Explicit answer | Status / impact |
 | --- | --- | --- | --- | --- |
 
-Tiada andaian nilai, peranan atau kontrak provider. Pertanyaan belum dijawab menghalang kerja yang bergantung padanya sahaja. Maksimum lima soalan setiap kumpulan; jangan ulang jawapan atau permintaan bukti yang pengguna tidak ada.
+Do not assume values, roles or provider contracts. Unanswered questions block only dependent work. Ask at most five questions per group; do not repeat answered questions or requests for evidence the user does not have.
 
-## Fasa dan penerimaan
+## Phases and acceptance
 
-Catat satu submodul dipilih, progress prototaip/UI review/backend/integration dan pautan TESTING/evidence. PRD.md menyimpan ringkasan umum. Selepas Fasa 1, sahkan semula sumber dan minta pengguna lock lima design docs sebelum Fasa 2. Tiada database human-review table berasingan.
+Record the selected submodule, prototype/UI review/backend/integration progress and TESTING/evidence links. PRD.md holds the general summary. After Phase 1, confirm the relevant sources and ask the user to lock the five design documents before Phase 2. No separate database human-review table is required.

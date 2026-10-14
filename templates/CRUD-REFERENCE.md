@@ -1,78 +1,60 @@
-# Rujukan CRUD
+# CRUD reference
 
-Dokumen ini menunjukkan programmer mana satu fail yang perlu rujuk bila membina
-screen CRUD baharu, dan mana fail yang perlu diedit bila mengubah
-komponen dia sendiri.
+This document identifies the reference files for new CRUD screens and the shared engines that control table/form behavior.
 
-Rujukan ini wujud sebab `ui` menyediakan enjin, tetapi tiada satu
-screen pun yang menunjukkan cara tertibkan enjin tu dari hujung ke
-hujung. `general-tab-crud` ialah satu-satunya yang menunjukkan semua
-sekaligus.
+`@2enapps/ui` supplies the engines. `general-tab-crud` demonstrates the complete list-to-details flow, including search, dashboards and nested tabs.
 
----
+## 1. Which reference to use
 
-## 1. Rujukan mana
-
-| Nak buat apa | Rujuk |
+| Task | Reference |
 | --- | --- |
-| Screen CRUD baharu (senarai → details) | `views/ui-element/general-tab-crud/list-main.vue` |
-| Ubah behaviour table (bulk, print, laporan, upload) | `@2enapps/ui` → `components/dynamic-form/generated-form/list-data.vue` |
-| Ubah behaviour borang (input, validasi) | `@2enapps/ui` → `components/dynamic-form/generated-form/form-data.vue` |
-| Senarai → details dalam satu klik | `detailsBreadcrumbMixin` daripada `@2enapps/ui` |
+| New CRUD screen (list → details) | `views/ui-element/general-tab-crud/list-main.vue` |
+| Table behavior (bulk, print, reports, upload) | `@2enapps/ui` → `components/dynamic-form/generated-form/list-data.vue` |
+| Form behavior (inputs, validation) | `@2enapps/ui` → `components/dynamic-form/generated-form/form-data.vue` |
+| One-click list → details navigation | `detailsBreadcrumbMixin` from `@2enapps/ui` |
 
-Jangan rujuk screen lain. `general-crud` (yang tiada tab),
-`training/crud/list`, dan 10 screen `shell/src/views/admin/` semua
-lebih nipis — hanya aliran tertentu sahaja, bukan semuanya.
+Do not substitute other screens as the complete reference. `general-crud` (without tabs), `training/crud/list` and the Shell administration screens cover narrower flows.
 
----
+## 2. Files in `general-tab-crud/`
 
-## 2. Fail dalam `general-tab-crud/`
-
-| Fail | Baris | Peranan |
+| File | Historical lines | Purpose |
 | --- | --- | --- |
-| `list-main.vue` | 781 | **Rujukan utama.** Senarai + carian + dashboard + tab |
-| `tab.vue` | 248 | Pembungkus tab; memuat 6 sub-screen |
-| `details-one.vue` | 862 | Details dengan borang paling lengkap |
-| `details-two.vue` | 419 | Details ringkas |
-| `details-three.vue` | 262 | Details jenis display sahaja |
-| `details-four.vue` | 217 | Details untuk tab paling dalam |
-| `list-two.vue` | 387 | Senarai anak (tab 2) |
-| `list-three.vue` | 400 | Senarai anak (tab 3) |
-| `list-four.vue` | 405 | Senarai anak (tab 4) |
-| `list-five.vue` | 410 | Senarai anak (tab 5) |
+| `list-main.vue` | 781 | **Main reference:** list, search, dashboard and tabs |
+| `tab.vue` | 248 | Tab wrapper loading six child screens |
+| `details-one.vue` | 862 | Most complete details form |
+| `details-two.vue` | 419 | Simple details form |
+| `details-three.vue` | 262 | Display-only details |
+| `details-four.vue` | 217 | Deeply nested tab details |
+| `list-two.vue` | 387 | Child list (tab 2) |
+| `list-three.vue` | 400 | Child list (tab 3) |
+| `list-four.vue` | 405 | Child list (tab 4) |
+| `list-five.vue` | 410 | Child list (tab 5) |
 
-Mula baca `list-main.vue`. Baca `details-one.vue` hanya bila screen
-perlu borang yang ada validasi dan lookup.
+Start with `list-main.vue`. Read `details-one.vue` when forms need validation and lookups. Line counts describe the reference revision; inspect the actual files rather than treating these counts as current verification.
 
----
+## 3. Running the reference
 
-## 3. Cara jalankan
+The reference route is registered in `shell/src/router/training-routes.js`:
 
-Route didaftar dalam `shell/src/router/training-routes.js`:
-
-```
+```text
 path: "/ui-element/general-tab-crud/list"
 component: () => import("training/views/ui-element/general-tab-crud/list-main")
 ```
 
-Buka `http://localhost:2400/ui-element/general-tab-crud/list`.
+With the reference Shell running at its configured port, open `http://localhost:2400/ui-element/general-tab-crud/list`.
 
-Tidak perlu backend. `services/training/crud.js` tiada satu pun HTTP
-call — semua data fixture dengan `await delay()` supaya kelihatan
-seperti rangkaian sebenar.
+No backend is required by the reference fixture service. `services/training/crud.js` uses fixtures and `await delay()` to simulate network latency, without HTTP calls. This does not prove the route or server is currently running.
 
----
+## 4. Data flow
 
-## 4. Aliran data
+### List
 
-### Senarai
-
-```
+```text
 created()
-  → getSchemaList()          isi this.schemaList (structure table)
-  → getSchemaFormCarian()    isi this.schemaFormCarian (borang carian)
-  → initStatsSchema()        kad dashboard (structure)
-  → loadDashboardStats()     this.statsData (nilai, dari service)
+  → getSchemaList()          populate this.schemaList (table structure)
+  → getSchemaFormCarian()    populate this.schemaFormCarian (search form)
+  → initStatsSchema()        dashboard card structure
+  → loadDashboardStats()     populate this.statsData from the service
 
 user action → listData @paginatedProps(page)
   → getList(page)
@@ -84,14 +66,11 @@ user action → listData @paginatedProps(page)
   → this.list = ...
 ```
 
-`getParams` baca `this.qSearch` dan `this.searchObject` dan letak
-dalam param. Jangan susun param sendiri — guna `getParams`, dia juga
-tulis `pageSize` dan `pageNo`.
+`getParams` reads `this.qSearch` and `this.searchObject` and supplies `pageSize` and `pageNo`. Use it instead of assembling separate search/pagination parameters.
 
-### Senarai → details
+### List → details
 
-Semua melalui `detailsBreadcrumbMixin` — jangan tambah
-`showDetailsForm` atau `id` sendiri:
+Use `detailsBreadcrumbMixin`; do not introduce separate `showDetailsForm` or ID state:
 
 ```js
 listActions({ functionProps: { functionName }, data }) {
@@ -103,28 +82,22 @@ listActions({ functionProps: { functionName }, data }) {
 onAddClick() { this.openDetails("", ""); }
 ```
 
-Argumen ketiga `openDetails` ialah label crumb. Beri nama rekod supaya
-crumb jadi bermakna; jika tiada nama, mixin jatuh balik kepada
-`breadcrumb.details` dalam locale.
+The third `openDetails` argument is the breadcrumb label. Supply the record name; if absent, the mixin falls back to the locale’s `breadcrumb.details` value.
 
-`backToList()` dan `onBreadcrumbScreenChange()` datang daripada mixin
-yang sama — jangan tulis semula.
+`backToList()` and `onBreadcrumbScreenChange()` come from the same mixin. Do not reimplement them.
 
----
+## 5. Service contract
 
-## 5. Kontrak service
-
-`@/services/training/crud` — **guna semula bentuk ini**, jangan
-ubah bentuknya.
+Preserve the shape used by `@/services/training/crud`:
 
 ```js
-// Senarai. WAJIB balut dengan returnResponseList.
+// Always wrap list responses with returnResponseList.
 export async function getMainList(params, viewsType, roleType) {
   const response = {
     data: {
       data: page,        // array of rows
       pageNo,
-      totalItems,        // jumlah keseluruhan, bukan jumlah halaman
+      totalItems,       // total records, not page count
       totalPages,
     },
   };
@@ -132,107 +105,77 @@ export async function getMainList(params, viewsType, roleType) {
 }
 ```
 
-`returnResponseList` (`services/training/http.js`) menambah dua field
-pada envelope yang sama:
+`returnResponseList` in `services/training/http.js` adds two aliases to the same envelope:
 
-| Field | Asal | Dibaca oleh view |
+| Field | Source | View consumer |
 | --- | --- | --- |
 | `res.list` | `res.data.data` | `getList()` → `this.list` |
 | `res.total` | `res.data.totalItems` | `getList()` → `this.totalRecord` |
 
-Untuk export laporan, `getListForReport` baca `finalRes.data?.data`
- terus — jadi **jangan** buang `response.data` selepas balut.
+Report export through `getListForReport` reads `finalRes.data?.data` directly. Do not discard `response.data` after wrapping.
 
-Function lain:
-
-| Signature | Guna untuk |
+| Signature | Purpose |
 | --- | --- |
-| `getDetailsOne(id)` | muat satu rekod → `returnResponseDetails` |
-| `saveDetails(id, data)` | `id` kosong = tambah, ada `id` = kemaskini |
-| `deleteRecord(id)` | padam, pulangkan `true` |
-| `getListTwo/T Three(params, viewsType, roleType)` | senarai anak dalam tab |
-| `getDashboardStats()` | nilai kad dashboard |
-| `getSummaryStats()` | ringkasan untuk `general-crud` (bukan tab) |
+| `getDetailsOne(id)` | Load one record through `returnResponseDetails` |
+| `saveDetails(id, data)` | Empty ID creates; an existing ID updates |
+| `deleteRecord(id)` | Delete and return `true`, only when domain requirements support deletion |
+| `getListTwo/T Three(params, viewsType, roleType)` | Child lists inside tabs |
+| `getDashboardStats()` | Dashboard card values |
+| `getSummaryStats()` | Summary for `general-crud` without tabs |
 
----
+## 6. Features wired in `list-main.vue`
 
-## 6. Feature yang perlu tahu
-
-Semua ini sudah tersambung dalam `list-main.vue`:
-
-| Feature | Di mana | Catatan |
+| Feature | Location | Notes |
 | --- | --- | --- |
-| Pagination server-side | `getList(page)` | `:backendPaginated="true"` + `@paginatedProps` |
-| Carian terperinci | `ComponentCarian` | dua mod: ringkas (`qSearch`) dan penuh (`searchObject`) |
-| Reset carian | `onResetSearchClick()` | kosongkan **kedua-dua** mod serentak |
-| Bulk select | `@listMultipleSelectActions` | perlu `listSchema.multipleSelectabled` |
+| Server-side pagination | `getList(page)` | `:backendPaginated="true"` + `@paginatedProps` |
+| Advanced search | `ComponentCarian` | Simple `qSearch` and full `searchObject` modes |
+| Reset search | `onResetSearchClick()` | Clear both search modes together |
+| Bulk selection | `@listMultipleSelectActions` | Requires `listSchema.multipleSelectabled` |
 | Row action | `@listActions` | show / edit / delete |
-| Row link action | `@listLinkActions` | buka details bila klik nama |
-| Export laporan | `getListForReport(type)` | sync label dropdown dulu |
-| Cetak | `schemaList.allowPrint: true` | satu-satunya screen yang hidup |
-| Kolum dinamik | `@updateDisplayListField` | simpan balik ke `this.schemaList` |
-| Dashboard kad | `StatCardGrid` | `statsSchema` + `statsData` + `statsLoading` |
-| Tab | `<tab>` → `tab.vue` | 6 sub-screen |
-| Breadcrumb | `detailsBreadcrumbMixin` | jangan tulis manual |
-| Kebenaran | `priv()` → `layoutStore.priv` | `flagDaftar` / `flagKemaskini` / `flagHapus` |
-| Notis | `notificationProp` computed | `notificationStore` |
-| Validasi | `customValidator` | `standardValidation(field, self)` |
+| Row link action | `@listLinkActions` | Open details when the name is clicked |
+| Report export | `getListForReport(type)` | Synchronize dropdown labels first |
+| Printing | `schemaList.allowPrint: true` | Enabled in the reference screen |
+| Dynamic columns | `@updateDisplayListField` | Save changes to `this.schemaList` |
+| Dashboard cards | `StatCardGrid` | `statsSchema` + `statsData` + `statsLoading` |
+| Tabs | `<tab>` → `tab.vue` | Six child screens in the reference |
+| Breadcrumb | `detailsBreadcrumbMixin` | Do not implement manually |
+| Permissions | `priv()` → `layoutStore.priv` | `flagDaftar` / `flagKemaskini` / `flagHapus` |
+| Notifications | Computed `notificationProp` | `notificationStore` |
+| Validation | `customValidator` | `standardValidation(field, self)` |
 
----
+Enable only features required by actual module functions. Reference wiring does not itself authorize domain actions.
 
-## 7. Wajib tukar bila copy
+## 7. What to replace when adapting the example
 
-Fixture dalam `services/training/crud.js`:
+Fixtures in `services/training/crud.js` include:
 
-- `senaraiAccountPengguna` — semua data senarai
-- `getDashboardStats()` — `await delay(900)` pastu pulangkan angka
-  hardcoded
-- `listTwo` — data senarai anak
-- `getMainList` ada `parseQuery` + `applyFilters` sendiri — ini hanya
-  untuk demo. Backend sebenar yang urus pagination dan filter.
+- `senaraiAccountPengguna`: list data.
+- `getDashboardStats()`: `await delay(900)` followed by hardcoded values.
+- `listTwo`: child list data.
+- `getMainList`: demo-only `parseQuery` and `applyFilters`; real backend services own pagination and filtering.
 
-Isi `schemaFormCarian` pun dummy: setiap dropdown `listData` diambil
-dari nilai yang ada dalam fixture. Bila tukar ke data sebenar, pastikan
-setiap pilihan dropdown **memang ada** dalam senarai — filter yang
-tawarkan pilihan yang tiada dalam data adalah filter yang pengguna
-akhirnya tak percaya.
+`schemaFormCarian` dropdown `listData` is derived from fixtures. Ensure choices match relevant demo data during prototyping. Replace them with authoritative options during real integration; do not offer irrelevant choices.
 
----
+## 8. Do not copy blindly
 
-## 8. Jangan copy bulat-blind
+The reference revision reported zero ESLint errors and five `no-unused-expressions` warnings. These are historical observations, not results from the current checkout.
 
-ESLint `list-main.vue`: **0 error, 5 warning**, semua
-`no-unused-expressions`.
+`formActions(data)` and `listMultipleSelectActions(payload)` contain stub expressions such as `data;` and `payload;`. Implement required behavior or remove unused stubs. Do not copy unused `infoSwal`, `confirmSwal` or `privSwal` imports.
 
-`formActions(data)` dan `listMultipleSelectActions(payload)` ialah
-stub — `data;` dan `payload;` sahaja. Guna sebagai titik sambung
-untuk bekalan forklift, atau buang.
+## 9. When to inspect the shared engine
 
-Jangan import `infoSwal` / `confirmSwal` / `privSwal` yang tak
-diguna — akan jadi warning baru.
+Inspect `list-data.vue` when required table behavior is not already understood. Changing the shared engine requires separate authorization; do not patch installed library files during module implementation.
 
----
+The reference revision of `components/dynamic-form/generated-form/list-data.vue` had 2,291 lines and 16 props. It already included bulk selection, printing, report/Excel export through `setting-laporan`, upload, modals, validation, search and pagination. Inspect the actual revision before asserting support or counts.
 
-## 9. Bila perlu ubah enjin
+Props in that reference:
 
-Hanya bila tabletop behaviour yang `list-data.vue` tidak sudah ada.
+```text
+listSchema, listData, totalRecord, backendPaginated,
+propListDataReport, reportSearch, customDisplayField,
+viewMode, fontSize, removeStripe, offScroll,
+hideTopPagination, setUsePagination, propSchemaDataReport,
+propSchemaDataReportAsal, listDataFooter
+```
 
-`components/dynamic-form/generated-form/list-data.vue` — 2291 baris,
-16 props. Feature yang dia sudah ada:
-
-| Feature | Bukti |
-| --- | --- |
-| Bulk select | 34 baris |
-| Cetak / print | 48 baris |
-| Laporan / Excel (`setting-laporan`) | 22 baris |
-| Upload, modal, validasi, carian, pagination | ada |
-
-Semua props (`listSchema`, `listData`, `totalRecord`,
-`backendPaginated`, `propListDataReport`, `reportSearch`,
-`customDisplayField`, `viewMode`, `fontSize`, `removeStripe`,
-`offScroll`, `hideTopPagination`, `setUsePagination`,
-`propSchemaDataReport`, `propSchemaDataReportAsal`,
-`listDataFooter`).
-
-Bila masuk `list-data.vue`, baca fail ini sekali — ia kod yang
-mengawal jadual dan ia tidak intuitif.
+Read the engine when investigating table behavior; do not assume its internal flow from a thin example screen.

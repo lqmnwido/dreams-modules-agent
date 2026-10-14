@@ -1,31 +1,31 @@
-# DATABASE — templat spesifikasi database modul sendiri
+# DATABASE — module-owned database specification template
 
-Isi nilai sebenar daripada sumber/keputusan Fasa 1; templat ini bukan skema lengkap dan bukan DDL.
+Fill actual values from Phase 1 sources and decisions. This template is not a complete schema or executable DDL.
 
-## Standard reka bentuk dan pelaksanaan
+## Design and implementation standards
 
-Baca [DATABASE-PATTERNS.md](../DATABASE-PATTERNS.md) sebelum memuktamadkan skema Fasa 1 atau mencipta migrasi Fasa 3. Tetapkan snake_case, PK id BIGINT GENERATED ALWAYS AS IDENTITY (SERIAL hanya alternatif corak projek), NUMERIC, TIMESTAMPTZ, CREATE TYPE bagi enum tertutup, idx_/uniq_/fk_ serta ON DELETE/UPDATE jelas. Dokumentasikan indexes/query reuse, page-size/timeouts, keyset/cursor compatibility, batch/no-N+1/eager loading bersasar, cache invalidation dan advisory coordination yang sesuai.
+Read [DATABASE-PATTERNS.md](../DATABASE-PATTERNS.md) before finalizing the Phase 1 schema or creating Phase 3 migrations. Specify snake_case names, an id BIGINT GENERATED ALWAYS AS IDENTITY primary key (SERIAL only as an existing project-pattern alternative), NUMERIC, TIMESTAMPTZ, CREATE TYPE for closed enums, idx_/uniq_/fk_ names and explicit ON DELETE/UPDATE rules. Document index/query reuse, page-size limits/timeouts, keyset/cursor compatibility, batching/no-N+1/targeted eager loading, cache invalidation and appropriate advisory coordination.
 
-Reka bentuk terkunci atau source-defined UUID/catalog/pageNo/locking yang bercanggah memerlukan keputusan revision khusus; jangan auto-convert atau reka nilai. Setiap migrasi memerlukan ujian forward dan rollback/recovery pada data representatif. Production read-only kecuali mutation khusus dibenarkan; DROP/destructive changes perlukan approval dan backup disahkan.
+Conflicting locked or source-defined UUID/catalog/pageNo/locking designs need a specific revision decision; never automatically convert or invent values. Each migration needs forward and rollback/recovery tests against representative data. Production is read-only unless a specific mutation is authorized; DROP/destructive changes require approval and a confirmed backup.
 
 ## Ownership
 
-Satu database PostgreSQL berasingan bagi modul. Hanya backend/worker/migration pemilik mengaksesnya. Modul lain melalui API sahaja; tiada cross-database FK/join atau credentials dikongsi.
+Use a separate PostgreSQL database for the module. Only its owning backend, workers and migrations access it. Other modules use APIs only; no cross-database foreign keys, joins or shared credentials.
 
-## Jadual dan kolum
+## Tables and columns
 
-Bagi setiap table, isi kolum/type/NULL/default/PK/FK/check/unique, audit dan soft-delete sebenar. Nyatakan referenced table/column, ON DELETE/UPDATE serta relationship cardinality. Bezakan source field daripada extension yang diputuskan.
+For each table, specify actual columns, types, nullability, defaults, PK/FK/check/unique constraints, audit and soft-delete behavior. State referenced tables/columns, ON DELETE/UPDATE rules and relationship cardinality. Distinguish source fields from agreed extensions.
 
 | Table / column | PostgreSQL type | NULL / default | Key / constraint / relation | Source / decision |
 | --- | --- | --- | --- | --- |
 
-## Indeks dan transaksi
+## Indexes and transactions
 
-| Nama index | Table / columns / ordering | Unique / predicate | Query berkaitan |
+| Index name | Table / columns / ordering | Unique / predicate | Related query |
 | --- | --- | --- | --- |
 
-Nyatakan query pagination/filter/sort, no-N+1, concurrent writes, optimistic locking, duplicate constraints, numbering dan transaction-owned cross-table validation yang diperlukan fungsi. Jangan cipta business defaults atau tables modul lain.
+Specify pagination/filter/sort queries, no-N+1 plans, concurrent writes, optimistic locking, duplicate constraints, numbering and transaction-owned cross-table validation required by actual functions. Do not invent business defaults or other modules’ tables.
 
-## Migrasi
+## Migrations
 
-Flyway; Hibernate generation none dan SQL initialization never. Nyatakan migration dependencies serta deletion/retention sebenar. Jangan tulis semula migrasi yang sudah dijalankan. Tiada seksyen human review/APPROVED berasingan diperlukan. Design dikunci selepas Fasa 1; exact target/scripts dan kebenaran execution masih perlu sebelum connect/startup.
+Use Flyway, Hibernate generation none and SQL initialization never. Specify migration dependencies and actual deletion/retention rules. Never rewrite applied migrations. No separate human-review/APPROVED section is required. Designs are locked after Phase 1; exact targets/scripts and execution authorization are still required before database connections/startup.

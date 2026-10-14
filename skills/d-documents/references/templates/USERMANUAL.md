@@ -1,5 +1,5 @@
-# USERMANUAL — penggunaan fungsi yang telah disahkan
+# USERMANUAL — verified functions
 
-Lengkapkan selepas fungsi diuji; jangan terangkan fungsi belum siap sebagai tersedia.
+Complete after functions are tested; do not describe unfinished functions as available.
 
-Susun role → submodul → navigasi → medan → tindakan → status/messages → upload/download. Gunakan screenshots sebenar yang dimask. Bezakan prototaip dan integrasi sebenar. Nyatakan batasan termasuk card `[ component not available ]` yang belum diselesaikan. Pautkan bukti TESTING.md dan dapatkan penerimaan pengguna sebelum meminta lock akhir.
+Organize by role → submodule → navigation → fields → actions → statuses/messages → upload/download. Use actual masked screenshots. Distinguish prototypes from real integration. State limitations, including unresolved `[ component not available ]` cards. Link TESTING.md evidence and obtain user acceptance before requesting final locking.

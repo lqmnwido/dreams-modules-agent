@@ -1,13 +1,13 @@
-# PRD — rekod umum sistem dan fasa
+# PRD — general system and phase record
 
-Templat ringkas, bukan bukti implementasi.
+This brief template is not implementation evidence.
 
-- Identiti modul dan tujuan umum daripada sumber sebenar.
-- Ownership database sendiri dan API silang modul.
-- Sumber/versi autoritatif serta status confirmation reread Fasa 1.
-- Pautan SCOPE/ARCHITECTURE/DATABASE/BACKEND/FRONTEND.
-- Fasa/submodul semasa dan penerimaan pengguna sebenar.
-- Keputusan penting, files/commits dan evidence links.
-- Batasan sebenar serta next step.
+- Module identity and general purpose from actual sources.
+- Ownership of the module database and cross-module APIs.
+- Authoritative source versions and Phase 1 confirmation reread status.
+- Links to SCOPE/ARCHITECTURE/DATABASE/BACKEND/FRONTEND.
+- Current phase/submodule and actual user acceptance.
+- Important decisions, files/commits and evidence links.
+- Actual limitations and next steps.
 
-Jangan duplikasi semua field/schema/API di sini. Update selepas kerja fasa yang dibenarkan siap. Jangan reka approvals, test results atau acceptance.
+Do not duplicate every field, schema or API here. Update after authorized phase work is complete. Never invent approvals, test results or acceptance.

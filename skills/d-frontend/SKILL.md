@@ -7,6 +7,8 @@ description: Build and review one D-ReAMS Phase 2 standalone frontend submodule 
 
 Load [UI and service contracts](references/ui-contract.md) before implementing a screen. This skill is for frontend-first prototypes, not silently connecting production APIs or implementing the backend.
 
+Write Markdown documentation in English; only prompts-ms.md uses Malay. Preserve source-defined names, code identifiers and quoted UI labels.
+
 ## Start or resume safely
 
 Read workspace AGENTS.md, module.config.json and .docs/PRD.md. Identify the actual module, phase, selected submodule, explicit user decisions and evidence. Speak the user's language. Invocation authorizes this skill's phase work within the stated module/submodule; it does not accept results on the user's behalf, change locked files, unlock documents, execute an unidentified migration target, or deploy.

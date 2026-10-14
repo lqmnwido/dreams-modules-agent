@@ -1,12 +1,12 @@
-# FRONTEND — templat skrin dan idea mockup
+# FRONTEND — screens and mockup ideas template
 
-Mockup ialah draf keperluan fungsi, bukan visual akhir. Isi skrin/medan/tindakan sumber sebenar. Semua UI daripada @2enapps/ui; gunakan general-tab-crud sahaja sebagai contoh lengkap.
+Mockups are draft functional requirements, not final visual designs. Fill actual source screens, fields and actions. All UI uses @2enapps/ui; use general-tab-crud as the complete example.
 
-| Submodul / skrin | Fields / actions / states | Source | Exact general-tab-crud file / shared components | Planned API | Fixture scenarios / review |
+| Submodule / screen | Fields / actions / states | Source | Exact general-tab-crud file / shared components | Planned API | Fixture scenarios / review |
 | --- | --- | --- | --- | --- | --- |
 
-Rujuk ARCHITECTURE.md untuk contract getParams/returnResponseList/detailsBreadcrumbMixin. Jangan bina params atau state breadcrumbs kedua. Tindakan hanya fungsi domain; jangan salin delete/bulk daripada contoh tanpa keperluan.
+See ARCHITECTURE.md for getParams/returnResponseList/detailsBreadcrumbMixin contracts. Do not build separate parameters or breadcrumb state. Actions follow domain functions; do not copy delete/bulk actions without a requirement.
 
-Fasa 2: satu submodul, dummy sintetik, API standby dikomen/tidak aktif, standalone tanpa Shell, ESLint/Prettier, white-box dan Playwright MCP visible browser. Stop untuk user review sebelum submodul seterusnya. Komponen tiada selepas semakan UI: card shared kosong dengan label tepat `[ component not available ]`; rekod jurang, tiada custom component/button/CSS.
+Phase 2: one submodule, synthetic fixtures, commented/inactive standby API calls, standalone without Shell, ESLint/Prettier, white-box tests and Playwright MCP visible-browser checks. Stop for user review before the next submodule. If the UI lacks a component, show an empty shared card labeled exactly `[ component not available ]`; record the gap without custom components, buttons or CSS.
 
-Selepas semua interface diterima, metadata.js/remote-entry.js/exposes.js mesti sepadan modul sebenar; fail scaffold sedia ada memerlukan kebenaran khusus sebelum edit. Fasa 3: ganti fixture dengan real API selepas backend diuji, tanpa dummy fallback. Integrasi Shell/SSO selepas pelan dibenarkan. Jangan anggap demo privilege flags membuktikan backend authorization.
+After all interfaces are accepted, metadata.js/remote-entry.js/exposes.js must match the actual module; existing scaffold files require specific permission before editing. Phase 3 replaces fixtures with real APIs after backend testing, without dummy fallbacks. Integrate Shell/SSO under an authorized plan. Demo privilege flags do not prove backend authorization.

@@ -1,42 +1,42 @@
-# BACKEND — templat kontrak dan logic submodul
+# BACKEND — submodule contracts and logic template
 
-Isi definisi sebenar pada Fasa 1; templat bukan API implementation. Spring Boot, Java 25 dan PostgreSQL sendiri; panggil modul lain melalui API.
+Fill actual definitions in Phase 1; this template is not an API implementation. Use Spring Boot, Java 25 and the module’s own PostgreSQL database. Access other modules through APIs.
 
-## Corak projek dan stack ujian
+## Project patterns and test stack
 
-Ikut corak modul/submodul sedia ada sebelum convention framework. Jangan install scaffolding tool yang menyusun semula repo tanpa kelulusan. Stack: PostgreSQL + Spring Data JPA; JUnit 5 + Mockito + Spring Boot Test. Rujuk [backend patterns](../BACKEND-PATTERNS.md) dan [database patterns](../DATABASE-PATTERNS.md).
+Follow existing module/submodule patterns before framework conventions. Do not install scaffolding tools that restructure the repository without approval. Stack: PostgreSQL + Spring Data JPA; JUnit 5 + Mockito + Spring Boot Test. See [backend patterns](../BACKEND-PATTERNS.md) and [database patterns](../DATABASE-PATTERNS.md).
 
-Gunakan @WebMvcTest bagi controller, @DataJpaTest bagi repository/PostgreSQL dan @SpringBootTest bagi integration. Unit service menggunakan JUnit 5/Mockito. Jalankan suite melalui Maven/Gradle projek sebenar (mvn test atau wrapper sedia ada); jangan cipta build system baharu. Sahkan test profile/database sebelum tests yang memulakan konteks/Flyway; tiada production default atau H2 senyap menggantikan semantics PostgreSQL.
+Use @WebMvcTest for controllers, @DataJpaTest for repositories/PostgreSQL and @SpringBootTest for integration. Service unit tests use JUnit 5/Mockito. Run tests through the project’s actual Maven/Gradle build (mvn test or an existing wrapper); do not introduce another build system. Confirm the test profile/database before context/Flyway tests; never default to production or silently substitute H2 for PostgreSQL semantics.
 
-## Controller — satu submodul
+## Controller — one submodule
 
-Class `{SubmoduleName}Controller`; isi nama sebenar.
+Class: `{SubmoduleName}Controller`; fill the actual name.
 
 | Method | Endpoint | Function | Request form | Response form | Role / object scope | Source ID |
 | --- | --- | --- | --- | --- | --- | --- |
 
-Senaraikan hanya fungsi sumber: GET list/detail, POST create/actions, PUT update dan operasi lain jika diperlukan. Tetapkan fields/types/optional, pagination/sort/filter, status/transitions dan examples tanpa secrets. Jangan cipta SRS IDs apabila hanya SDS/UC tersedia.
+List source-supported functions only: GET list/detail, POST create/actions, PUT update and other operations where required. Specify fields/types/optionality, pagination/sort/filter, statuses/transitions and examples without secrets. Do not invent SRS IDs when only SDS/UC references exist.
 
-## Entity — satu entity setiap table
+## Entity — one entity per table
 
 | Entity | Table | Relationships | Audit / soft delete | Notes |
 | --- | --- | --- | --- | --- |
 
-## Repository — data access sahaja
+## Repository — data access only
 
 | Method signature | Purpose | Pagination | Related index |
 | --- | --- | --- | --- |
 
-Gunakan JpaRepository dengan entity/ID type sebenar. `findAllByFlagAktif` hanya jika field itu benar-benar wujud; list besar perlu query bounded/paged. Nyatakan fetch plan/no-N+1.
+Use JpaRepository with actual entity/ID types. Use `findAllByFlagAktif` only if the field exists; large lists need bounded/paged queries. Specify the fetch plan and N+1 prevention.
 
-## Service — satu service/submodul
+## Service — one service per submodule
 
-`{SubmoduleName}Service` dan implementation jika corak projek memerlukannya.
+Use `{SubmoduleName}Service` and an implementation class if the project pattern requires it.
 
 | Function | Input | Output | Business rules | Read-only / write transaction | Source ID |
 | --- | --- | --- | --- | --- | --- |
 
-Nyatakan roles/object checks, numbering/status validation, duplicate/concurrency dan remote API failure/timeouts. Transaction boundaries di service, bukan controller/repository logic.
+Specify role/object checks, numbering/status validation, duplicate/concurrency behavior and remote API failures/timeouts. Services own transaction boundaries; controllers/repositories do not own business logic.
 
 ## Form
 
@@ -49,25 +49,25 @@ form/{submodule}/
 | Form | Field / type | Validation | Mapping | Sensitive? |
 | --- | --- | --- | --- | --- |
 
-Forms khusus tindakan boleh ditambah jika kontrak sebenar memerlukannya; jangan terima entity mentah atau caller-owned audit/identity fields.
+Add action-specific forms when actual contracts require them. Do not accept raw entities or caller-supplied audit/identity fields.
 
 ## Errors
 
 | Condition | HTTP | Code | User message | Logging |
 | --- | --- | --- | --- | --- |
-| Validation failure | 400 | Isi kod sebenar | Isi mesej sebenar | Tanpa secrets |
-| Missing authentication | 401 | Isi kod sebenar | Isi mesej sebenar | Tanpa token |
-| Missing authorization | 403 | Isi kod sebenar | Isi mesej sebenar | Object scope dijaga |
-| Record not found | 404 | Isi kod sebenar | Isi mesej sebenar | Tiada PII bocor |
-| Conflict / duplicate | 409 | Isi kod sebenar | Isi mesej sebenar | Correlation jika ditetapkan |
+| Validation failure | 400 | Specify actual code | Specify actual message | No secrets |
+| Missing authentication | 401 | Specify actual code | Specify actual message | No tokens |
+| Missing authorization | 403 | Specify actual code | Specify actual message | Preserve object scope |
+| Record not found | 404 | Specify actual code | Specify actual message | No leaked PII |
+| Conflict / duplicate | 409 | Specify actual code | Specify actual message | Correlation if configured |
 
-Satu consistent response/error schema. Jangan pulangkan kejayaan palsu selepas remote failure.
+Use one consistent response/error schema. Never return false success after a remote failure.
 
-## Quality dan README
+## Quality and README
 
-Per endpoint: happy/negative/field-boundary/roles/object/missing/duplicate/concurrency/paging/filter/empty/timeouts. Semak SQL injection, mass assignment, IDOR, files dan audit. Java lint/style/formatter, build/tests dan dependency/security scans sebenar; report unrun checks.
+For every endpoint, cover happy/negative cases, field boundaries, roles, object scope, missing records, duplicates, concurrency, paging, filtering, empty results and timeouts. Check SQL injection, mass assignment, IDOR, files and audit. Run actual Java lint/style/format, build/tests and dependency/security scans; report checks not run.
 
-Tiada dummy backend responses, hidden TODOs, unused code, swallowed exceptions atau giant mixed-submodule service. README mesti sepadan kod: purpose/scope, submodul, architecture/packages, prerequisites/setup/run, env tanpa secrets, migration, Keycloak role/access matrix dan API list.
+No dummy backend responses, hidden TODOs, unused code, swallowed exceptions or giant services mixing submodules. README must match actual code: purpose/scope, submodules, architecture/packages, prerequisites/setup/run, environment variables without secrets, migrations, Keycloak role/access matrix and API list.
 
 | Submodule | Method | Endpoint | Function | Request | Response | Role | Source ID |
 | --- | --- | --- | --- | --- | --- | --- | --- |
