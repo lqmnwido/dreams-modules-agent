@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, writeFile, mkdir, readdir, symlink } from 'node:fs/promises';
+import { mkdtemp, readFile, writeFile, mkdir, readdir, symlink, rename, unlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { runInNewContext } from 'node:vm';
 import { plan, writePlan, validate } from '../lib/scaffold.mjs';
-import { checkDocuments, lockDraft, DRAFT_DOCUMENTS, maintain, enforceUi, UI_DEPENDENCY, SHELL_URL } from '../lib/maintenance.mjs';
+import { checkDocuments, lockDraft, lockPhase1, DRAFT_DOCUMENTS, maintain, enforceUi, UI_DEPENDENCY, SHELL_URL } from '../lib/maintenance.mjs';
 const config={module:'memorial',code:'MEM',group:'com.dreams',package:'com.dreams.memorial',java:'21',boot:'3.5.0',port:3004,submodules:['feedback','visitors'],answers:[{question:'feedback purpose?',answer:'TBD'}]};
 const temp=()=>mkdtemp(join(tmpdir(),'dreams-module-test-'));
 test('scaffold includes source folder, split docs, references, submodules and no migrations/domain endpoints', async()=>{
@@ -258,4 +258,44 @@ test('workspace skill installer is self-contained and works outside the bootstra
   assert.equal(repeat.status, 0, repeat.stderr);
   assert.match(repeat.stdout, /unchanged:/);
   await checkDocuments(root);
+});
+
+
+test('Phase 1 lock command resolves actual casing and locks exactly the five designs', async () => {
+  const root = await temp();
+  await writePlan(root, await plan(config));
+  for (const name of ['scope', 'architecture', 'database', 'backend', 'frontend']) {
+    await rename(join(root, `.docs/${name}.md`), join(root, `.docs/${name.toUpperCase()}.md`));
+  }
+  const result = spawnSync(process.execPath, [join(root, 'scripts/maintenance.mjs'), 'lock-phase1'], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  const hashes = JSON.parse(await readFile(join(root, 'document-integrity.json'), 'utf8'));
+  for (const name of ['SCOPE', 'ARCHITECTURE', 'DATABASE', 'BACKEND', 'FRONTEND']) {
+    assert.ok(hashes[`.docs/${name}.md`]);
+  }
+  assert.equal(hashes['.docs/testing.md'], undefined);
+  assert.equal(hashes['.docs/usermanual.md'], undefined);
+  assert.equal(hashes['.docs/PRD.md'], undefined);
+  await checkDocuments(root);
+});
+
+test('locking rejects duplicate casing and missing documents without partial baseline changes', async () => {
+  const root = await temp();
+  await writePlan(root, await plan(config));
+  const manifest = join(root, 'document-integrity.json');
+  const before = await readFile(manifest, 'utf8');
+  await unlink(join(root, '.docs/frontend.md'));
+  await assert.rejects(lockPhase1(root), /Missing draft frontend/);
+  assert.equal(await readFile(manifest, 'utf8'), before);
+  await writeFile(join(root, '.docs/frontend.md'), 'Restored draft');
+  await writeFile(join(root, '.docs/SCOPE.md'), 'Duplicate');
+  await assert.rejects(lockPhase1(root), /Ambiguous draft scope/);
+  assert.equal(await readFile(manifest, 'utf8'), before);
+  await unlink(join(root, '.docs/SCOPE.md'));
+  await rename(join(root, '.docs/scope.md'), join(root, '.docs/SCOPE.md'));
+  await lockDraft(root, 'scope');
+  await assert.rejects(lockDraft(root, 'SCOPE'), /already locked/);
+  const locked = await readFile(manifest, 'utf8');
+  await assert.rejects(lockPhase1(root), /already locked/);
+  assert.equal(await readFile(manifest, 'utf8'), locked);
 });
