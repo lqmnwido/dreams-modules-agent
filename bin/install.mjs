@@ -46,7 +46,12 @@ try {
   const files=await plan(config);
   console.log(`\nPlan: ${root}\n${module}_fe + ${module}_be; ${files.size} files including concise Markdown, AGENTS.md, .docs/PRD.md, .docs/documents and ui-element references.\nMaven dependencies: Web, Validation, JPA, Security, OAuth2 Resource Server, PostgreSQL, Flyway (enabled; migration creation/execution requires human approval), Test.\nFrontend: Vue CLI 5, Vue 3, Pinia, router, i18n, and @2enapps/ui Git develop.\nNo secrets, tables, migrations or business endpoints. Existing files are never overwritten.`);
   const online=(await ask('Clone/check Shell and npm install after scaffolding? (yes/no)','yes')).toLowerCase()==='yes';
-  if((await ask('Confirm these scaffold/dependency selections and create files? (yes/no)','yes')).toLowerCase()!=='yes') {console.log('Cancelled; no files written.');}
+  const confirmed = (await ask('Confirm these scaffold/dependency selections and create files? (yes/no)', 'yes')).toLowerCase() === 'yes';
+
+  // Release readline's terminal/raw-mode ownership before Git prompts for credentials.
+  rl.close();
+
+  if (!confirmed) {console.log('Cancelled; no files written.');}
   else {
     await writePlan(root,files);
     console.log(`Created ${root}. Place sources in .docs/documents/ and review .docs/PRD.md; agents can prepare source-based .docs/ drafts after approval, then humans review and lock them. Scope/schema approval is still pending.`);
