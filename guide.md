@@ -108,7 +108,7 @@ node scripts/maintenance.mjs install
 node scripts/maintenance.mjs check-docs
 ```
 
-Replace the example with the actual workspace path. `install` performs initial npm installation; `node scripts/maintenance.mjs` performs later Shell/npm-update maintenance. It is not another mandatory initial step. Do not update dependencies outside authorized scope.
+Replace the example with the actual workspace path. `install` installs dependencies and explicitly refreshes @2enapps/ui from develop in Shell and the module frontend; `node scripts/maintenance.mjs` performs later Shell/npm-update maintenance plus the same explicit UI branch refresh. It is not another mandatory initial step. Do not update dependencies outside authorized scope.
 
 ## Document filename compatibility
 

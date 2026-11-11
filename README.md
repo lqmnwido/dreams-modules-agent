@@ -287,7 +287,7 @@ Use JUnit 5/Mockito/Spring Boot Test for backend scope and white-box plus Playwr
 From the generated workspace root:
 
 ```bash
-node scripts/maintenance.mjs install    # initial npm install only
+node scripts/maintenance.mjs install    # install dependencies and refresh UI develop
 node scripts/maintenance.mjs            # later Shell check and npm update
 node scripts/maintenance.mjs check-docs # check protected Markdown hashes
 ```
@@ -380,3 +380,7 @@ Keep the visible field label `Status`, but avoid the DOM ID `status` because the
 The module name may contain lowercase letters, digits, hyphens and underscores, starting with a letter (for example memorial-test or memorial_test). Generated folders retain that name: memorial-test_fe and memorial-test_be. Java package/group are entered separately and do not accept hyphens. Java application class names capitalize separator-delimited words; memorial-test produces MemorialTestApplication. Environment variable suffixes uppercase the name and replace hyphens with underscores (MEMORIAL_TEST). Federation remoteName also replaces hyphens with underscores (memorial_test); metadata and webpack use the same value. Route prefixes, service paths and bucket values retain the module name. Review remote-name collisions before registering similarly named modules with Shell.
 
 The Module Code is a separate source identifier, read from the PRD and checked against module.config.json. It is not constrained to M12 and does not replace the module name. Existing workspaces are not renamed by these changes.
+
+### Shared UI branch refresh
+
+Both initial setup and later maintenance explicitly run `npm install "@2enapps/ui@git+https://kai.2enapps.my/d-reams/frontend/ui.git#develop" --legacy-peer-deps` in Shell and the module frontend. This refreshes the Git dependency selection instead of relying only on an existing lockfile revision. Later maintenance also runs the existing npm update step. A failed UI install stops maintenance; completion is not reported. Existing workspaces contain their own copied maintenance script and need that script updated explicitly to receive this fix. No lockfiles or npm caches are deleted.

@@ -87,7 +87,7 @@ function runnerFixture(root,{dirty=false,remote='head',failNpm=false}={}) {
     return '';
   };return {calls,runner};
 }
-test('setup installs only; daily maintenance updates; correct UI before each install/update',async()=>{
+test('setup and daily maintenance explicitly refresh UI develop for Shell and frontend',async()=>{
   const root=await fixture(),f=runnerFixture(root);
   await maintain(root,{runner:f.runner,today:'2026-10-12',install:true});
   assert.equal(f.calls.filter(([c])=>c==='npm').length,2);
@@ -95,9 +95,17 @@ test('setup installs only; daily maintenance updates; correct UI before each ins
   await maintain(root,{runner:f.runner,today:'2026-10-12'});
   assert.equal(f.calls.filter(([,a])=>a[0]==='fetch').length,1);
   assert.equal(f.calls.filter(([c,a])=>c==='npm'&&a[0]==='update').length,2);
-  assert.equal(f.calls.filter(([c,a])=>c==='npm'&&a[0]==='install').length,2);
+  assert.equal(f.calls.filter(([c,a])=>c==='npm'&&a[0]==='install').length,4);
   for(const [command,args] of f.calls) {
-    if(command==='npm') assert.deepEqual(args,[args[0],'--legacy-peer-deps']);
+    if (command === 'npm') {
+      assert.deepEqual(args, args[0] === 'install'
+        ? ['install', `@2enapps/ui@${UI_DEPENDENCY}`, '--legacy-peer-deps']
+        : ['update', '--legacy-peer-deps']);
+    }
+  }
+  for (const project of [join(root, 'shell'), join(root, 'memorial_fe')]) {
+    const installs = f.calls.filter(([command, args, cwd]) => command === 'npm' && args[0] === 'install' && cwd === project);
+    assert.equal(installs.length, 2);
   }
   await maintain(root,{runner:f.runner,today:'2026-10-13'});
   assert.equal(f.calls.filter(([,a])=>a[0]==='fetch').length,2);await checkDocuments(root);
@@ -111,6 +119,19 @@ test('clone missing Shell and stop before pull when local changes exist',async()
 });
 test('npm failures propagate and are never reported as complete',async()=>{
   const root=await fixture(),f=runnerFixture(root,{failNpm:true});await assert.rejects(maintain(root,{runner:f.runner,today:'2026-10-12'}),/npm failed/);
+});
+test('UI refresh failure stops maintenance before installing the next project', async () => {
+  const root = await fixture();
+  const fake = runnerFixture(root);
+  const runner = async (command, args, cwd, capture) => {
+    if (command === 'npm' && args.includes(`@2enapps/ui@${UI_DEPENDENCY}`)) {
+      throw Error('UI Git authentication failed');
+    }
+    return fake.runner(command, args, cwd, capture);
+  };
+
+  await assert.rejects(maintain(root, { install: true, runner }), /UI Git authentication failed/);
+  assert.ok(!fake.calls.some(([command, , cwd]) => command === 'npm' && cwd === join(root, 'memorial_fe')));
 });
 test('noninteractive CLI fails before writing; help requires no setup',()=>{
   const cli=new URL('../bin/install.mjs',import.meta.url);
