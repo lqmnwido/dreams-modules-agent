@@ -23,12 +23,12 @@ module.exports = {
   configureWebpack: {
     output: {
       uniqueName: "dreams-{{module}}",
-      chunkLoadingGlobal: "webpackChunk_{{module}}"
+      chunkLoadingGlobal: "webpackChunk_{{remote}}"
     },
     plugins: isRemote
       ? [
           new ModuleFederationPlugin({
-            name: "{{module}}",
+            name: "{{remote}}",
             filename: "remoteEntry.js",
             exposes: require("./exposes"),
             remotes: {

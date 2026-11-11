@@ -15,7 +15,7 @@ Install with `node skills.js --codex`, `--claude`, `--opencode`, `--cursor`, `--
 ```text
 Read AGENTS.md, module.config.json and .docs/PRD.md. Identify the actual module and sources under .docs/documents/. Do not assume an SRS exists or reuse another module's business rules.
 
-Read Module Code from module.config.json field code before selecting mockups; do not use the module name or package as the code. Resolve .docs/documents/mockup/{module code}/ using the actual directory name. For code M12, use an existing m12 folder only if it is the unique case-insensitive match; prefer an exact match. Report the configured code and resolved path before reading mockups. If the code is missing, unsafe or inconsistent, or the folder is missing/ambiguous, ask for the exact code/path before dependent work. Never substitute another module folder or a dated/ZIP copy without explicit source selection. Read nested/supporting files only from the selected mockup folder. Record the code and actual path in SCOPE.md and the PRD source summary.
+Read the module name and Module Code from the current workspace PRD and cross-check module.config.json. Legacy `Module: test (m12)` means name `test`, code `m12`. Use config.code only if the PRD omits its code; ask if both disagree. Never default to M12 or use identity from another workspace. Select the actual matching .docs/documents/mockup/{module code}/ directory, preferring an exact match or otherwise one unique case-insensitive match. Report the resolved identity/path before reading sources.
 
 Use the three-phase workflow: documents and user locking; standalone frontend prototypes for every submodule; backend and real integration. Database has no separate human schema-review/APPROVED record requirement.
 
@@ -31,7 +31,7 @@ Summarize source availability and any real ambiguity. Read-only inspection may c
 ```text
 I authorize Phase 1 documentation for the confirmed module and source set.
 
-Read Module Code from module.config.json field code before selecting mockups; do not use the module name or package as the code. Resolve .docs/documents/mockup/{module code}/ using the actual directory name. For code M12, use an existing m12 folder only if it is the unique case-insensitive match; prefer an exact match. Report the configured code and resolved path before reading mockups. If the code is missing, unsafe or inconsistent, or the folder is missing/ambiguous, ask for the exact code/path before dependent work. Never substitute another module folder or a dated/ZIP copy without explicit source selection. Read nested/supporting files only from the selected mockup folder. Record the code and actual path in SCOPE.md and the PRD source summary.
+Read the module name and Module Code from the current workspace PRD and cross-check module.config.json. Legacy `Module: test (m12)` means name `test`, code `m12`. Use config.code only if the PRD omits its code; ask if both disagree. Never default to M12 or use identity from another workspace. Select the actual matching .docs/documents/mockup/{module code}/ directory, preferring an exact match or otherwise one unique case-insensitive match. Report the resolved identity/path before reading sources.
 
 Read module-relevant SRS/SDS, including DOCX tables/diagrams, and mockup support files from the resolved folder. Continue independently identified SRS/SDS work while awaiting any mockup-path clarification.
 

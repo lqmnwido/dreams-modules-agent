@@ -2,7 +2,7 @@
 
 This brief template is not implementation evidence.
 
-- Module identity and general purpose from actual sources.
+- Module name and Module Code as separate explicit fields, cross-checked with module.config.json; general purpose from actual sources.
 - Ownership of the module database and cross-module APIs.
 - Authoritative source versions and Phase 1 confirmation reread status.
 - Links to SCOPE/ARCHITECTURE/DATABASE/BACKEND/FRONTEND.

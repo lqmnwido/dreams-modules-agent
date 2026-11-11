@@ -13,7 +13,7 @@ Pasang dengan `node skills.js --codex`, `--claude`, `--opencode`, `--cursor`, `-
 ```text
 Baca AGENTS.md, module.config.json dan .docs/PRD.md. Kenal pasti modul sebenar dan sumber dalam .docs/documents/. Jangan anggap SRS wujud atau guna peraturan modul lain.
 
-Baca Module Code daripada medan code dalam module.config.json sebelum memilih mockup; jangan gunakan nama modul atau package sebagai kod. Tentukan .docs/documents/mockup/{module code}/ mengikut nama folder sebenar. Bagi kod M12, gunakan folder m12 yang wujud hanya jika itulah satu-satunya padanan tanpa mengira huruf besar/kecil; utamakan padanan tepat. Nyatakan kod konfigurasi dan path sebenar sebelum membaca mockup. Jika kod tiada, tidak selamat atau bercanggah, atau folder tiada/tidak jelas, tanya kod/path tepat sebelum kerja yang bergantung padanya. Jangan ganti dengan folder modul lain atau salinan bertarikh/ZIP tanpa pemilihan sumber yang jelas. Baca fail bersarang/sokongan mockup hanya daripada folder yang dipilih. Rekod kod dan path sebenar dalam SCOPE.md serta ringkasan sumber PRD.
+Baca nama modul dan Module Code daripada PRD workspace semasa, kemudian semak module.config.json. Format lama Module: test (m12) bermaksud nama test dan kod m12. Guna config.code hanya jika PRD tidak menyatakan kod; tanya jika kedua-duanya bercanggah. Jangan anggap M12 atau guna identiti workspace lain. Pilih folder sebenar .docs/documents/mockup/{module code}/ dengan padanan tepat atau satu padanan unik tanpa mengira huruf besar/kecil. Laporkan identiti dan path sebelum membaca sumber; tanya jika folder tiada atau tidak jelas.
 
 Gunakan tiga fasa: dokumentasi dan penguncian pengguna; prototaip frontend standalone bagi semua submodul; backend dan integrasi sebenar. Database tidak memerlukan rekod human review/APPROVED berasingan.
 
@@ -29,7 +29,7 @@ Ringkaskan sumber tersedia dan kekaburan sebenar. Boleh teruskan pemeriksaan rea
 ```text
 Saya membenarkan Fasa 1 dokumentasi bagi modul dan sumber yang disahkan.
 
-Baca Module Code daripada medan code dalam module.config.json sebelum memilih mockup; jangan gunakan nama modul atau package sebagai kod. Tentukan .docs/documents/mockup/{module code}/ mengikut nama folder sebenar. Bagi kod M12, gunakan folder m12 yang wujud hanya jika itulah satu-satunya padanan tanpa mengira huruf besar/kecil; utamakan padanan tepat. Nyatakan kod konfigurasi dan path sebenar sebelum membaca mockup. Jika kod tiada, tidak selamat atau bercanggah, atau folder tiada/tidak jelas, tanya kod/path tepat sebelum kerja yang bergantung padanya. Jangan ganti dengan folder modul lain atau salinan bertarikh/ZIP tanpa pemilihan sumber yang jelas. Baca fail bersarang/sokongan mockup hanya daripada folder yang dipilih. Rekod kod dan path sebenar dalam SCOPE.md serta ringkasan sumber PRD.
+Baca nama modul dan Module Code daripada PRD workspace semasa, kemudian semak module.config.json. Format lama Module: test (m12) bermaksud nama test dan kod m12. Guna config.code hanya jika PRD tidak menyatakan kod; tanya jika kedua-duanya bercanggah. Jangan anggap M12 atau guna identiti workspace lain. Pilih folder sebenar .docs/documents/mockup/{module code}/ dengan padanan tepat atau satu padanan unik tanpa mengira huruf besar/kecil. Laporkan identiti dan path sebelum membaca sumber; tanya jika folder tiada atau tidak jelas.
 
 Baca SRS/SDS berkaitan modul termasuk jadual/rajah DOCX, serta fail sokongan mockup daripada folder yang dikenal pasti. Teruskan kerja SRS/SDS yang dikenal pasti secara bebas sementara menunggu penjelasan path mockup.
 

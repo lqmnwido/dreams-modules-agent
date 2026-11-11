@@ -449,3 +449,29 @@ test('Java 25 Boot 4 scaffold includes modular MVC, OAuth2 and Flyway starters',
   assert.match(properties, /spring.sql.init.mode=never/);
   assert.match(properties, /API_SECURITY_ENABLED:true/);
 });
+
+test('module name separators generate consistent paths, Java classes, environment keys and federation names', async () => {
+  for (const module of ['memorial-test', 'memorial_test', 'memorial-_test']) {
+    const selected = { ...config, module, code: 'X07', package: 'com.dreams.probe' };
+    const files = await plan(selected);
+    const frontend = `${module}_fe`;
+    assert.ok(files.has(`${module}_be/src/main/java/com/dreams/probe/MemorialTestApplication.java`));
+    assert.match(files.get('.docs/PRD.md').toString(), new RegExp(`Module name: ${module}\\.`));
+    assert.match(files.get('.docs/PRD.md').toString(), /Module Code: X07\./);
+    const envSuffix = module.toUpperCase().replaceAll('-', '_');
+    assert.ok(files.get(`${frontend}/.env`).toString().includes(`VUE_APP_BUCKET_${envSuffix}=${module}`));
+    const remote = module.replaceAll('-', '_');
+    assert.ok(files.get(`${frontend}/vue.config.js`).toString().includes(`name: "${remote}"`));
+    assert.ok(files.get(`${frontend}/src/metadata.js`).toString().includes(`"remoteName": "${remote}"`));
+    assert.ok(files.get(`${frontend}/src/metadata.js`).toString().includes(`"routePrefix": "/${module}"`));
+
+    const root = await temp();
+    await writePlan(root, files);
+    const fake = runnerFixture(root);
+    await maintain(root, { install: true, runner: fake.runner });
+    assert.ok(fake.calls.some(([command, , cwd]) => command === 'npm' && cwd === join(root, frontend)));
+  }
+  for (const module of ['../module', '-module', 'module/name', 'module name', 'Module']) {
+    assert.throws(() => validate({ ...config, module }));
+  }
+});

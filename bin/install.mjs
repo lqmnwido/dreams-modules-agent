@@ -23,7 +23,7 @@ const categories=[
 ];
 try {
   console.log('D-ReAMS module setup. PostgreSQL is mandatory. Blank use-case answers remain TBD.\nSources: place SRS/SDS/mockups in .docs/documents/ after setup. No source-derived business code or migrations are generated.');
-  const module=await required('Module name (lowercase; example memorial)',/^[a-z][a-z0-9_]*$/);
+  const module=await required('Module name (lowercase; hyphens/underscores allowed; example memorial-test)',/^[a-z][a-z0-9_-]*$/);
   const code=await required('Module code',/^[^|\r\n]+$/);
   const root=resolve(await ask('Target workspace (contains Shell, frontend and backend)',join(process.cwd(),`${module}-workspace`)));
   const group=await required('Approved Java group (example com.dreams)',/^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)+$/);

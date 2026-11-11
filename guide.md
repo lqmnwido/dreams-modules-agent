@@ -116,7 +116,7 @@ New scaffolds generate uppercase Markdown filenames. Older unlocked lowercase Ph
 
 ## Phase 1 — read sources, prepare documents, confirm and lock
 
-Place actual sources under `.docs/documents/`; do not assume an SRS exists. Read Module Code from `module.config.json` field `code`, then select the actual matching `.docs/documents/mockup/{module code}/` folder. For example, code M12 may match an existing m12 directory. Ask if the code/folder is missing or ambiguous; never use another module’s mockups. Use dated ZIP/mockup copies only when the user selects them as sources.
+Read the module name and Module Code from the current workspace PRD and cross-check module.config.json. Legacy `Module: test (m12)` means name `test`, code `m12`. Use config.code only if the PRD omits its code; ask if both disagree. Never default to M12 or use identity from another workspace. Select the actual matching .docs/documents/mockup/{module code}/ directory, preferring an exact match or otherwise one unique case-insensitive match. Report the resolved identity/path before reading sources.
 
 | Document | Content |
 | --- | --- |
@@ -431,3 +431,9 @@ Render exactly one card/title for `Carian Terperinci`. Inspect ComponentCarian a
 Keep the visible field label `Status`, but avoid the DOM ID `status` because the shared global `#status` rule styles an unrelated indicator. Use `status_new` for the UI control ID. Where the installed renderer derives its ID from field.name, use `status_new` as the UI schema/model key and map it explicitly to the existing approved API status key in the service. Preserve getParams and map its generated UI-key parameter rather than bypassing it. Do not rename backend/domain fields or invent a field.id override. Match labels, validation, reset and tests to the UI key; use unique namespaced suffixes for simultaneously rendered Status controls. Verify the dropdown and keyboard/accessibility behavior in the browser.
 
 New-project installer default: Java 25 LTS and Spring Boot 4.1.1 stable. Boot 4 requires its modular MVC, OAuth2 resource-server and Flyway starters; verify actual test imports/dependencies for that major version. Existing approved projects keep their versions until an upgrade is explicitly authorized. See https://docs.spring.io/spring-boot/system-requirements.html for compatibility.
+
+## Module name and Module Code
+
+The module name may contain lowercase letters, digits, hyphens and underscores, starting with a letter (for example memorial-test or memorial_test). Generated folders retain that name: memorial-test_fe and memorial-test_be. Java package/group are entered separately and do not accept hyphens. Java application class names capitalize separator-delimited words; memorial-test produces MemorialTestApplication. Environment variable suffixes uppercase the name and replace hyphens with underscores (MEMORIAL_TEST). Federation remoteName also replaces hyphens with underscores (memorial_test); metadata and webpack use the same value. Route prefixes, service paths and bucket values retain the module name. Review remote-name collisions before registering similarly named modules with Shell.
+
+The Module Code is a separate source identifier, read from the PRD and checked against module.config.json. It is not constrained to M12 and does not replace the module name. Existing workspaces are not renamed by these changes.

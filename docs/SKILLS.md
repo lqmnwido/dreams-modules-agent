@@ -122,7 +122,7 @@ The skills preserve the current three-phase workflow, no separate database human
 
 No MCP server, browser, JDK, npm dependency, harness binary or authentication is installed by this script. Playwright MCP browser tests still require the actual tool to be configured. No working harness UI has been exercised by filesystem installation tests alone.
 
-Phase 1 reads Module Code from `module.config.json` field `code` and selects `.docs/documents/mockup/{module code}/` (the actual matching folder, for example M12 → m12). Missing or ambiguous codes/folders require clarification; other modules’ mockups are excluded.
+Read the module name and Module Code from the current workspace PRD and cross-check module.config.json. Legacy `Module: test (m12)` means name `test`, code `m12`. Use config.code only if the PRD omits its code; ask if both disagree. Never default to M12 or use identity from another workspace. Select the actual matching .docs/documents/mockup/{module code}/ directory, preferring an exact match or otherwise one unique case-insensitive match. Report the resolved identity/path before reading sources.
 
 Install only the two additional skills without replacing existing phase skills:
 

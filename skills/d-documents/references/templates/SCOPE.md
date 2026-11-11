@@ -4,7 +4,7 @@ This documentation template is not a reviewed module scope. Fill it from actual 
 
 ## Identity and sources
 
-Read the module name and code from module.config.json. Use its code field to select the actual matching .docs/documents/mockup/{module code}/ folder; ask if missing or ambiguous. List files, versions, sections and authoritative sources; record missing or unreadable files. Do not invent an SRS when none exists.
+Read the module name and Module Code from the current workspace PRD and cross-check module.config.json. Legacy `Module: test (m12)` means name `test`, code `m12`. Use config.code only if the PRD omits its code; ask if both disagree. Never default to M12 or use identity from another workspace. Select the actual matching .docs/documents/mockup/{module code}/ directory, preferring an exact match or otherwise one unique case-insensitive match. Report the resolved identity/path before reading sources. List files, versions, sections and authoritative sources; record missing or unreadable files. Do not invent an SRS when none exists.
 
 ## Function map
 
