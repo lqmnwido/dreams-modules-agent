@@ -63,6 +63,35 @@ test('dry run writes no target directories and shared Codex/agents target is ded
   assert.ok(plan.operations.every(operation => operation.action === 'create'));
 });
 
+test('Windows CRLF skill headers and optional UTF-8 BOM install without changing source bytes', async () => {
+  for (const bom of ['', '\uFEFF']) {
+    const bundled = await temporary();
+    const project = await temporary();
+    const skillDirectory = join(bundled, 'd-documents');
+    await mkdir(skillDirectory);
+    const contents = Buffer.from(`${bom}---\r\nname: d-documents\r\ndescription: Windows fixture\r\n---\r\n\r\n# Documents\r\n`);
+    await writeFile(join(skillDirectory, 'SKILL.md'), contents);
+
+    await installSkills(parseArgs(['--codex', '--project', project, '--skill', 'd-documents']), { source: bundled });
+
+    assert.deepEqual(await readFile(join(project, '.agents/skills/d-documents/SKILL.md')), contents);
+    assert.deepEqual(await readFile(join(skillDirectory, 'SKILL.md')), contents);
+  }
+});
+
+test('Windows line endings do not allow a mismatched bundled skill name', async () => {
+  const bundled = await temporary();
+  const project = await temporary();
+  await mkdir(join(bundled, 'd-documents'));
+  await writeFile(join(bundled, 'd-documents/SKILL.md'), '\uFEFF---\r\nname: unexpected-skill\r\n---\r\n');
+
+  await assert.rejects(
+    installSkills(parseArgs(['--codex', '--project', project, '--skill', 'd-documents']), { source: bundled }),
+    /Invalid bundled skill: d-documents/
+  );
+  assert.deepEqual(await readdir(project), []);
+});
+
 test('original three adapters retain self-contained skills and OpenCode slash wrappers', async () => {
   const project = await temporary();
   const plan = await installSkills(parseArgs(['--codex', '--claude', '--opencode', '--project', project]));
