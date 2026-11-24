@@ -525,3 +525,39 @@ test('backend foundation is complete, module-scoped and keeps properties configu
   assert.doesNotMatch(pom, /\{\{\w+\}\}/);
   assert.ok(![...files.keys()].some((path) => path.endsWith('.sql')));
 });
+
+test('npm children and nested lifecycle processes inherit CUDA skip without overriding explicit choices', async () => {
+  const root = await temp();
+  await writeFile(join(root, 'package.json'), JSON.stringify({
+    private: true,
+    scripts: { probe: 'node probe.cjs' },
+  }));
+  await writeFile(join(root, 'probe.cjs'), `
+const { execFileSync } = require('node:child_process');
+process.stdout.write(execFileSync(process.execPath, ['-e',
+  'process.stdout.write(process.env.ONNXRUNTIME_NODE_INSTALL_CUDA || "unset")'
+], { encoding: 'utf8' }));
+`);
+  const maintenance = new URL('../lib/maintenance.mjs', import.meta.url).href;
+  for (const [direct, npmConfig, expected] of [
+    [undefined, undefined, 'skip'],
+    ['v12', undefined, 'v12'],
+    [undefined, 'v11', 'v11'],
+    ['skip', 'v12', 'skip'],
+  ]) {
+    const env = { ...process.env };
+    delete env.ONNXRUNTIME_NODE_INSTALL_CUDA;
+    delete env.npm_config_onnxruntime_node_install_cuda;
+    if (direct !== undefined) env.ONNXRUNTIME_NODE_INSTALL_CUDA = direct;
+    if (npmConfig !== undefined) env.npm_config_onnxruntime_node_install_cuda = npmConfig;
+    const script = `
+import { run } from ${JSON.stringify(maintenance)};
+process.stdout.write(await run('npm', ['run', 'probe', '--silent'], ${JSON.stringify(root)}, true));
+`;
+    const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], {
+      env, encoding: 'utf8', timeout: 30000,
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stdout.trim(), expected);
+  }
+});

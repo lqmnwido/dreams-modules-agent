@@ -400,3 +400,22 @@ The portable d-documents, d-backend and d-testing packages each include this ref
 New backends now include util, specification, exception and constant packages plus shared ListResponseForm, PageResponseForm and SearchForm. These are technical helpers, not generated business APIs. SearchForm is bounded and extended per resource; there is no global catch-all business search form or unlimited page shortcut. See [foundation contracts and commands](docs/BACKEND-FOUNDATION.md).
 
 Spotless/google-java-format and Checkstyle are configured in the generated Maven build. Use `mvn spotless:apply`, `mvn spotless:check`, `mvn checkstyle:check` and `mvn test`; formatting/lint checks also run during validate. Domain implementation still requires actual authorization, mapping, transactions, database tests and measured query performance. Existing workspaces, protected designs and configuration are not rewritten automatically. Configuration remains application.properties and application-local.properties; no transcribe/MinIO/Temporal bindings are added.
+
+## ONNX Runtime CUDA download during frontend setup
+
+The UI dependency uses Transformers, which can pull in onnxruntime-node while npm prepares the Git package. Frontend setup does not require Node CUDA binaries. Maintenance therefore defaults ONNXRUNTIME_NODE_INSTALL_CUDA=skip for its npm child processes; nested Git-package preparation inherits it. Required prepare/build scripts remain enabled, CPU binaries are retained and no system CUDA installation is changed. Browser GPU selection is separate. An explicitly supplied ONNXRUNTIME_NODE_INSTALL_CUDA (or npm_config_onnxruntime_node_install_cuda) takes precedence; projects intentionally needing Node CUDA must select and verify their compatible GPU dependencies. This is not a retry for unrelated network or build errors.
+
+For an older workspace that does not contain the updated maintenance script, resume its existing installation on Linux/macOS with:
+
+```bash
+ONNXRUNTIME_NODE_INSTALL_CUDA=skip node scripts/maintenance.mjs install
+```
+
+In PowerShell:
+
+```powershell
+$env:ONNXRUNTIME_NODE_INSTALL_CUDA = "skip"
+node scripts/maintenance.mjs install
+```
+
+Do not rerun workspace creation or delete lockfiles/caches. Existing workspace scripts are not automatically upgraded.
