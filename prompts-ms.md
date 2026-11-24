@@ -173,6 +173,7 @@ Semak formatter/lint Java dan cadang tools/versi yang tiada (contohnya Checkstyl
 **Prompt:**
 
 ```text
+Gunakan struktur backend berasaskan kod-api: controller nipis, service konkrit dengan constructor injection, repository JPA, form input/output berasingan, validasi sebenar, mapping jelas dan Specifications berskop. Kekalkan kontrak paging/envelope yang diluluskan dengan had. Sertakan identiti audit dipercayai, transaksi service, ujian keselamatan/rollback/concurrency, format/lint Java dan ukuran prestasi query/fetch. Jangan salin naming/label, query tanpa had, authId dipercayai daripada pemanggil atau mapping BeanUtils menyeluruh.
 Untuk projek baharu, gunakan default installer Java 25 LTS dan Spring Boot 4.1.1 stable dengan starter serasi Boot 4. Kekalkan versi projek sedia ada melainkan naik taraf diluluskan secara jelas.
 Saya membenarkan satu submodul backend dan pelan terhad yang baru dicadangkan. Nyatakan ID. Implement controller/service/form/entity/repository sebenar, validasi, role/object access, transaksi, paging/filter/sort, errors, concurrency dan audit mengikut BACKEND.md/DATABASE.md.
 

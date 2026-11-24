@@ -21,6 +21,8 @@ Inspect actual scripts, test discovery and profiles before running commands. Dat
 
 ## Verify behavior and quality
 
+For the kod-api-derived backend pattern, verify controller/service/repository boundaries and test mass assignment, omitted/null updates, trusted actor/record scope, removed-row visibility, paging/sort limits, rollback and concurrency. Check SQL/query counts and batch/fetch behavior on the authorized PostgreSQL target. Report performance measurements separately from mocks and run formatter and lint checks separately; do not claim speed improvements from architecture alone. See [backend acceptance checks](references/BACKEND-PATTERNS.md).
+
 Use the [testing template](references/TESTING.md) for the result structure, [code style](references/CODE-STYLE.md) for mandatory readability/format/lint and [backend test patterns](references/BACKEND-PATTERNS.md) for applicable Java tests.
 
 1. Map actual source/use-case IDs to implemented functions, expected outcomes and test cases. Do not infer blanket CRUD from a sample.
@@ -48,3 +50,7 @@ All synthetic business rows, dropdown fixture values, dashboard values and simul
 Render exactly one card/title for `Carian Terperinci`. Inspect ComponentCarian and the generated form's actual supported options. If the outer component owns the card/title, suppress the inner card/title through an existing supported option; do not nest two identically titled cards, invent a prop, patch the UI library or add custom CSS. Verify the rendered DOM and screenshot.
 
 Keep the visible field label `Status`, but avoid the DOM ID `status` because the shared global `#status` rule styles an unrelated indicator. Use `status_new` for the UI control ID. Where the installed renderer derives its ID from field.name, use `status_new` as the UI schema/model key and map it explicitly to the existing approved API status key in the service. Preserve getParams and map its generated UI-key parameter rather than bypassing it. Do not rename backend/domain fields or invent a field.id override. Match labels, validation, reset and tests to the UI key; use unique namespaced suffixes for simultaneously rendered Status controls. Verify the dropdown and keyboard/accessibility behavior in the browser.
+
+## Generated backend helpers
+
+Read [backend foundation](references/BACKEND-FOUNDATION.md) when working with new scaffolds. Reuse the generated paging/list forms, bounded SearchForm/PagingUtil, specification helpers and sanitized exception handler instead of creating duplicates. Their defaults must be confirmed against the resource contract in Phase 1; preserve existing locked alternatives. New backends include Spotless and Checkstyle checks; verify them separately and add real submodule tests. Existing workspaces are not automatically upgraded.

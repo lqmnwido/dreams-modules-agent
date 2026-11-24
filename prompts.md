@@ -175,6 +175,7 @@ Inspect Java formatter/lint settings and propose missing tools/versions (for exa
 **Prompt:**
 
 ```text
+Use the kod-api-derived backend pattern: thin controllers, concrete constructor-injected services, JPA repositories, separate validated forms, explicit mapping and scoped Specifications. Preserve approved bounded paging/envelopes. Include trusted audit identity, service transactions, security and rollback/concurrency tests, Java format/lint checks, and measured query/fetch performance. Do not copy naming/labels, unbounded queries, caller-trusted authId or blanket BeanUtils mapping.
 For a newly generated project, use the installer defaults Java 25 LTS and Spring Boot 4.1.1 stable with Boot 4-compatible starters. Keep existing approved versions unless an upgrade is explicitly authorized.
 I authorize the single backend submodule and bounded plan just proposed. Name its ID. Implement actual controllers/services/forms/entities/repositories, validation, role/object access, transactions, paging/filter/sort, errors, concurrency and audit against BACKEND.md/DATABASE.md.
 

@@ -35,6 +35,8 @@ Every schema change uses Flyway and a new migration; never edit applied migratio
 
 ## Implementation
 
+Use the [kod-api-derived implementation pattern](references/BACKEND-PATTERNS.md): thin controllers, focused concrete constructor-injected services, repository-only persistence, separate validated request/response forms, explicit mapping and composable scoped Specifications. Preserve the approved paging/envelope contract and use bounded queries with measured fetch plans. Do not copy source naming/labels, blanket BeanUtils mapping, caller-trusted authId, unlimited paging, hard-delete routes or missing service transactions. The reference combines this structure with our mandatory Java formatting/linting, security, test and performance evidence requirements. Existing locked contracts take precedence; no unrelated scaffold restructuring.
+
 Use Java 25, project-compatible Spring Boot, PostgreSQL and Flyway. Keep Flyway enabled, Hibernate generation none and SQL initialization never. Bearer authentication remains default; preserve only the approved local bypass without treating bypass tests as real identity/security evidence.
 
 Controller owns HTTP mappings; one service/submodule owns business logic and transaction boundaries; repository owns data access; one entity/table; forms live in form/{submodule}. Use actual source IDs including SDS/UC when no SRS exists. Do not add sample flagAktif fields, blanket CRUD/deletes or guessed roles.
@@ -78,3 +80,7 @@ For a needed locked-document revision, identify the exact file and ask the human
 Use source-screen names from FRONTEND.md as PascalCase Vue filenames: `src/views/{submodule}/{ScreenName}.vue`, for example Senarai Permohonan Lawatan → SenaraiPermohonanLawatan.vue. interface.vue is an initial scaffold placeholder only. Keep the flat API entry at `src/services/{module}/{submodule}.service.js`; place extracted schemas, demo/file logic and .mjs/.js helpers under `src/services/{module}/{submodule}/`, not views/{submodule}/. Update authorized imports, tests and exposes/Shell mappings together; do not change locked designs or existing workspaces silently.
 
 New-project installer default: Java 25 LTS and Spring Boot 4.1.1 stable. Boot 4 requires its modular MVC, OAuth2 resource-server and Flyway starters; verify actual test imports/dependencies for that major version. Existing approved projects keep their versions until an upgrade is explicitly authorized. See https://docs.spring.io/spring-boot/system-requirements.html for compatibility.
+
+## Generated backend helpers
+
+Read [backend foundation](references/BACKEND-FOUNDATION.md) when working with new scaffolds. Reuse the generated paging/list forms, bounded SearchForm/PagingUtil, specification helpers and sanitized exception handler instead of creating duplicates. Their defaults must be confirmed against the resource contract in Phase 1; preserve existing locked alternatives. New backends include Spotless and Checkstyle checks; verify them separately and add real submodule tests. Existing workspaces are not automatically upgraded.

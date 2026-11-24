@@ -88,6 +88,10 @@ memorial_be/
     │   │   ├── config/
     │   │   ├── security/
     │   │   ├── common/
+    │   │   ├── constant/            # technical paging defaults
+    │   │   ├── util/                # bounded paging and sort mapping
+    │   │   ├── specification/       # reusable Criteria predicates
+    │   │   ├── exception/           # sanitized MVC error handling
     │   │   ├── entity/
     │   │   ├── repository/
     │   │   ├── form/{submodule}/

@@ -496,3 +496,32 @@ test('module name separators generate consistent paths, Java classes, environmen
     assert.throws(() => validate({ ...config, module }));
   }
 });
+
+test('backend foundation is complete, module-scoped and keeps properties configuration', async () => {
+  const files = await plan(config);
+  const base = 'memorial_be/src/main/java/com/dreams/memorial/';
+  for (const filename of [
+    'constant/PagingConstants', 'form/SearchForm', 'form/PageResponseForm', 'form/ListResponseForm',
+    'util/PagingUtil', 'specification/SpecificationsBuilder', 'exception/ApiException',
+    'exception/ErrorDetails', 'exception/GlobalExceptionHandler', 'exception/InvalidRequestException',
+    'exception/ResourceNotFoundException', 'exception/ResourceConflictException',
+  ]) {
+    const contents = files.get(`${base}${filename}.java`)?.toString();
+    assert.ok(contents, filename);
+    assert.match(contents, /package com\.dreams\.memorial\./);
+    assert.doesNotMatch(contents, /\{\{\w+\}\}/);
+  }
+  for (const filename of ['form/FoundationFormTest', 'specification/SpecificationsBuilderTest', 'exception/GlobalExceptionHandlerTest']) {
+    assert.ok(files.has(`memorial_be/src/test/java/com/dreams/memorial/${filename}.java`));
+  }
+  assert.ok(files.has('memorial_be/config/checkstyle.xml'));
+  assert.ok(files.has('memorial_be/BACKEND-FOUNDATION.md'));
+  assert.ok(files.has('memorial_be/src/main/resources/application.properties'));
+  assert.ok(files.has('memorial_be/src/main/resources/application-local.properties'));
+  assert.ok(!files.has('memorial_be/src/main/resources/application.yml'));
+  const pom = files.get('memorial_be/pom.xml').toString();
+  assert.match(pom, /spotless-maven-plugin/);
+  assert.match(pom, /maven-checkstyle-plugin/);
+  assert.doesNotMatch(pom, /\{\{\w+\}\}/);
+  assert.ok(![...files.keys()].some((path) => path.endsWith('.sql')));
+});

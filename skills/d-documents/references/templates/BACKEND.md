@@ -8,6 +8,8 @@ Follow existing module/submodule patterns before framework conventions. Do not i
 
 Use @WebMvcTest for controllers, @DataJpaTest for repositories/PostgreSQL and @SpringBootTest for integration. Service unit tests use JUnit 5/Mockito. Run tests through the project’s actual Maven/Gradle build (mvn test or an existing wrapper); do not introduce another build system. Confirm the test profile/database before context/Flyway tests; never default to production or silently substitute H2 for PostgreSQL semantics.
 
+Use the kod-api-derived structural pattern without its naming, labels or business rules: thin HTTP controllers, concrete constructor-injected services, JPA repositories/entities and separate validated request/response forms. Use explicit allowed-field mapping, scoped JPA Specifications and the existing bounded paging envelope. Services own authorization, audit identity and transactions; avoid per-row queries/provider calls and prove fetch behavior on PostgreSQL. Do not copy unbounded paging, caller-trusted authId or blanket property copying. Existing approved contracts remain authoritative.
+
 ## Controller — one submodule
 
 Class: `{SubmoduleName}Controller`; fill the actual name.
@@ -27,11 +29,11 @@ List source-supported functions only: GET list/detail, POST create/actions, PUT 
 | Method signature | Purpose | Pagination | Related index |
 | --- | --- | --- | --- |
 
-Use JpaRepository with actual entity/ID types. Use `findAllByFlagAktif` only if the field exists; large lists need bounded/paged queries. Specify the fetch plan and N+1 prevention.
+Use JpaRepository with actual entity/ID types; add JpaSpecificationExecutor for actual dynamic filtering. Use `findAllByFlagAktif` only if the field exists; large lists need bounded/paged queries. Specify the fetch plan and N+1 prevention.
 
 ## Service — one service per submodule
 
-Use `{SubmoduleName}Service` and an implementation class if the project pattern requires it.
+Default to a focused concrete @Service with constructor-injected final dependencies. Add an interface/implementation split only when the existing project pattern or a concrete requirement needs it.
 
 | Function | Input | Output | Business rules | Read-only / write transaction | Source ID |
 | --- | --- | --- | --- | --- | --- |
@@ -49,7 +51,7 @@ form/{submodule}/
 | Form | Field / type | Validation | Mapping | Sensitive? |
 | --- | --- | --- | --- | --- |
 
-Add action-specific forms when actual contracts require them. Do not accept raw entities or caller-supplied audit/identity fields.
+Specify field constraints, allowed mapping and omitted-versus-null update semantics. Add action-specific forms when actual contracts require them. Do not accept raw entities or caller-supplied audit/identity fields.
 
 ## Errors
 

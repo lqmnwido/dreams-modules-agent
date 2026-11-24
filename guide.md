@@ -437,3 +437,15 @@ New-project installer default: Java 25 LTS and Spring Boot 4.1.1 stable. Boot 4 
 The module name may contain lowercase letters, digits, hyphens and underscores, starting with a letter (for example memorial-test or memorial_test). Generated folders retain that name: memorial-test_fe and memorial-test_be. Java package/group are entered separately and do not accept hyphens. Java application class names capitalize separator-delimited words; memorial-test produces MemorialTestApplication. Environment variable suffixes uppercase the name and replace hyphens with underscores (MEMORIAL_TEST). Federation remoteName also replaces hyphens with underscores (memorial_test); metadata and webpack use the same value. Route prefixes, service paths and bucket values retain the module name. Review remote-name collisions before registering similarly named modules with Shell.
 
 The Module Code is a separate source identifier, read from the PRD and checked against module.config.json. It is not constrained to M12 and does not replace the module name. Existing workspaces are not renamed by these changes.
+
+## Backend implementation pattern
+
+The backend skills adopt kod-api's structural flow: thin controller → focused concrete service → JPA repository/entity, with separate request/response forms, composable filtering and the accepted paging envelope. This does not copy its naming, labels, business rules or weaknesses. Our requirements add constructor injection, controlled mapping, trusted identity/record scope, service transactions, bounded queries, deliberate fetch/batch plans, Java formatting/linting and layered tests. Performance improvement requires actual SQL/query-count/timing evidence; a skill update alone does not prove faster runtime behavior. See [backend patterns](docs/BACKEND-PATTERNS.md).
+
+The portable d-documents, d-backend and d-testing packages each include this reference. Existing locked contracts and approved project patterns remain authoritative. No extra service interfaces, mapper dependencies or generic CRUD framework are required by default.
+
+## Generated backend foundation and Java checks
+
+New backends now include util, specification, exception and constant packages plus shared ListResponseForm, PageResponseForm and SearchForm. These are technical helpers, not generated business APIs. SearchForm is bounded and extended per resource; there is no global catch-all business search form or unlimited page shortcut. See [foundation contracts and commands](docs/BACKEND-FOUNDATION.md).
+
+Spotless/google-java-format and Checkstyle are configured in the generated Maven build. Use `mvn spotless:apply`, `mvn spotless:check`, `mvn checkstyle:check` and `mvn test`; formatting/lint checks also run during validate. Domain implementation still requires actual authorization, mapping, transactions, database tests and measured query performance. Existing workspaces, protected designs and configuration are not rewritten automatically. Configuration remains application.properties and application-local.properties; no transcribe/MinIO/Temporal bindings are added.

@@ -30,6 +30,26 @@ async function assertPortableReferences(skillRoot, directory = skillRoot) {
   }
 }
 
+test('backend workflow skills bundle the same portable implementation and quality reference', async () => {
+  const project = await temporary();
+  const canonical = await readFile(new URL('../docs/BACKEND-PATTERNS.md', import.meta.url));
+  const names = ['d-documents', 'd-backend', 'd-testing'];
+  const options = parseArgs([
+    '--codex', '--claude', '--opencode', '--project', project,
+    ...names.flatMap((name) => ['--skill', name]),
+  ]);
+
+  await installSkills(options);
+
+  for (const directory of ['.agents/skills', '.claude/skills', '.opencode/skills']) {
+    for (const name of names) {
+      const installed = join(project, directory, name);
+      assert.deepEqual(await readFile(join(installed, 'references/BACKEND-PATTERNS.md')), canonical);
+      await assertPortableReferences(installed);
+    }
+  }
+});
+
 test('skill CLI validates choices and rejects ambiguous or traversal arguments', () => {
   assert.throws(() => parseArgs([]), /Choose/);
   assert.throws(() => parseArgs(['--unknown']), /Unknown argument/);

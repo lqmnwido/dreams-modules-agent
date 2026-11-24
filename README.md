@@ -247,7 +247,11 @@ memorial_be/
     │   │   ├── MemorialApplication.java
     │   │   ├── config/              # infrastructure wiring
     │   │   ├── security/            # JWT authentication; role mapping TBD
-    │   │   ├── common/              # response/paging/exceptions after review
+    │   │   ├── common/              # other genuinely shared infrastructure
+    │   │   ├── constant/            # technical paging defaults
+    │   │   ├── util/                # bounded paging and sort mapping
+    │   │   ├── specification/       # reusable Criteria predicates
+    │   │   ├── exception/           # sanitized MVC error handling
     │   │   ├── entity/              # one entity per approved table
     │   │   ├── repository/          # data access only
     │   │   ├── form/{submodule}/
@@ -384,3 +388,15 @@ The Module Code is a separate source identifier, read from the PRD and checked a
 ### Shared UI branch refresh
 
 Both initial setup and later maintenance explicitly run `npm install "@2enapps/ui@git+https://kai.2enapps.my/d-reams/frontend/ui.git#develop" --legacy-peer-deps` in Shell and the module frontend. This refreshes the Git dependency selection instead of relying only on an existing lockfile revision. Later maintenance also runs the existing npm update step. A failed UI install stops maintenance; completion is not reported. Existing workspaces contain their own copied maintenance script and need that script updated explicitly to receive this fix. No lockfiles or npm caches are deleted.
+
+## Backend implementation pattern
+
+The backend skills adopt kod-api's structural flow: thin controller → focused concrete service → JPA repository/entity, with separate request/response forms, composable filtering and the accepted paging envelope. This does not copy its naming, labels, business rules or weaknesses. Our requirements add constructor injection, controlled mapping, trusted identity/record scope, service transactions, bounded queries, deliberate fetch/batch plans, Java formatting/linting and layered tests. Performance improvement requires actual SQL/query-count/timing evidence; a skill update alone does not prove faster runtime behavior. See [backend patterns](docs/BACKEND-PATTERNS.md).
+
+The portable d-documents, d-backend and d-testing packages each include this reference. Existing locked contracts and approved project patterns remain authoritative. No extra service interfaces, mapper dependencies or generic CRUD framework are required by default.
+
+## Generated backend foundation and Java checks
+
+New backends now include util, specification, exception and constant packages plus shared ListResponseForm, PageResponseForm and SearchForm. These are technical helpers, not generated business APIs. SearchForm is bounded and extended per resource; there is no global catch-all business search form or unlimited page shortcut. See [foundation contracts and commands](docs/BACKEND-FOUNDATION.md).
+
+Spotless/google-java-format and Checkstyle are configured in the generated Maven build. Use `mvn spotless:apply`, `mvn spotless:check`, `mvn checkstyle:check` and `mvn test`; formatting/lint checks also run during validate. Domain implementation still requires actual authorization, mapping, transactions, database tests and measured query performance. Existing workspaces, protected designs and configuration are not rewritten automatically. Configuration remains application.properties and application-local.properties; no transcribe/MinIO/Temporal bindings are added.

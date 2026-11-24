@@ -39,6 +39,8 @@ Resolve mockups under `.docs/documents/mockup/{module code}`. Prefer the exact e
 
 ## Phase 3 standards must be designed before locking
 
+Specify the [kod-api-derived backend layers](references/BACKEND-PATTERNS.md) without copying its naming, labels or business rules: controller → concrete service → repository/entity, separate forms, scoped filtering and the approved paging envelope. Record mapping/null semantics, actor/record authorization, transactions, bounded query/fetch plans, test cases and formatter/linter commands before locking. Do not invent runtime performance results or silently override existing contracts.
+
 Read [database patterns](references/DATABASE-PATTERNS.md) while specifying tables/types/keys/indexes, rollback/recovery, query/cache/pagination/locking plans. Read [backend patterns](references/BACKEND-PATTERNS.md) for existing-project conventions, PostgreSQL/JPA and JUnit 5/Mockito/Spring Boot Test scope. Resolve any source/locked-design conflict explicitly before dependent work; do not leave a UUID-to-BIGINT or pageNo-to-cursor change for silent Phase 3 implementation. These standards add no separate human database-review form.
 
 ## Finish and stop
@@ -76,3 +78,7 @@ All synthetic business rows, dropdown fixture values, dashboard values and simul
 Render exactly one card/title for `Carian Terperinci`. Inspect ComponentCarian and the generated form's actual supported options. If the outer component owns the card/title, suppress the inner card/title through an existing supported option; do not nest two identically titled cards, invent a prop, patch the UI library or add custom CSS. Verify the rendered DOM and screenshot.
 
 Keep the visible field label `Status`, but avoid the DOM ID `status` because the shared global `#status` rule styles an unrelated indicator. Use `status_new` for the UI control ID. Where the installed renderer derives its ID from field.name, use `status_new` as the UI schema/model key and map it explicitly to the existing approved API status key in the service. Preserve getParams and map its generated UI-key parameter rather than bypassing it. Do not rename backend/domain fields or invent a field.id override. Match labels, validation, reset and tests to the UI key; use unique namespaced suffixes for simultaneously rendered Status controls. Verify the dropdown and keyboard/accessibility behavior in the browser.
+
+## Generated backend helpers
+
+Read [backend foundation](references/BACKEND-FOUNDATION.md) when working with new scaffolds. Reuse the generated paging/list forms, bounded SearchForm/PagingUtil, specification helpers and sanitized exception handler instead of creating duplicates. Their defaults must be confirmed against the resource contract in Phase 1; preserve existing locked alternatives. New backends include Spotless and Checkstyle checks; verify them separately and add real submodule tests. Existing workspaces are not automatically upgraded.
